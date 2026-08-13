@@ -13,10 +13,16 @@ import 'package:flutter/material.dart';
 
 import '../../core/conversation/message.dart';
 import '../../core/conversation/participant.dart';
+import '../../core/trust/trust_manager.dart';
+import '../../core/trust/trust_score.dart';
 import '../avatars/avatar_registry.dart';
 import '../avatars/avatar_widget.dart';
 import '../avatars/energy_orb/orb_config.dart';
 import '../widgets/app_theme.dart';
+import '../widgets/network_indicator/network_toggle.dart';
+import '../widgets/network_indicator/rate_limit_flash.dart';
+import '../widgets/network_indicator/search_activity_entry.dart';
+import '../widgets/trust_badge/trust_badge.dart';
 
 // ---------------------------------------------------------------------------
 // Round palette — subtle background tints cycling per conversation round.
@@ -66,6 +72,18 @@ class AiQuadrant extends StatefulWidget {
   /// External scroll controller — supplied by [QuadrantGrid] for sync.
   final ScrollController scrollController;
 
+  /// [TrustManager] for network toggle callbacks.
+  final TrustManager? trustManager;
+
+  /// Initial trust score — used to prime the trust badge.
+  final TrustScore? initialTrustScore;
+
+  /// Stream of [TrustScore] updates for this character — feeds the badge.
+  final Stream<TrustScore>? trustScoreStream;
+
+  /// Controller for triggering the rate-limit flash indicator.
+  final RateLimitFlashController? rateLimitFlashController;
+
   const AiQuadrant({
     required this.participant,
     required this.messages,
@@ -73,6 +91,10 @@ class AiQuadrant extends StatefulWidget {
     required this.isThinking,
     required this.tokenStream,
     required this.scrollController,
+    this.trustManager,
+    this.initialTrustScore,
+    this.trustScoreStream,
+    this.rateLimitFlashController,
     super.key,
   });
 
@@ -250,6 +272,10 @@ class _AiQuadrantState extends State<AiQuadrant> {
             participant: widget.participant,
             avatarState: widget.avatarState,
             charColor: charColor,
+            trustManager: widget.trustManager,
+            initialTrustScore: widget.initialTrustScore,
+            trustScoreStream: widget.trustScoreStream,
+            rateLimitFlashController: widget.rateLimitFlashController,
           ),
           const Divider(height: 1, thickness: 1, color: AppColors.border),
           Expanded(
@@ -294,11 +320,19 @@ class _Header extends StatelessWidget {
   final Participant participant;
   final AvatarState avatarState;
   final Color charColor;
+  final TrustManager? trustManager;
+  final TrustScore? initialTrustScore;
+  final Stream<TrustScore>? trustScoreStream;
+  final RateLimitFlashController? rateLimitFlashController;
 
   const _Header({
     required this.participant,
     required this.avatarState,
     required this.charColor,
+    this.trustManager,
+    this.initialTrustScore,
+    this.trustScoreStream,
+    this.rateLimitFlashController,
   });
 
   @override
@@ -318,28 +352,54 @@ class _Header extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  participant.name,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: charColor,
-                    letterSpacing: 1.0,
-                  ),
+                // Name row
+                Row(
+                  children: [
+                    Text(
+                      participant.name,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: charColor,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                    if (initialTrustScore != null &&
+                        trustScoreStream != null) ...[
+                      const SizedBox(width: 6),
+                      TrustBadge(
+                        scoreStream: trustScoreStream!,
+                        initialScore: initialTrustScore!,
+                      ),
+                    ],
+                    if (rateLimitFlashController != null) ...[
+                      const SizedBox(width: 4),
+                      RateLimitFlash(
+                          controller: rateLimitFlashController!),
+                    ],
+                  ],
                 ),
                 const SizedBox(height: 3),
                 Row(
                   children: [
                     _ModelBadge(modelId: participant.assignedModelId),
                     const SizedBox(width: 6),
-                    Text(
-                      participant.personality,
-                      style: const TextStyle(
-                        fontSize: 10,
-                        color: AppColors.textSecondary,
+                    if (trustManager != null)
+                      NetworkToggle(
+                        characterName: participant.name,
+                        initialEnabled:
+                            initialTrustScore?.networkEnabled ?? true,
+                        trustManager: trustManager!,
+                      )
+                    else
+                      Text(
+                        participant.personality,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: AppColors.textSecondary,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
                   ],
                 ),
               ],
@@ -416,6 +476,15 @@ class _MessageArea extends StatelessWidget {
         if (index < messages.length) {
           final msg = messages[index];
           if (msg.isPass) return const SizedBox.shrink();
+          // Ephemeral web-result injections render as collapsible search entries.
+          if (msg.isEphemeral) {
+            // Extract the query from the injection content if possible.
+            final query = _extractQuery(msg.content);
+            return SearchActivityEntry(
+              query: query,
+              rawHtml: msg.content,
+            );
+          }
           return _MessageRow(
             name: msg.participantName,
             content: msg.content,
@@ -438,6 +507,21 @@ class _MessageArea extends StatelessWidget {
         );
       },
     );
+  }
+
+  /// Tries to extract the search query from an injected web-result message.
+  ///
+  /// The injection format is `[WEB_RESULT for CHARACTER]:\n<html>`.
+  /// Falls back to a truncated preview of the content.
+  static String _extractQuery(String content) {
+    // Look for the original [SEARCH: query] tag if still present.
+    final searchMatch = RegExp(r'\[SEARCH:\s*(.*?)\]').firstMatch(content);
+    if (searchMatch != null) return searchMatch.group(1)?.trim() ?? 'unknown';
+    final fetchMatch = RegExp(r'\[FETCH:\s*(.*?)\]').firstMatch(content);
+    if (fetchMatch != null) return fetchMatch.group(1)?.trim() ?? 'unknown';
+    // Fallback: first 60 chars of content.
+    final preview = content.replaceAll('\n', ' ').trim();
+    return preview.length > 60 ? '${preview.substring(0, 57)}...' : preview;
   }
 }
 
