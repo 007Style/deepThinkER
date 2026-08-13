@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/conversation/message.dart';
 import '../../core/conversation/participant.dart';
+import '../../core/tools/image/image_watcher.dart';
 import '../avatars/avatar_widget.dart';
 import 'ai_quadrant.dart';
 
@@ -23,12 +24,16 @@ class QuadrantData {
   final bool isThinking;
   final Stream<String> tokenStream;
 
+  /// Optional image event stream for the quadrant.
+  final Stream<ImageDroppedEvent>? imageEventStream;
+
   const QuadrantData({
     required this.participant,
     required this.messages,
     required this.avatarState,
     required this.isThinking,
     required this.tokenStream,
+    this.imageEventStream,
   });
 }
 
@@ -197,6 +202,7 @@ class QuadrantGridState extends State<QuadrantGrid> {
       isThinking: d.isThinking,
       tokenStream: d.tokenStream,
       scrollController: _scrollControllers[index],
+      imageEventStream: d.imageEventStream,
     );
   }
 }

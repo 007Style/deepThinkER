@@ -17,6 +17,7 @@ import 'core/ollama/ollama_launcher.dart';
 import 'core/tools/calc/calc_tool.dart';
 import 'core/tools/file/file_read_tool.dart';
 import 'core/tools/file/file_write_tool.dart';
+import 'core/tools/image/image_tool.dart';
 import 'core/tools/memory/recall_tool.dart';
 import 'core/tools/memory/remember_tool.dart';
 import 'core/tools/tool_registry.dart';
@@ -36,7 +37,8 @@ void main() {
     ..register(RecallTool())
     ..register(FileReadTool())
     ..register(FileWriteTool())
-    ..register(CalcTool());
+    ..register(CalcTool())
+    ..register(ImageTool());
 
   // Belt-and-suspenders: if the Dart VM exits for any reason (crash, signal,
   // etc.) kill the Ollama process we may have spawned.  AppDelegate handles

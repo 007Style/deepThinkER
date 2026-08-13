@@ -23,6 +23,8 @@ import '../../core/ollama/ollama_client.dart';
 import '../../core/relationships/relationship_matrix.dart';
 import '../../core/session/session.dart';
 import '../../core/session/session_manager.dart';
+import '../../core/tools/file/file_tool_config.dart';
+import '../../core/tools/image/image_watcher.dart';
 import '../avatars/avatar_widget.dart';
 import '../quadrants/quadrant_grid.dart';
 import '../widgets/app_theme.dart';
@@ -111,6 +113,15 @@ class _MainScreenState extends State<MainScreen> {
   /// Shared relationship matrix (session-scoped, instantiated in _start).
   final RelationshipMatrix _relationshipMatrix = RelationshipMatrix();
 
+  /// Image watcher — monitors workspace for dropped images.
+  ImageWatcher? _imageWatcher;
+
+  /// Broadcast stream controller for image drop events.
+  final StreamController<ImageDroppedEvent> _imageEventController =
+      StreamController<ImageDroppedEvent>.broadcast();
+
+  StreamSubscription<ImageDroppedEvent>? _imageWatcherSub;
+
   // Messages typed before Start — injected in order when engine starts.
   final List<String> _pendingUserMessages = [];
 
@@ -128,11 +139,26 @@ class _MainScreenState extends State<MainScreen> {
     for (final p in widget.participants) {
       _quadrantStates[p.name] = _QuadrantState();
     }
+    _startImageWatcher();
+  }
+
+  void _startImageWatcher() async {
+    final watchPath = FileToolConfig.instance.workspacePath;
+    _imageWatcher = ImageWatcher(watchPath: watchPath);
+    await _imageWatcher!.start();
+    _imageWatcherSub = _imageWatcher!.events.listen((event) {
+      if (!_imageEventController.isClosed) {
+        _imageEventController.add(event);
+      }
+    });
   }
 
   @override
   void dispose() {
     _stop();
+    _imageWatcherSub?.cancel();
+    _imageWatcher?.stop();
+    _imageEventController.close();
     for (final qs in _quadrantStates.values) {
       qs.dispose();
     }
@@ -443,6 +469,7 @@ class _MainScreenState extends State<MainScreen> {
         avatarState: qs.avatarState,
         isThinking: qs.isThinking,
         tokenStream: qs.tokenStream,
+        imageEventStream: _imageEventController.stream,
       );
     }).toList();
 

@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import '../../core/conversation/message.dart';
 import '../../core/conversation/participant.dart';
 import '../../core/mood/mood_score.dart';
+import '../../core/tools/image/image_watcher.dart';
 import '../../core/trust/trust_manager.dart';
 import '../../core/trust/trust_score.dart';
 import '../avatars/avatar_registry.dart';
@@ -92,6 +93,9 @@ class AiQuadrant extends StatefulWidget {
   /// Stream of mood score updates for this character.
   final Stream<MoodScore>? moodScoreStream;
 
+  /// Stream of image drop events to show inline in the quadrant.
+  final Stream<ImageDroppedEvent>? imageEventStream;
+
   const AiQuadrant({
     required this.participant,
     required this.messages,
@@ -105,6 +109,7 @@ class AiQuadrant extends StatefulWidget {
     this.rateLimitFlashController,
     this.initialMoodScore,
     this.moodScoreStream,
+    this.imageEventStream,
     super.key,
   });
 
@@ -118,6 +123,10 @@ class _AiQuadrantState extends State<AiQuadrant> {
   String _liveText = '';
 
   StreamSubscription<String>? _tokenSub;
+  StreamSubscription<ImageDroppedEvent>? _imageSub;
+
+  // Recent image event notices shown inline.
+  final List<String> _imageNotices = [];
 
   // Thinking-dots animation
   int _dotCount = 0;
@@ -139,6 +148,7 @@ class _AiQuadrantState extends State<AiQuadrant> {
   void initState() {
     super.initState();
     _subscribeToTokens();
+    _subscribeToImageEvents();
     _updateDotsTimer();
     // Start listening for manual scroll gestures.
     widget.scrollController.addListener(_onScrollChanged);
@@ -170,6 +180,18 @@ class _AiQuadrantState extends State<AiQuadrant> {
       }
       _maybeScrollToBottom();
     }
+  }
+
+  void _subscribeToImageEvents() {
+    _imageSub?.cancel();
+    if (widget.imageEventStream == null) return;
+    _imageSub = widget.imageEventStream!.listen((event) {
+      if (mounted) {
+        setState(() {
+          _imageNotices.add('🖼️ image analysed: ${event.fileName}');
+        });
+      }
+    });
   }
 
   void _subscribeToTokens() {
@@ -251,6 +273,7 @@ class _AiQuadrantState extends State<AiQuadrant> {
   void dispose() {
     widget.scrollController.removeListener(_onScrollChanged);
     _tokenSub?.cancel();
+    _imageSub?.cancel();
     _dotsTimer?.cancel();
     super.dispose();
   }
@@ -301,6 +324,7 @@ class _AiQuadrantState extends State<AiQuadrant> {
                     ownerName: widget.participant.name,
                     scroll: widget.scrollController,
                     charColor: charColor,
+                    imageNotices: _imageNotices,
                   ),
                 ),
                 // "Jump to Latest" pill — only shown when auto-scroll is locked.
@@ -480,6 +504,7 @@ class _MessageArea extends StatelessWidget {
   final String ownerName;
   final ScrollController scroll;
   final Color charColor;
+  final List<String> imageNotices;
 
   const _MessageArea({
     required this.messages,
@@ -487,19 +512,37 @@ class _MessageArea extends StatelessWidget {
     required this.ownerName,
     required this.scroll,
     required this.charColor,
+    this.imageNotices = const [],
   });
 
   @override
   Widget build(BuildContext context) {
-    final itemCount = messages.length + (liveText.isNotEmpty ? 1 : 0);
+    final noticeCount = imageNotices.length;
+    final itemCount = messages.length + (liveText.isNotEmpty ? 1 : 0) + noticeCount;
 
     return ListView.builder(
       controller: scroll,
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       itemCount: itemCount,
       itemBuilder: (context, index) {
-        if (index < messages.length) {
-          final msg = messages[index];
+        // Image notices shown at the top.
+        if (index < noticeCount) {
+          return Container(
+            color: const Color(0xFF0D1A0D),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Text(
+              imageNotices[index],
+              style: const TextStyle(
+                fontSize: 11,
+                color: Color(0xFF66BB6A),
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          );
+        }
+        final msgIndex = index - noticeCount;
+        if (msgIndex < messages.length) {
+          final msg = messages[msgIndex];
           if (msg.isPass) return const SizedBox.shrink();
           // Ephemeral web-result injections render as collapsible search entries.
           if (msg.isEphemeral) {
