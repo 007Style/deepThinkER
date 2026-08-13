@@ -22,6 +22,7 @@ import '../avatars/avatar_registry.dart';
 import '../avatars/avatar_widget.dart';
 import '../avatars/energy_orb/orb_config.dart';
 import '../widgets/app_theme.dart';
+import '../widgets/character_picker_dialog.dart';
 import '../widgets/mood_indicator/mood_indicator.dart';
 import '../widgets/network_indicator/network_toggle.dart';
 import '../widgets/network_indicator/rate_limit_flash.dart';
@@ -102,6 +103,9 @@ class AiQuadrant extends StatefulWidget {
   final int tokenCount;
   final int maxTokens;
 
+  /// Optional callback when user requests a character swap for this slot.
+  final void Function(Participant)? onSwap;
+
   const AiQuadrant({
     required this.participant,
     required this.messages,
@@ -118,6 +122,7 @@ class AiQuadrant extends StatefulWidget {
     this.imageEventStream,
     this.tokenCount = 0,
     this.maxTokens = 8192,
+    this.onSwap,
     super.key,
   });
 
@@ -321,6 +326,7 @@ class _AiQuadrantState extends State<AiQuadrant> {
             moodScoreStream: widget.moodScoreStream,
             tokenCount: widget.tokenCount,
             maxTokens: widget.maxTokens,
+            onSwap: widget.onSwap,
           ),
           const Divider(height: 1, thickness: 1, color: AppColors.border),
           Expanded(
@@ -374,6 +380,7 @@ class _Header extends StatelessWidget {
   final Stream<MoodScore>? moodScoreStream;
   final int tokenCount;
   final int maxTokens;
+  final void Function(Participant)? onSwap;
 
   const _Header({
     required this.participant,
@@ -387,6 +394,7 @@ class _Header extends StatelessWidget {
     this.moodScoreStream,
     this.tokenCount = 0,
     this.maxTokens = 8192,
+    this.onSwap,
   });
 
   @override
@@ -473,6 +481,27 @@ class _Header extends StatelessWidget {
               ],
             ),
           ),
+          // Swap button — shown when onSwap is provided
+          if (onSwap != null)
+            Tooltip(
+              message: 'Swap character',
+              child: InkWell(
+                onTap: () => showCharacterPickerDialog(
+                  context: context,
+                  currentCharacter: participant.name,
+                  onSelected: onSwap!,
+                ),
+                borderRadius: BorderRadius.circular(4),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 6, bottom: 4),
+                  child: Icon(
+                    Icons.swap_horiz_rounded,
+                    size: 16,
+                    color: charColor.withValues(alpha: 0.6),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

@@ -13,6 +13,7 @@ import '../context/context_manager.dart';
 import '../ollama/hardware_detector.dart';
 import '../ollama/model_registry.dart';
 import '../ollama/ollama_client.dart';
+import 'character_swap_event.dart';
 import 'conversation_log.dart';
 import 'inference_worker.dart';
 import 'message.dart';
@@ -61,8 +62,13 @@ class ConversationEngine {
   final StreamController<InferenceEvent> _eventController =
       StreamController<InferenceEvent>.broadcast();
 
+  final StreamController<CharacterSwapEvent> _swapController =
+      StreamController<CharacterSwapEvent>.broadcast();
+
   bool _started = false;
   bool _paused = false;
+
+  HardwareInfo? _hardware;
 
   /// Creates a [ConversationEngine].
   ConversationEngine({required this.client});
@@ -73,6 +79,9 @@ class ConversationEngine {
 
   /// The shared conversation log.
   ConversationLog get log => _log;
+
+  /// Broadcast stream of [CharacterSwapEvent]s.
+  Stream<CharacterSwapEvent> get swapStream => _swapController.stream;
 
   /// Merged broadcast stream of [InferenceEvent]s from all four workers.
   ///
@@ -114,6 +123,7 @@ class ConversationEngine {
     if (_started) return;
     _started = true;
     _participants = participants;
+    _hardware = hardware;
 
     _workers = participants
         .map(
@@ -204,6 +214,78 @@ class ConversationEngine {
       isUser: true,
     );
     _log.append(message);
+  }
+
+  /// Swaps the character at [slot] (0-based index in [_participants]) with
+  /// [newParticipant] mid-session.
+  ///
+  /// Stops the outgoing worker, starts a new worker for [newParticipant],
+  /// injects the last 10 messages as a catch-up context, and emits a
+  /// [CharacterSwapEvent].
+  Future<void> swapCharacter(int slot, Participant newParticipant) async {
+    if (!_started || slot < 0 || slot >= _workers.length) return;
+
+    final outgoing = _participants[slot];
+
+    // Stop the old worker.
+    await _workers[slot].stop();
+
+    // Update participants list.
+    _participants = List<Participant>.from(_participants)..[slot] = newParticipant;
+
+    // Build catch-up context from last 10 messages.
+    final recent = _log.allMessages
+        .where((m) => !m.isPass && !m.isEphemeral)
+        .toList();
+    final catchUp = recent.length > 10 ? recent.sublist(recent.length - 10) : recent;
+    final catchUpText = catchUp
+        .map((m) => '[${m.participantName}]: ${m.content}')
+        .join('\n');
+    final catchUpMsg = Message(
+      participantName: 'System',
+      content: 'You are joining an ongoing conversation. '
+          'Recent context:\n$catchUpText',
+      isUser: false,
+      isEphemeral: true,
+    );
+    _log.append(catchUpMsg);
+
+    // Create and start the new worker.
+    final newWorker = InferenceWorker(
+      participant: newParticipant,
+      log: _log,
+      client: client,
+      hardware: _hardware!,
+      contextManager: _contextManager,
+    );
+
+    // Wire the new worker into the event controller.
+    newWorker.eventStream.listen(
+      (event) {
+        if (!_eventController.isClosed) _eventController.add(event);
+      },
+      onError: (_) {},
+    );
+    newWorker.start(_participants);
+    _workers[slot] = newWorker;
+
+    // Log swap as a system message.
+    final swapNote = Message(
+      participantName: 'System',
+      content: '[SYSTEM: ${outgoing.name} replaced by ${newParticipant.name} '
+          'at ${DateTime.now().hour.toString().padLeft(2,'0')}:'
+          '${DateTime.now().minute.toString().padLeft(2,'0')}]',
+      isUser: false,
+    );
+    _log.append(swapNote);
+
+    final event = CharacterSwapEvent(
+      outgoingCharacter: outgoing.name,
+      incomingCharacter: newParticipant.name,
+      timestamp: DateTime.now(),
+      catchUpMessageCount: catchUp.length,
+    );
+    if (!_swapController.isClosed) _swapController.add(event);
   }
 
   /// Sends a whisper message visible only to [targetCharacter].

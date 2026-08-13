@@ -710,7 +710,7 @@ appearing in the conversation log.
 
 ---
 
-### Sub-Task 19 — Whisper Mode (Core + UI)
+### Sub-Task 19 — Whisper Mode (Core + UI) [x] done
 
 **Intent**
 Allow the user to send a private message to a single character that the other three cannot

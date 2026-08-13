@@ -9,7 +9,7 @@ import '../../core/conversation/message.dart';
 import '../../core/conversation/participant.dart';
 import '../../core/tools/image/image_watcher.dart';
 import '../avatars/avatar_widget.dart';
-import 'ai_quadrant.dart';
+import 'ai_quadrant.dart'; // also provides AiQuadrant
 
 // ---------------------------------------------------------------------------
 // QuadrantData — per-quadrant state bundle
@@ -34,6 +34,9 @@ class QuadrantData {
   /// Context window size in tokens.
   final int maxTokens;
 
+  /// Optional swap callback — passed through to [AiQuadrant.onSwap].
+  final void Function(Participant)? onSwap;
+
   const QuadrantData({
     required this.participant,
     required this.messages,
@@ -43,6 +46,7 @@ class QuadrantData {
     this.imageEventStream,
     this.tokenCount = 0,
     this.maxTokens = 8192,
+    this.onSwap,
   });
 }
 
@@ -214,6 +218,7 @@ class QuadrantGridState extends State<QuadrantGrid> {
       imageEventStream: d.imageEventStream,
       tokenCount: d.tokenCount,
       maxTokens: d.maxTokens,
+      onSwap: d.onSwap,
     );
   }
 }

@@ -493,7 +493,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final quadrantDataList = widget.participants.map((p) {
+    final quadrantDataList = List.generate(widget.participants.length, (i) {
+      final p = widget.participants[i];
       final qs = _quadrantStates[p.name]!;
       return QuadrantData(
         participant: p,
@@ -502,8 +503,11 @@ class _MainScreenState extends State<MainScreen> {
         isThinking: qs.isThinking,
         tokenStream: qs.tokenStream,
         imageEventStream: _imageEventController.stream,
+        onSwap: _isRunning
+            ? (newP) => _engine?.swapCharacter(i, newP)
+            : null,
       );
-    }).toList();
+    });
 
     return Scaffold(
       backgroundColor: AppColors.background,
