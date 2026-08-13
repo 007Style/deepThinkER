@@ -552,6 +552,11 @@ class _StatsSection extends StatelessWidget {
         ('Total sessions run', _fmt(s.totalSessionsRun)),
         ('Total messages generated', _fmt(s.totalMessagesGenerated)),
         ('Total tokens processed', _fmt(s.totalTokensProcessed)),
+        ('Web searches performed', _fmt(s.totalSearchesPerformed)),
+        (
+          'Web bytes fetched',
+          '${(s.totalBytesFetched / 1024).toStringAsFixed(1)} KB',
+        ),
       ],
     );
   }
@@ -725,10 +730,10 @@ class _IbmHistorySection extends StatelessWidget {
     ),
     (
       year: '2026',
-      title: 'deepThink',
+      title: 'deepThinkER',
       body: 'Four language models, running in parallel, on your machine, '
-          'debating each other, in a Flutter app, bundled with the full '
-          'Ollama runtime so you never have to configure anything.\n\n'
+          'debating each other — now with controlled internet access, a '
+          'trust system, and extensible tool calls.\n\n'
           'Deep Blue would approve.',
     ),
   ];
@@ -900,8 +905,8 @@ class _CreditsSection extends StatelessWidget {
           const _HDivider(),
           _CreditRow(
             label: 'Source code',
-            value: 'github.com/007Style/deepThink',
-            onTap: () => _launch('https://github.com/007Style/deepThink'),
+            value: 'github.com/007Style/deepThinkER',
+            onTap: () => _launch('https://github.com/007Style/deepThinkER'),
             linkStyle: true,
           ),
           const _HDivider(),
@@ -1046,7 +1051,7 @@ class _QuoteSection extends StatelessWidget {
           GestureDetector(
             onTap: () {
               Clipboard.setData(
-                  const ClipboardData(text: 'deepThink v1.0.2'));
+                  const ClipboardData(text: 'deepThinkER v1.0.0'));
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Version copied to clipboard'),
@@ -1055,7 +1060,7 @@ class _QuoteSection extends StatelessWidget {
               );
             },
             child: Text(
-              "deepThink v1.0.2  ·  © 2026 Daneyand & IBM's Bob",
+              "deepThinkER v1.0.0  ·  © 2026 Daneyand & IBM's Bob",
               style: TextStyle(
                 fontSize: 11,
                 color: AppColors.textSecondary.withValues(alpha: 0.6),

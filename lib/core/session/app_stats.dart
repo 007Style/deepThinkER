@@ -32,6 +32,12 @@ class AppStats {
   /// Sourced from Ollama `eval_count` values.
   int totalTokensProcessed;
 
+  /// Cumulative web searches / fetches performed (deepThinkER).
+  int totalSearchesPerformed;
+
+  /// Cumulative bytes received from web fetches (deepThinkER).
+  int totalBytesFetched;
+
   /// UTC timestamp of the very first session, or `null` if no session has
   /// ever been completed.
   DateTime? firstSessionDate;
@@ -45,6 +51,8 @@ class AppStats {
     required this.totalSessionsRun,
     required this.totalMessagesGenerated,
     required this.totalTokensProcessed,
+    this.totalSearchesPerformed = 0,
+    this.totalBytesFetched = 0,
     this.firstSessionDate,
     this.lastSessionDate,
   });
@@ -54,6 +62,8 @@ class AppStats {
         totalSessionsRun: 0,
         totalMessagesGenerated: 0,
         totalTokensProcessed: 0,
+        totalSearchesPerformed: 0,
+        totalBytesFetched: 0,
       );
 
   // -------------------------------------------------------------------------
@@ -65,6 +75,8 @@ class AppStats {
         'totalSessionsRun': totalSessionsRun,
         'totalMessagesGenerated': totalMessagesGenerated,
         'totalTokensProcessed': totalTokensProcessed,
+        'totalSearchesPerformed': totalSearchesPerformed,
+        'totalBytesFetched': totalBytesFetched,
         if (firstSessionDate != null)
           'firstSessionDate': firstSessionDate!.toIso8601String(),
         if (lastSessionDate != null)
@@ -76,6 +88,8 @@ class AppStats {
         totalSessionsRun: json['totalSessionsRun'] as int? ?? 0,
         totalMessagesGenerated: json['totalMessagesGenerated'] as int? ?? 0,
         totalTokensProcessed: json['totalTokensProcessed'] as int? ?? 0,
+        totalSearchesPerformed: json['totalSearchesPerformed'] as int? ?? 0,
+        totalBytesFetched: json['totalBytesFetched'] as int? ?? 0,
         firstSessionDate: json['firstSessionDate'] != null
             ? DateTime.parse(json['firstSessionDate'] as String)
             : null,

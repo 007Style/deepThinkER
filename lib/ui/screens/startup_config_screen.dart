@@ -250,6 +250,13 @@ class _StartupConfigScreenState extends State<StartupConfigScreen> {
 
               const SizedBox(height: 24),
 
+              // ── Network Access ───────────────────────────────────────────
+              _SectionLabel(label: 'NETWORK ACCESS'),
+              const SizedBox(height: 12),
+              _NetworkAccessSection(participants: _participants),
+
+              const SizedBox(height: 24),
+
               // ── Reset / Launch row ───────────────────────────────────────
               Row(
                 children: [
@@ -316,7 +323,7 @@ class _AppLogo extends StatelessWidget {
           children: [
             // Glow layer
             Text(
-              'deepThink',
+              'deepThinkER',
               style: TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.w800,
@@ -326,7 +333,7 @@ class _AppLogo extends StatelessWidget {
             ),
             // Crisp top layer
             const Text(
-              'deepThink',
+              'deepThinkER',
               style: TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.w800,
@@ -338,7 +345,7 @@ class _AppLogo extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         const Text(
-          'Multi-agent AI conversation platform',
+          'Multi-agent AI · Extended Reach',
           style: TextStyle(
             fontSize: 13,
             color: AppColors.textSecondary,
@@ -632,6 +639,162 @@ class _LaunchButton extends StatelessWidget {
             letterSpacing: 0.5,
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// _NetworkAccessSection
+// ---------------------------------------------------------------------------
+
+/// Per-character network access toggles + global rate cap + proactive toggle.
+class _NetworkAccessSection extends StatefulWidget {
+  final List<Participant> participants;
+
+  const _NetworkAccessSection({required this.participants});
+
+  @override
+  State<_NetworkAccessSection> createState() => _NetworkAccessSectionState();
+}
+
+class _NetworkAccessSectionState extends State<_NetworkAccessSection> {
+  // Per-character network enabled state (true = ON).
+  late final List<bool> _networkEnabled;
+  int _globalRateCap = 10;
+  bool _proactiveEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _networkEnabled = List.filled(widget.participants.length, true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Per-character toggles
+          ...List.generate(widget.participants.length, (i) {
+            final p = widget.participants[i];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      p.name,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    _networkEnabled[i] ? 'Network ON' : 'Network OFF',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: _networkEnabled[i]
+                          ? AppColors.accent.withValues(alpha: 0.8)
+                          : AppColors.textSecondary.withValues(alpha: 0.6),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Switch(
+                    value: _networkEnabled[i],
+                    onChanged: (v) => setState(() => _networkEnabled[i] = v),
+                    activeColor: AppColors.accent,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ],
+              ),
+            );
+          }),
+
+          const Divider(height: 16, color: AppColors.border),
+
+          // Global rate cap
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Global rate cap (searches/min)',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 60,
+                child: TextField(
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 6),
+                    filled: true,
+                    fillColor: AppColors.card,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                  ),
+                  controller: TextEditingController(
+                      text: _globalRateCap.toString()),
+                  onChanged: (v) {
+                    final n = int.tryParse(v);
+                    if (n != null && n > 0) {
+                      setState(() => _globalRateCap = n);
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+
+          // Proactive injection toggle
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Proactive context injection',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+              Switch(
+                value: _proactiveEnabled,
+                onChanged: (v) => setState(() => _proactiveEnabled = v),
+                activeColor: AppColors.accent,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
