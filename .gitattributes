@@ -1,0 +1,4 @@
+macos/Runner/ollama/mlx_metal_v3/mlx.metallib filter=lfs diff=lfs merge=lfs -text
+macos/Runner/ollama/mlx_metal_v4/mlx.metallib filter=lfs diff=lfs merge=lfs -text
+macos/Runner/ollama/mlx_metal_v4/libjaccl.dylib filter=lfs diff=lfs merge=lfs -text
+*.metallib filter=lfs diff=lfs merge=lfs -text

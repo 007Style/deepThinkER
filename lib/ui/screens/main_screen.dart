@@ -1,0 +1,772 @@
+// Main application screen for deepThink.
+//
+// Assembles: top header bar, 2×2 quadrant grid, user input bar, status band.
+// Manages ConversationEngine lifecycle, routes InferenceEvents to quadrants,
+// and tracks user-name easter-egg updates.
+//
+// Key design points:
+//   • Each AI quadrant shows ONLY its own messages + user messages.
+//   • User can type and queue messages BEFORE pressing Start.
+//   • Queued messages are injected into the engine in order once Start fires.
+//   • Messages carry a roundIndex for color-banding in the quadrant panels.
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+
+import '../../core/conversation/conversation_engine.dart';
+import '../../core/conversation/inference_worker.dart';
+import '../../core/conversation/message.dart';
+import '../../core/conversation/participant.dart';
+import '../../core/conversation/user_name_detector.dart';
+import '../../core/ollama/hardware_detector.dart';
+import '../../core/ollama/ollama_client.dart';
+import '../../core/session/session.dart';
+import '../../core/session/session_manager.dart';
+import '../avatars/avatar_widget.dart';
+import '../quadrants/quadrant_grid.dart';
+import '../widgets/app_theme.dart';
+import '../widgets/help_menu.dart';
+import '../widgets/start_stop_button.dart';
+import '../widgets/status_band.dart';
+import '../widgets/user_input_bar.dart';
+import 'startup_config_screen.dart';
+
+// ---------------------------------------------------------------------------
+// MainScreen
+// ---------------------------------------------------------------------------
+
+/// The primary application window, shown once startup configuration is done.
+///
+/// Accepts:
+/// - [participants] — the four configured [Participant] objects.
+/// - [hardware]     — detected [HardwareInfo] for display and context sizing.
+class MainScreen extends StatefulWidget {
+  /// The four AI participants to display.
+  final List<Participant> participants;
+
+  /// Detected hardware info (RAM tier, backend).
+  final HardwareInfo hardware;
+
+  const MainScreen({
+    required this.participants,
+    required this.hardware,
+    super.key,
+  });
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+// ---------------------------------------------------------------------------
+// _QuadrantState — per-participant mutable state
+// ---------------------------------------------------------------------------
+
+class _QuadrantState {
+  /// Only this participant's own messages + user messages (chronological).
+  final List<Message> messages = [];
+  AvatarState avatarState = AvatarState.idle;
+  bool isThinking = false;
+
+  // Each quadrant gets its own broadcast StreamController for live tokens.
+  final StreamController<String> tokenController =
+      StreamController<String>.broadcast();
+
+  Stream<String> get tokenStream => tokenController.stream;
+
+  void dispose() {
+    tokenController.close();
+  }
+}
+
+// ---------------------------------------------------------------------------
+// _MainScreenState
+// ---------------------------------------------------------------------------
+
+class _MainScreenState extends State<MainScreen> {
+  // Core — engine is recreated on every Start so it can be restarted cleanly.
+  ConversationEngine? _engine;
+  late final SessionManager _sessionManager;
+  Session? _session;
+  StreamSubscription<InferenceEvent>? _engineSub;
+  StreamSubscription<Message>? _logMessageSub;
+  StreamSubscription<Message>? _logSub;
+
+  // GlobalKey to call warpToHead on the QuadrantGrid.
+  final GlobalKey<QuadrantGridState> _gridKey = GlobalKey<QuadrantGridState>();
+
+  // UI state
+  bool _isRunning = false;
+  bool _isPaused = false;
+  /// True while a stop-and-unload or start sequence is in progress.
+  /// Blocks the Start button to prevent double-presses.
+  bool _isBusy = false;
+  String _userName = 'User';
+  String _sessionName = '';
+
+  // Messages typed before Start — injected in order when engine starts.
+  final List<String> _pendingUserMessages = [];
+
+  // One _QuadrantState per participant (keyed by participant name).
+  final Map<String, _QuadrantState> _quadrantStates = {};
+
+  // -------------------------------------------------------------------------
+  // Lifecycle
+  // -------------------------------------------------------------------------
+
+  @override
+  void initState() {
+    super.initState();
+    _sessionManager = SessionManager();
+    for (final p in widget.participants) {
+      _quadrantStates[p.name] = _QuadrantState();
+    }
+  }
+
+  @override
+  void dispose() {
+    _stop();
+    for (final qs in _quadrantStates.values) {
+      qs.dispose();
+    }
+    super.dispose();
+  }
+
+  // -------------------------------------------------------------------------
+  // Start / Stop
+  // -------------------------------------------------------------------------
+
+  Future<void> _start() async {
+    if (_isRunning || _isBusy) return;
+    setState(() => _isBusy = true);
+
+    // Always create a fresh engine — ConversationEngine is single-use because
+    // stop() closes its internal ConversationLog stream controller.
+    _engine = ConversationEngine(client: OllamaClient());
+
+    // Create session.
+    final session = await _sessionManager.createSession(
+      participants: widget.participants,
+    );
+    _session = session;
+
+    // Wire up ALL subscriptions BEFORE starting the engine so no messages
+    // are missed on the broadcast stream.  Order matters:
+    //   1. File logging — every message must land on disk.
+    //   2. UI display subscription.
+    //   3. Engine start (emits kickoff) + pending message injection.
+    _logSub = await _sessionManager.startLogging(
+      session,
+      _engine!.log.messageStream,
+    );
+
+    _engineSub = _engine!.eventStream.listen(_handleEvent);
+    _logMessageSub = _engine!.log.messageStream.listen(_handleLogMessage);
+
+    // Start the engine (appends kickoff message — workers see it immediately).
+    await _engine!.start(widget.participants, widget.hardware);
+
+    // Clear the local preview messages that were shown while the engine was
+    // stopped — the real messages will arrive via _handleLogMessage as the
+    // engine re-injects them into the shared log, so without this clear they
+    // would appear twice.
+    for (final qs in _quadrantStates.values) {
+      qs.messages.clear();
+    }
+
+    // Inject any messages the user queued before pressing Start.
+    for (final text in _pendingUserMessages) {
+      _engine!.injectUserMessage(_userName, text);
+    }
+    _pendingUserMessages.clear();
+
+    setState(() {
+      _isRunning = true;
+      _isBusy = false;
+      _sessionName = session.name;
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // Reconfigure — stop session and return to config screen
+  // -------------------------------------------------------------------------
+
+  Future<void> _reconfigure() async {
+    if (_isBusy) return;
+
+    // If a session is running, ask for confirmation before tearing it down.
+    if (_isRunning) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: AppColors.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(color: AppColors.border),
+          ),
+          title: const Text(
+            'End session?',
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          content: const Text(
+            'The current session will be stopped and all models will be '
+            'unloaded. You can reconfigure and start a new session.',
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 13,
+              height: 1.5,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Cancel',
+                  style: TextStyle(color: AppColors.textSecondary)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: const Text('End & Reconfigure',
+                  style: TextStyle(color: AppColors.accent)),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true) return;
+      await _stop();
+    }
+
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (_) => StartupConfigScreen(hardware: widget.hardware),
+      ),
+    );
+  }
+
+  Future<void> _stop() async {
+    if (!_isRunning || _isBusy) return;
+    setState(() => _isBusy = true);
+
+    // Abort any in-flight HTTP streams immediately — prevents unloadModel
+    // from queuing behind an active inference.
+    _engine?.pause();
+
+    // Cancel the UI event subscription first so no more state updates fire.
+    await _engineSub?.cancel();
+    _engineSub = null;
+
+    // Cancel the log-message subscription so no more messages hit the display.
+    await _logMessageSub?.cancel();
+    _logMessageSub = null;
+
+    // Stop the engine (stops workers, unloads models, disposes log stream).
+    await _engine?.stop();
+    _engine = null;
+
+    // End the session BEFORE cancelling _logSub — endSession flushes and
+    // closes the IOSink; cancelling _logSub afterward is safe because the
+    // sink is already gone and won't be double-closed.
+    if (_session != null) {
+      await _sessionManager.endSession(_session!);
+      _session = null;
+    }
+
+    await _logSub?.cancel();
+    _logSub = null;
+
+    // Reset quadrant states (clear messages too so the next session is fresh).
+    for (final qs in _quadrantStates.values) {
+      qs.avatarState = AvatarState.idle;
+      qs.isThinking = false;
+      qs.messages.clear();
+    }
+
+    if (mounted) {
+      setState(() {
+        _isRunning = false;
+        _isPaused = false;
+        _isBusy = false;
+        _sessionName = '';
+      });
+    }
+  }
+
+  void _pause() {
+    _engine?.pause();
+    if (mounted) setState(() => _isPaused = true);
+  }
+
+  void _resume() {
+    _engine?.resume();
+    if (mounted) setState(() => _isPaused = false);
+  }
+
+  // -------------------------------------------------------------------------
+  // Event routing
+  // -------------------------------------------------------------------------
+
+  void _handleEvent(InferenceEvent event) {
+    final qs = _quadrantStates[event.participantName];
+    if (qs == null) return;
+
+    if (event.isThinking) {
+      setState(() {
+        qs.avatarState = AvatarState.thinking;
+        qs.isThinking = true;
+      });
+      return;
+    }
+
+    if (event.token != null) {
+      qs.tokenController.add(event.token!);
+      if (qs.avatarState != AvatarState.speaking) {
+        setState(() => qs.avatarState = AvatarState.speaking);
+      }
+
+      // Run user-name detection on every token batch.
+      final newName = UserNameDetector.detectRename(event.token!, _userName);
+      if (newName != null && mounted) {
+        setState(() => _userName = newName);
+      }
+      return;
+    }
+
+    if (event.isDone) {
+      setState(() {
+        qs.avatarState = AvatarState.idle;
+        qs.isThinking = false;
+      });
+    }
+  }
+
+  void _handleLogMessage(Message msg) {
+    if (!mounted) return;
+    if (msg.isPass) return;
+
+    setState(() {
+      if (msg.isUser) {
+        // User messages appear in ALL quadrant panels.
+        for (final qs in _quadrantStates.values) {
+          qs.messages.add(msg);
+        }
+      } else {
+        // AI message: only the owner's quadrant panel.
+        final qs = _quadrantStates[msg.participantName];
+        qs?.messages.add(msg);
+      }
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // User input
+  // -------------------------------------------------------------------------
+
+  void _warpToHead() => QuadrantGrid.warpToHead(_gridKey);
+
+  void _onUserSubmit(String text) {
+    // Check if the user is telling us their name ("my name is X").
+    final detectedName = _detectUserSelfIntroduction(text);
+    if (detectedName != null && mounted) {
+      setState(() => _userName = detectedName);
+    }
+
+    if (_isRunning) {
+      final name = detectedName ?? _userName;
+      // Inject the message — if paused, also resume so AIs respond.
+      _engine!.injectUserMessage(name, text);
+      if (_isPaused) _resume();
+    } else {
+      // Pre-start — queue for when Start is pressed, and show in all panels.
+      setState(() {
+        _pendingUserMessages.add(text);
+        // Use a local round placeholder (roundIndex 0) for display purposes.
+        // The real round will be assigned by the engine after Start.
+        final preview = Message(
+          participantName: _userName,
+          content: text,
+          isUser: true,
+          roundIndex: 0,
+        );
+        for (final qs in _quadrantStates.values) {
+          qs.messages.add(preview);
+        }
+      });
+    }
+  }
+
+  /// Detects "my name is X" / "I'm X" / "call me X" directly from the
+  /// user's own typed text, so the label updates without waiting for an AI
+  /// to acknowledge it.  Returns the trimmed name (max 20 chars) or null.
+  static String? _detectUserSelfIntroduction(String text) {
+    final patterns = [
+      RegExp(r"my name is ([A-Za-z][A-Za-z0-9_\-]{0,19})", caseSensitive: false),
+      RegExp(r"i'?m ([A-Za-z][A-Za-z0-9_\-]{1,19})\b", caseSensitive: false),
+      RegExp(r"call me ([A-Za-z][A-Za-z0-9_\-]{0,19})\b", caseSensitive: false),
+      RegExp(r"my name'?s ([A-Za-z][A-Za-z0-9_\-]{0,19})\b", caseSensitive: false),
+    ];
+    const blocklist = {'a', 'an', 'the', 'here', 'there', 'sorry', 'not',
+        'sure', 'ok', 'okay', 'just', 'going', 'doing', 'trying', 'happy'};
+
+    for (final p in patterns) {
+      final m = p.firstMatch(text);
+      if (m == null) continue;
+      final raw = (m.group(1) ?? '').trim();
+      if (raw.isEmpty || blocklist.contains(raw.toLowerCase())) continue;
+      // Truncate to 20 chars for UI safety.
+      return raw.length > 20 ? raw.substring(0, 20) : raw;
+    }
+    return null;
+  }
+
+  // -------------------------------------------------------------------------
+  // Build
+  // -------------------------------------------------------------------------
+
+  @override
+  Widget build(BuildContext context) {
+    final quadrantDataList = widget.participants.map((p) {
+      final qs = _quadrantStates[p.name]!;
+      return QuadrantData(
+        participant: p,
+        messages: List.unmodifiable(qs.messages),
+        avatarState: qs.avatarState,
+        isThinking: qs.isThinking,
+        tokenStream: qs.tokenStream,
+      );
+    }).toList();
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: Column(
+        children: [
+          // ── Top header bar ────────────────────────────────────────────────
+          _TopBar(
+            isRunning: _isRunning,
+            isPaused: _isPaused,
+            isBusy: _isBusy,
+            sessionName: _sessionName,
+            pendingCount: _pendingUserMessages.length,
+            onStart: _start,
+            onStop: _stop,
+            onPause: _pause,
+            onResume: _resume,
+            onWarpToHead: _warpToHead,
+            onReconfigure: _reconfigure,
+            hardware: widget.hardware,
+          ),
+          // ── Quadrant grid ─────────────────────────────────────────────────
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: QuadrantGrid(
+                key: _gridKey,
+                quadrants: quadrantDataList,
+              ),
+            ),
+          ),
+          // ── User input bar ────────────────────────────────────────────────
+          UserInputBar(
+            userName: _userName,
+            isRunning: _isRunning,
+            pendingCount: _pendingUserMessages.length,
+            onSubmit: _onUserSubmit,
+          ),
+          // ── Status band ───────────────────────────────────────────────────
+          StatusBand(
+            hardware: widget.hardware,
+            sessionName: _sessionName,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// _TopBar
+// ---------------------------------------------------------------------------
+
+class _TopBar extends StatelessWidget {
+  final bool isRunning;
+  final bool isPaused;
+  final bool isBusy;
+  final String sessionName;
+  final int pendingCount;
+  final VoidCallback onStart;
+  final VoidCallback onStop;
+  final VoidCallback onPause;
+  final VoidCallback onResume;
+  final VoidCallback onWarpToHead;
+  final VoidCallback onReconfigure;
+  final HardwareInfo hardware;
+
+  const _TopBar({
+    required this.isRunning,
+    required this.isPaused,
+    required this.isBusy,
+    required this.sessionName,
+    required this.pendingCount,
+    required this.onStart,
+    required this.onStop,
+    required this.onPause,
+    required this.onResume,
+    required this.onWarpToHead,
+    required this.onReconfigure,
+    required this.hardware,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 52,
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        border: Border(
+          bottom: BorderSide(color: AppColors.border, width: 1),
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          // App name — left
+          const Text(
+            'deepThink',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: AppColors.accent,
+              letterSpacing: 1.2,
+            ),
+          ),
+          // Warp to Head — far left, next to app name
+          const SizedBox(width: 10),
+          _WarpToHeadButton(onTap: onWarpToHead),
+          // Start/Stop — centre
+          const Spacer(),
+          // Busy spinner shown while stop-and-unload is in progress
+          if (isBusy) ...[
+            const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
+          StartStopButton(
+            isRunning: isRunning,
+            disabled: isBusy,
+            onStart: onStart,
+            onStop: onStop,
+          ),
+          // Pause/Resume — only visible while running and not busy
+          if (isRunning && !isBusy) ...[
+            const SizedBox(width: 8),
+            _PauseResumeButton(
+              isPaused: isPaused,
+              onPause: onPause,
+              onResume: onResume,
+            ),
+          ],
+          // Optional pending-message badge (shows when queued before start)
+          if (!isRunning && pendingCount > 0) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+              decoration: BoxDecoration(
+                color: AppColors.accent.withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: AppColors.accent.withValues(alpha: 0.45),
+                ),
+              ),
+              child: Text(
+                '$pendingCount queued',
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: AppColors.accent,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+          // Session name + help button — right
+          const Spacer(),
+          SizedBox(
+            width: 160,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                sessionName.isNotEmpty ? 'Session: $sessionName' : '',
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textSecondary,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          _ReconfigureButton(onTap: onReconfigure, disabled: isBusy),
+          const SizedBox(width: 4),
+          HelpMenuButton(hardware: hardware),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// _PauseResumeButton
+// ---------------------------------------------------------------------------
+
+class _PauseResumeButton extends StatelessWidget {
+  final bool isPaused;
+  final VoidCallback onPause;
+  final VoidCallback onResume;
+
+  const _PauseResumeButton({
+    required this.isPaused,
+    required this.onPause,
+    required this.onResume,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const pauseColor = Color(0xFFFFB300); // amber
+    const resumeColor = Color(0xFF00C853); // green
+
+    final color = isPaused ? resumeColor : pauseColor;
+    final icon = isPaused ? Icons.play_arrow_rounded : Icons.pause_rounded;
+    final label = isPaused ? 'Resume' : 'Pause';
+    final tooltip = isPaused
+        ? 'Resume — AIs continue talking'
+        : 'Pause — stop new AI responses so you can interject';
+
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: isPaused ? onResume : onPause,
+        borderRadius: BorderRadius.circular(6),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+          decoration: BoxDecoration(
+            border: Border.all(color: color.withValues(alpha: 0.55)),
+            borderRadius: BorderRadius.circular(6),
+            color: color.withValues(alpha: 0.08),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 13, color: color),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// _WarpToHeadButton
+// ---------------------------------------------------------------------------
+
+class _WarpToHeadButton extends StatelessWidget {
+  final VoidCallback onTap;
+  const _WarpToHeadButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: 'Scroll all panels to the beginning',
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(6),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+          decoration: BoxDecoration(
+            border: Border.all(
+                color: AppColors.border.withValues(alpha: 0.7)),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(Icons.vertical_align_top_rounded,
+                  size: 13, color: AppColors.textSecondary),
+              SizedBox(width: 4),
+              Text(
+                'Warp to Head',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// _ReconfigureButton
+// ---------------------------------------------------------------------------
+
+class _ReconfigureButton extends StatelessWidget {
+  final VoidCallback onTap;
+  final bool disabled;
+
+  const _ReconfigureButton({required this.onTap, required this.disabled});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = disabled ? AppColors.textSecondary.withValues(alpha: 0.35) : AppColors.textSecondary;
+    return Tooltip(
+      message: 'Stop session and return to configuration',
+      child: InkWell(
+        onTap: disabled ? null : onTap,
+        borderRadius: BorderRadius.circular(6),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+          decoration: BoxDecoration(
+            border: Border.all(
+                color: AppColors.border.withValues(alpha: disabled ? 0.35 : 0.7)),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.tune_rounded, size: 13, color: color),
+              const SizedBox(width: 4),
+              Text(
+                'Configure',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: color,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
