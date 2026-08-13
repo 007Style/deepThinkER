@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/analytics/session_analytics.dart';
 import '../../core/conversation/conversation_engine.dart';
+import '../../core/conversation/conversation_log.dart';
 import '../../core/conversation/inference_worker.dart';
 import '../../core/conversation/message.dart';
 import '../../core/conversation/whisper_message.dart';
@@ -27,6 +28,7 @@ import '../../core/session/session.dart';
 import '../../core/session/session_manager.dart';
 import '../../core/steering/steering_engine.dart';
 
+import '../../core/session/replay_mode.dart';
 import '../../core/tools/file/file_tool_config.dart';
 import '../../core/tools/image/image_watcher.dart';
 import 'analytics_screen.dart';
@@ -35,6 +37,7 @@ import '../quadrants/quadrant_grid.dart';
 import '../widgets/app_theme.dart';
 import '../widgets/help_menu.dart';
 import '../widgets/relationship_matrix_widget.dart';
+import '../widgets/replay_banner.dart';
 import '../widgets/start_stop_button.dart';
 import '../widgets/status_band.dart';
 import '../widgets/steering_input_bar.dart';
@@ -49,8 +52,11 @@ import 'startup_config_screen.dart';
 /// The primary application window, shown once startup configuration is done.
 ///
 /// Accepts:
-/// - [participants] — the four configured [Participant] objects.
-/// - [hardware]     — detected [HardwareInfo] for display and context sizing.
+/// - [participants]       — the four configured [Participant] objects.
+/// - [hardware]           — detected [HardwareInfo] for display and context sizing.
+/// - [replayLog]          — optional pre-loaded [ConversationLog] for replay mode.
+/// - [replayMode]         — the [ReplayMode] to use when [replayLog] is provided.
+/// - [replaySessionName]  — display name of the replayed session.
 class MainScreen extends StatefulWidget {
   /// The four AI participants to display.
   final List<Participant> participants;
@@ -58,9 +64,21 @@ class MainScreen extends StatefulWidget {
   /// Detected hardware info (RAM tier, backend).
   final HardwareInfo hardware;
 
+  /// Optional pre-loaded conversation log for session replay.
+  final ConversationLog? replayLog;
+
+  /// The replay mode — required when [replayLog] is provided.
+  final ReplayMode? replayMode;
+
+  /// Display name of the replayed session.
+  final String? replaySessionName;
+
   const MainScreen({
     required this.participants,
     required this.hardware,
+    this.replayLog,
+    this.replayMode,
+    this.replaySessionName,
     super.key,
   });
 
@@ -114,6 +132,9 @@ class _MainScreenState extends State<MainScreen> {
   String _userName = 'User';
   String _sessionName = '';
 
+  // Replay state
+  bool _showReplayBanner = false;
+
   /// Whether the relationship matrix panel is visible.
   bool _showRelationships = false;
 
@@ -156,6 +177,23 @@ class _MainScreenState extends State<MainScreen> {
       _quadrantStates[p.name] = _QuadrantState();
     }
     _startImageWatcher();
+    // If a replay log was passed, schedule the loadReplay after first frame.
+    if (widget.replayLog != null) {
+      _showReplayBanner = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _initReplay());
+    }
+  }
+
+  Future<void> _initReplay() async {
+    final log = widget.replayLog;
+    final mode = widget.replayMode;
+    if (log == null || mode == null) return;
+
+    // Create engine, load replay, then start normally.
+    _engine = ConversationEngine(client: OllamaClient());
+    await _engine!.loadReplay(log, mode);
+    // loadReplay only seeds the log; the engine still needs start() called
+    // to create workers — _start() handles that.
   }
 
   void _startImageWatcher() async {
@@ -513,6 +551,13 @@ class _MainScreenState extends State<MainScreen> {
       backgroundColor: AppColors.background,
       body: Column(
         children: [
+          // ── Replay banner (shown when in replay mode) ─────────────────────
+          if (_showReplayBanner && widget.replaySessionName != null)
+            ReplayBanner(
+              sessionName: widget.replaySessionName!,
+              mode: widget.replayMode ?? ReplayMode.continueSession,
+              onDismiss: () => setState(() => _showReplayBanner = false),
+            ),
           // ── Top header bar ────────────────────────────────────────────────
           _TopBar(
             isRunning: _isRunning,

@@ -13,6 +13,7 @@ import '../context/context_manager.dart';
 import '../ollama/hardware_detector.dart';
 import '../ollama/model_registry.dart';
 import '../ollama/ollama_client.dart';
+import '../session/replay_mode.dart';
 import 'character_swap_event.dart';
 import 'conversation_log.dart';
 import 'inference_worker.dart';
@@ -287,6 +288,32 @@ class ConversationEngine {
       catchUpMessageCount: catchUp.length,
     );
     if (!_swapController.isClosed) _swapController.add(event);
+  }
+
+  /// Loads [replayLog] into this engine so characters can continue or reflect
+  /// on a past session.
+  ///
+  /// If the engine is currently running, [stop] is called first.
+  ///
+  /// In [ReplayMode.reflection] a system message is prepended to the log so
+  /// all four workers understand the loaded messages are historical context.
+  Future<void> loadReplay(ConversationLog replayLog, ReplayMode mode) async {
+    if (_started) await stop();
+
+    final messages = List<Message>.from(replayLog.allMessages);
+
+    if (mode == ReplayMode.reflection) {
+      final framingMsg = Message(
+        participantName: 'SYSTEM',
+        content: 'The following conversation occurred in a past session. '
+            'Read it carefully, then continue the discussion or reflect on '
+            'it when prompted.',
+        isUser: false,
+      );
+      _log.seedFrom([framingMsg, ...messages]);
+    } else {
+      _log.seedFrom(messages);
+    }
   }
 
   /// Sends a whisper message visible only to [targetCharacter].

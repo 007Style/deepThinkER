@@ -833,7 +833,7 @@ and can continue from where it left off, or reflect on it as a past event.
 - Tool call entries in log appear as `[timestamp] WATSON: 🌐 searched: query` — loaded as static messages, not re-executed
 - Reflection mode framing: injected as a system message to all 4 characters before the loaded log
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 

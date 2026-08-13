@@ -6,14 +6,19 @@
 //   • See the live total RAM allocation
 //   • View detected hardware info
 //   • Launch into MainScreen
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
+import '../../core/conversation/conversation_log.dart';
 import '../../core/conversation/participant.dart';
 import '../../core/ollama/hardware_detector.dart';
 import '../../core/ollama/model_registry.dart';
 import '../../core/persona/user_persona.dart';
 import '../../core/session/name_generator.dart';
 import '../../core/session/participant_prefs.dart';
+import '../../core/session/replay_mode.dart';
+import '../../core/session/session_loader.dart';
 import '../widgets/app_theme.dart';
 import '../widgets/character_config_card.dart';
 import '../widgets/help_menu.dart';
@@ -184,6 +189,104 @@ class _StartupConfigScreenState extends State<StartupConfigScreen> {
     });
   }
 
+  /// Opens a dialog listing past session .txt files for replay.
+  Future<void> _loadPastSession() async {
+    final hw = _hardware;
+    if (hw == null) return;
+
+    // Locate the sessions directory.
+    final home = Platform.environment['HOME'] ?? '';
+    final sessionsDir =
+        Directory('$home/Documents/deepThinkER/sessions');
+
+    List<FileSystemEntity> files = [];
+    if (await sessionsDir.exists()) {
+      files = await sessionsDir
+          .list()
+          .where((e) => e is File && e.path.endsWith('.txt'))
+          .toList();
+    }
+
+    if (!mounted) return;
+
+    if (files.isEmpty) {
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: AppColors.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(color: AppColors.border),
+          ),
+          title: const Text(
+            'No sessions found',
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          content: Text(
+            'No .txt files found in ${sessionsDir.path}',
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 13,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK',
+                  style: TextStyle(color: AppColors.accent)),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    // Sort by name for a predictable order.
+    files.sort((a, b) => a.path.compareTo(b.path));
+
+    // Show the picker dialog. Returns [filePath, mode].
+    final result = await showDialog<(String, ReplayMode)>(
+      context: context,
+      builder: (ctx) => _SessionPickerDialog(files: files),
+    );
+
+    if (result == null || !mounted) return;
+
+    final (filePath, mode) = result;
+
+    // Load the log.
+    ConversationLog replayLog;
+    try {
+      replayLog = await SessionLoader.load(filePath);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load session: $e')),
+      );
+      return;
+    }
+
+    final sessionName =
+        filePath.split(Platform.pathSeparator).last.replaceAll('.txt', '');
+
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (_) => MainScreen(
+          participants: _participants,
+          hardware: hw,
+          replayLog: replayLog,
+          replayMode: mode,
+          replaySessionName: sessionName,
+        ),
+      ),
+    );
+  }
+
   // -------------------------------------------------------------------------
   // Model / prompt change handlers
   // -------------------------------------------------------------------------
@@ -243,8 +346,22 @@ class _StartupConfigScreenState extends State<StartupConfigScreen> {
                 diceSpinning: _diceSpinning,
                 onGenerate: _generateName,
               ),
+              const SizedBox(height: 8),
+              // ── Load past session ────────────────────────────────────────
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: _hardware != null ? _loadPastSession : null,
+                  icon: const Text('\u23EA', style: TextStyle(fontSize: 13)),
+                  label: const Text('\u202FLoad Past Session'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.textSecondary,
+                    textStyle: const TextStyle(fontSize: 12),
+                  ),
+                ),
+              ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 20),
 
               // ── Hardware info ────────────────────────────────────────────
               _HardwareInfoBar(label: _contextLabel),
@@ -862,6 +979,98 @@ class _NetworkAccessSectionState extends State<_NetworkAccessSection> {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// _SessionPickerDialog
+// ---------------------------------------------------------------------------
+
+/// Dialog that lists available .txt session files and lets the user choose
+/// between Continue and Reflection mode for each.
+class _SessionPickerDialog extends StatelessWidget {
+  final List<FileSystemEntity> files;
+
+  const _SessionPickerDialog({required this.files});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: AppColors.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: const BorderSide(color: AppColors.border),
+      ),
+      title: const Text(
+        'Load Past Session',
+        style: TextStyle(
+          color: AppColors.textPrimary,
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      contentPadding: const EdgeInsets.symmetric(vertical: 8),
+      content: SizedBox(
+        width: 440,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: files.length,
+          itemBuilder: (ctx, i) {
+            final filePath = files[i].path;
+            final fileName = filePath
+                .split(Platform.pathSeparator)
+                .last;
+            return ListTile(
+              dense: true,
+              title: Text(
+                fileName,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Continue mode
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.accent,
+                      textStyle: const TextStyle(fontSize: 11),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                    ),
+                    onPressed: () => Navigator.of(ctx)
+                        .pop((filePath, ReplayMode.continueSession)),
+                    child: const Text('Continue'),
+                  ),
+                  // Reflection mode
+                  IconButton(
+                    icon: const Text(
+                      '\uD83D\uDD0D',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    tooltip: 'Reflection Mode',
+                    padding: EdgeInsets.zero,
+                    constraints:
+                        const BoxConstraints(minWidth: 30, minHeight: 30),
+                    onPressed: () => Navigator.of(ctx)
+                        .pop((filePath, ReplayMode.reflection)),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel',
+              style: TextStyle(color: AppColors.textSecondary)),
+        ),
+      ],
     );
   }
 }
