@@ -14,6 +14,9 @@ import 'core/ollama/hardware_detector.dart';
 import 'core/ollama/model_manager.dart';
 import 'core/ollama/ollama_client.dart';
 import 'core/ollama/ollama_launcher.dart';
+import 'core/tools/calc/calc_tool.dart';
+import 'core/tools/file/file_read_tool.dart';
+import 'core/tools/file/file_write_tool.dart';
 import 'core/tools/memory/recall_tool.dart';
 import 'core/tools/memory/remember_tool.dart';
 import 'core/tools/tool_registry.dart';
@@ -27,10 +30,13 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   AvatarRegistry.registerDefaults();
 
-  // Register memory tools.
+  // Register all tools.
   ToolRegistry.instance
     ..register(RememberTool())
-    ..register(RecallTool());
+    ..register(RecallTool())
+    ..register(FileReadTool())
+    ..register(FileWriteTool())
+    ..register(CalcTool());
 
   // Belt-and-suspenders: if the Dart VM exits for any reason (crash, signal,
   // etc.) kill the Ollama process we may have spawned.  AppDelegate handles
