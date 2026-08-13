@@ -166,7 +166,7 @@ This interacts with the existing context reset strategy from deepThink:
 
 ---
 
-### Sub-Task 1 — Project Scaffold (Fork of deepThink)
+### Sub-Task 1 — Project Scaffold (Fork of deepThink) ✅
 
 **Intent**
 Create the `deepThinkER` Flutter project as a clean fork of `deepThink`, rename all references,
@@ -195,7 +195,7 @@ establish the new folder structure for extended-reach core modules, and set up t
 - deepThink `lib/core/` is pure Dart — all new modules must also be pure Dart
 - deepThink `lib/ui/` is Flutter only — same rule applies here
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -225,7 +225,7 @@ the UI to observe.
 - Timer tick: every 60 seconds for decay/gain calculations
 - Persistence path mirrors deepThink session path pattern: `~/Documents/deepThinkER/`
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
