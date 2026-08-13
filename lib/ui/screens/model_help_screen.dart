@@ -69,6 +69,13 @@ class ModelHelpScreen extends StatelessWidget {
                 const _StorageLocations(),
 
                 const SizedBox(height: 32),
+
+                // ── Network Access & Trust ────────────────────────────────────
+                _SectionHeader(title: 'Network Access & Trust'),
+                const SizedBox(height: 12),
+                const _NetworkTrustSection(),
+
+                const SizedBox(height: 32),
               ],
             ),
           ),
@@ -506,6 +513,253 @@ class _StorageRow extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// _NetworkTrustSection
+// ---------------------------------------------------------------------------
+
+class _NetworkTrustSection extends StatelessWidget {
+  const _NetworkTrustSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // ── Overview ────────────────────────────────────────────────────────
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.card,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: const Text(
+            'Each AI character has a Trust Score (0–100) that governs how '
+            'aggressively it may use the network. The score is visible in the '
+            'quadrant header as a colored badge. Trust decays slowly while '
+            'network access is ON, and recovers if the character behaves well. '
+            'Turning network OFF applies an immediate −15 penalty; turning it '
+            'ON applies +5.',
+            style: TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+              height: 1.55,
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        // ── Tier table ───────────────────────────────────────────────────────
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.card,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Column(
+            children: const [
+              _TrustTierRow(
+                tier: 'Low',
+                range: '0 – 33',
+                limit: '1 search / min',
+                proactive: 'Disabled',
+                color: Color(0xFFB71C1C),
+              ),
+              _TrustTierRow(
+                tier: 'Mid',
+                range: '34 – 66',
+                limit: '3 searches / min',
+                proactive: '1 / 5 min',
+                color: Color(0xFFF9A825),
+                divider: true,
+              ),
+              _TrustTierRow(
+                tier: 'High',
+                range: '67 – 100',
+                limit: '5 searches / min',
+                proactive: '1 / 2 min',
+                color: Color(0xFF2E7D32),
+                divider: true,
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        // ── Tool tags ────────────────────────────────────────────────────────
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.card,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Tool-Call Tags',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              _ToolTagRow(
+                tag: '[SEARCH: query]',
+                description: 'Searches DuckDuckGo for the given query. '
+                    'The raw HTML result (up to 12,000 chars) is injected '
+                    'into the character\'s context. Shown as '
+                    '\uD83C\uDF10 searched: query in the message list.',
+              ),
+              const SizedBox(height: 8),
+              _ToolTagRow(
+                tag: '[FETCH: url]',
+                description: 'Fetches the given URL directly. Same '
+                    'truncation and injection rules as SEARCH.',
+              ),
+              const SizedBox(height: 8),
+              _ToolTagRow(
+                tag: '[SHELL: command]',
+                description: 'Reserved for a future version. '
+                    'Shell access is currently disabled — the character '
+                    'receives a "not yet enabled" message.',
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TrustTierRow extends StatelessWidget {
+  final String tier;
+  final String range;
+  final String limit;
+  final String proactive;
+  final Color color;
+  final bool divider;
+
+  const _TrustTierRow({
+    required this.tier,
+    required this.range,
+    required this.limit,
+    required this.proactive,
+    required this.color,
+    this.divider = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (divider) Container(height: 1, color: AppColors.border),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: color,
+                ),
+              ),
+              const SizedBox(width: 8),
+              SizedBox(
+                width: 36,
+                child: Text(
+                  tier,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: color,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 60,
+                child: Text(
+                  range,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
+                    fontFamily: 'monospace',
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  limit,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              Text(
+                'Proactive: $proactive',
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ToolTagRow extends StatelessWidget {
+  final String tag;
+  final String description;
+
+  const _ToolTagRow({required this.tag, required this.description});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(3),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Text(
+            tag,
+            style: const TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 11,
+              color: AppColors.accent,
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            description,
+            style: const TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
