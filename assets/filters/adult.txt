@@ -1,0 +1,16 @@
+# Adult content keyword list (stub — replace with curated list before production)
+nude
+nudity
+explicit
+pornographic
+erotic
+sexual
+lewd
+obscene
+nsfw
+fetish
+genitalia
+intercourse
+masturbation
+pornography
+lascivious

@@ -1,0 +1,16 @@
+# Violence keyword list (stub — replace with curated list before production)
+murder
+kill
+slaughter
+torture
+beheading
+dismember
+gore
+massacre
+bloodbath
+brutalize
+mutilate
+stabbing
+execution
+genocide
+carnage

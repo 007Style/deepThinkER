@@ -8,6 +8,8 @@ import 'dart:async';
 
 import '../audit/audit_log.dart';
 import '../network/rate_limiter.dart';
+import '../security/content_filter.dart';
+import '../security/injection_guard.dart';
 import '../trust/trust_manager.dart';
 import '../trust/trust_score.dart';
 import 'agent_tool.dart';
@@ -76,6 +78,10 @@ class ToolCallInterceptor {
   /// Session name used to tag audit entries.  Can be updated each session.
   String sessionName;
 
+  /// Optional content filter — when provided, injected content is sanitised
+  /// through [ContentFilter.sanitise] before being placed in the LLM context.
+  final ContentFilter? contentFilter;
+
   final StreamController<ToolCallEvent> _eventController =
       StreamController<ToolCallEvent>.broadcast();
 
@@ -84,6 +90,7 @@ class ToolCallInterceptor {
     required this.rateLimiter,
     required this.trustManager,
     this.sessionName = '',
+    this.contentFilter,
   });
 
   /// The most recent [ToolCallEvent] produced by [process], or `null`.
@@ -148,9 +155,17 @@ class ToolCallInterceptor {
         result = await tool.execute(call.argument, characterName);
       }
 
+      // Sanitise tool output before injecting into LLM context.
+      final guard = InjectionGuard(registry);
+      final injectionDetected = guard.containsInjection(result.output);
+      var sanitisedOutput = guard.sanitise(result.output);
+      if (contentFilter != null) {
+        sanitisedOutput = contentFilter!.sanitise(sanitisedOutput);
+      }
+
       // Replace the matched tag in the buffer with the injection marker.
       final injectionText =
-          '\n[WEB_RESULT for $characterName]:\n${result.output}\n';
+          '\n[WEB_RESULT for $characterName]:\n$sanitisedOutput\n';
       final modified = tokenBuffer.replaceRange(
         call.startIndex,
         call.endIndex,
@@ -180,6 +195,7 @@ class ToolCallInterceptor {
           wasRateLimited: result.wasRateLimited,
           wasDisabled: result.wasDisabled,
           responseBytes: result.output.length,
+          injectionAttemptDetected: injectionDetected,
         ),
       ).ignore();
 

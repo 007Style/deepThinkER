@@ -83,12 +83,22 @@ class ModelRegistry {
     isHighContext: true,
   );
 
-  /// All four registered models in display order.
+  /// Vision — image analysis model (loaded on demand).
+  static const ModelInfo llava7b = ModelInfo(
+    id: 'llava:7b',
+    displayName: 'LLaVA 7B',
+    ramGb: 4.7,
+    description: 'Vision — image analysis (loaded on demand).',
+    isHighContext: false,
+  );
+
+  /// All registered models in display order.
   static const List<ModelInfo> all = [
     mistral7b,
     llama3_8b,
     gemma2_9b,
     phi3_14b,
+    llava7b,
   ];
 
   /// Returns the [ModelInfo] whose [ModelInfo.id] equals [id], or `null` if

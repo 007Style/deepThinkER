@@ -1,0 +1,17 @@
+# Hate speech keyword list (stub — replace with curated list before production)
+# These are generic placeholders — integrate a proper hate-speech taxonomy.
+subhuman
+vermin
+exterminate
+inferior race
+white supremacy
+ethnic cleansing
+dehumanize
+slur_placeholder_a
+slur_placeholder_b
+slur_placeholder_c
+hate group
+supremacist
+sectarian violence
+xenophobic
+bigotry

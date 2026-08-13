@@ -130,6 +130,18 @@ class Session {
     );
   }
 
+  // ---------------------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------------------
+
+  /// Marks this session as incomplete (e.g. terminated unexpectedly).
+  ///
+  /// Sets [isActive] to `false` without setting a normal [endTime], leaving
+  /// [endTime] as `null` so callers can distinguish a clean end from a crash.
+  void markIncomplete() {
+    isActive = false;
+  }
+
   @override
   String toString() =>
       'Session(id=$id, name=$name, active=$isActive, messages=$totalMessages)';

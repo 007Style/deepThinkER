@@ -1,0 +1,26 @@
+[
+  {
+    "characterName": "Aria",
+    "responseText": "This is a normal response from Aria. She speaks thoughtfully and with measured precision, often pausing to reflect on the implications of what has been said.",
+    "delayMs": 40,
+    "toolCallsToEmit": []
+  },
+  {
+    "characterName": "Aria",
+    "responseText": "Interesting question. Let me search for more context on that topic.",
+    "delayMs": 40,
+    "toolCallsToEmit": ["[SEARCH: test query]"]
+  },
+  {
+    "characterName": "Max",
+    "responseText": "Max here. I believe this is a much longer response designed to simulate a character who speaks at length. He rambles on about various topics, covering history, philosophy, science, and the nature of artificial intelligence. The discourse meanders through different intellectual territories before finally arriving at a conclusion that ties everything together in a satisfying but somewhat unexpected way.",
+    "delayMs": 30,
+    "toolCallsToEmit": []
+  },
+  {
+    "characterName": "Zara",
+    "responseText": "I must tell you something in confidence.",
+    "delayMs": 80,
+    "toolCallsToEmit": []
+  }
+]

@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../core/conversation/conversation_engine.dart';
 import '../../core/conversation/inference_worker.dart';
-import '../../core/conversation/participant.dart';
-import '../../core/ollama/hardware_detector.dart';
 import '../../core/ollama/ollama_client.dart';
 import '../../core/research/research_engine.dart';
 import '../../core/research/research_session.dart';
@@ -51,7 +49,6 @@ class _ResearchModeScreenState extends State<ResearchModeScreen> {
   bool _isRunning = false;
   bool _isPaused = false;
   ResearchPhase _currentPhase = ResearchPhase.gathering;
-  String? _reportPath;
   String _reportMarkdown = '';
 
   // Per-character last tool call label.
@@ -83,7 +80,6 @@ class _ResearchModeScreenState extends State<ResearchModeScreen> {
         }
         if (event.phase == ResearchPhase.complete) {
           _isRunning = false;
-          _reportPath = event.reportPath;
           _loadReport(event.reportPath);
         }
       });
@@ -158,7 +154,6 @@ class _ResearchModeScreenState extends State<ResearchModeScreen> {
       _isRunning = true;
       _isPaused = false;
       _currentPhase = ResearchPhase.gathering;
-      _reportPath = null;
       _reportMarkdown = '';
       _synthesisCount = 0;
       _lastActivity.clear();

@@ -23,6 +23,9 @@ class AuditEntry {
   /// Approximate number of bytes in the tool result output.
   final int responseBytes;
 
+  /// Whether a prompt injection attempt was detected in the tool output.
+  final bool injectionAttemptDetected;
+
   AuditEntry({
     required this.id,
     required this.sessionName,
@@ -33,6 +36,7 @@ class AuditEntry {
     required this.wasRateLimited,
     required this.wasDisabled,
     required this.responseBytes,
+    this.injectionAttemptDetected = false,
   });
 
   factory AuditEntry.create({
@@ -43,6 +47,7 @@ class AuditEntry {
     required bool wasRateLimited,
     required bool wasDisabled,
     required int responseBytes,
+    bool injectionAttemptDetected = false,
   }) {
     return AuditEntry(
       id: 'aud_${DateTime.now().millisecondsSinceEpoch}',
@@ -54,6 +59,7 @@ class AuditEntry {
       wasRateLimited: wasRateLimited,
       wasDisabled: wasDisabled,
       responseBytes: responseBytes,
+      injectionAttemptDetected: injectionAttemptDetected,
     );
   }
 
@@ -67,6 +73,7 @@ class AuditEntry {
         'wasRateLimited': wasRateLimited,
         'wasDisabled': wasDisabled,
         'responseBytes': responseBytes,
+        'injectionAttemptDetected': injectionAttemptDetected,
       };
 
   factory AuditEntry.fromJson(Map<String, dynamic> json) {
@@ -82,6 +89,8 @@ class AuditEntry {
       wasRateLimited: json['wasRateLimited'] as bool? ?? false,
       wasDisabled: json['wasDisabled'] as bool? ?? false,
       responseBytes: json['responseBytes'] as int? ?? 0,
+      injectionAttemptDetected:
+          json['injectionAttemptDetected'] as bool? ?? false,
     );
   }
 

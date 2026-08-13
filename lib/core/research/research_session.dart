@@ -61,7 +61,6 @@ class ResearchSession {
     required this.phaseStartTime,
     required this.toolCallCounts,
     required this.synthesisStatements,
-    this.isPaused = false,
   });
 
   /// Creates a new research session for [topic].

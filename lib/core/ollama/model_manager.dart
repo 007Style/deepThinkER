@@ -62,6 +62,9 @@ class ModelManager {
   /// Creates a [ModelManager] backed by [client].
   const ModelManager({required this.client});
 
+  /// The Ollama model tag for the vision model.
+  String get visionModelId => ModelRegistry.llava7b.id;
+
   // -------------------------------------------------------------------------
   // Status check
   // -------------------------------------------------------------------------
