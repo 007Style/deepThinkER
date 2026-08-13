@@ -13,7 +13,7 @@ set -euo pipefail
 
 VERSION="${1:-1.0.0}"
 DISPLAY_NAME="deepThinkER"
-BUNDLE_NAME="deep_think_er"          # Flutter uses pubspec name for the bundle
+BUNDLE_NAME="deepThinkER"            # Xcode target name (product name)
 BUILD_DIR="build/macos/Build/Products/Release"
 APP_PATH="${BUILD_DIR}/${BUNDLE_NAME}.app"
 OUTPUT_DIR="build"
