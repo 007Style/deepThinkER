@@ -1,16 +1,18 @@
 import 'package:test/test.dart';
-import 'package:deep_think/core/ollama/model_registry.dart';
+import 'package:deep_think_er/core/ollama/model_registry.dart';
 
 void main() {
   group('ModelRegistry', () {
     group('all', () {
-      test('contains exactly 4 models', () {
-        expect(ModelRegistry.all.length, 4);
+      test('contains exactly 5 models (4 character + llava vision)', () {
+        expect(ModelRegistry.all.length, 5);
       });
 
       test('contains all expected model ids', () {
         final ids = ModelRegistry.all.map((m) => m.id).toSet();
-        expect(ids, containsAll(['mistral:7b', 'llama3:8b', 'gemma2:9b', 'phi3:14b']));
+        expect(ids, containsAll([
+          'mistral:7b', 'llama3:8b', 'gemma2:9b', 'phi3:14b', 'llava:7b',
+        ]));
       });
 
       test('all models have non-empty display names', () {

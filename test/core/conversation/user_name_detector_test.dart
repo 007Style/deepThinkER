@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:deep_think/core/conversation/user_name_detector.dart';
+import 'package:deep_think_er/core/conversation/user_name_detector.dart';
 
 void main() {
   group('UserNameDetector', () {

@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:deep_think/core/conversation/message.dart';
+import 'package:deep_think_er/core/conversation/message.dart';
 
 void main() {
   group('Message', () {

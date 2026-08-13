@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-import 'package:deep_think/core/session/session.dart';
-import 'package:deep_think/core/conversation/participant.dart';
+import 'package:deep_think_er/core/session/session.dart';
+import 'package:deep_think_er/core/conversation/participant.dart';
 
 void main() {
   group('Session', () {

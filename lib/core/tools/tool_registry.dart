@@ -25,6 +25,13 @@ class ToolRegistry {
 
   static final ToolRegistry instance = ToolRegistry._();
 
+  /// Creates a fresh, isolated [ToolRegistry] for use in tests.
+  ///
+  /// Unlike [instance], each call returns a new registry with no registered
+  /// tools, so tests can't pollute each other.
+  // ignore: invalid_use_of_visible_for_testing_member
+  static ToolRegistry instanceForTesting() => ToolRegistry._();
+
   final Map<String, AgentTool> _tools = {};
 
   // -------------------------------------------------------------------------

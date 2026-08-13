@@ -6,7 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:deep_think/ui/widgets/app_theme.dart';
+import 'package:deep_think_er/ui/widgets/app_theme.dart';
 
 // A minimal wrapper that applies the app theme so widget tests have the
 // correct theme context.

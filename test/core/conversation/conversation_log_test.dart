@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:test/test.dart';
-import 'package:deep_think/core/conversation/conversation_log.dart';
-import 'package:deep_think/core/conversation/message.dart';
+import 'package:deep_think_er/core/conversation/conversation_log.dart';
+import 'package:deep_think_er/core/conversation/message.dart';
 
 Message _msg(String name, String content, {bool isUser = false}) =>
     Message(participantName: name, content: content, isUser: isUser);

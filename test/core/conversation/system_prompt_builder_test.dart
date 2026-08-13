@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
-import 'package:deep_think/core/conversation/system_prompt_builder.dart';
-import 'package:deep_think/core/conversation/participant.dart';
-import 'package:deep_think/core/ollama/hardware_detector.dart';
+import 'package:deep_think_er/core/conversation/system_prompt_builder.dart';
+import 'package:deep_think_er/core/conversation/participant.dart';
+import 'package:deep_think_er/core/ollama/hardware_detector.dart';
 
 HardwareInfo _hardware(RamTier tier) => HardwareInfo(
       totalRamGb: 32.0,

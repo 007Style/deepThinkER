@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:test/test.dart';
-import 'package:deep_think/core/session/name_generator.dart';
+import 'package:deep_think_er/core/session/name_generator.dart';
 
 void main() {
   group('NameGenerator', () {

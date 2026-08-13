@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:deep_think/core/ollama/ollama_client.dart';
+import 'package:deep_think_er/core/ollama/ollama_client.dart';
 
 void main() {
   group('ModelPullProgress', () {

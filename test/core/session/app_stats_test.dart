@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:deep_think/core/session/app_stats.dart';
+import 'package:deep_think_er/core/session/app_stats.dart';
 
 void main() {
   group('AppStats', () {
