@@ -24,6 +24,8 @@ import '../../core/ollama/ollama_client.dart';
 import '../../core/relationships/relationship_matrix.dart';
 import '../../core/session/session.dart';
 import '../../core/session/session_manager.dart';
+import '../../core/steering/steering_engine.dart';
+
 import '../../core/tools/file/file_tool_config.dart';
 import '../../core/tools/image/image_watcher.dart';
 import 'analytics_screen.dart';
@@ -34,6 +36,8 @@ import '../widgets/help_menu.dart';
 import '../widgets/relationship_matrix_widget.dart';
 import '../widgets/start_stop_button.dart';
 import '../widgets/status_band.dart';
+import '../widgets/steering_input_bar.dart';
+
 import '../widgets/user_input_bar.dart';
 import 'startup_config_screen.dart';
 
@@ -127,6 +131,12 @@ class _MainScreenState extends State<MainScreen> {
   /// Session analytics (created on Start, disposed on Stop).
   SessionAnalytics? _sessionAnalytics;
 
+  /// Whether the steering bar is visible.
+  bool _showSteering = false;
+
+  /// Steering engine (created after engine starts).
+  SteeringEngine? _steeringEngine;
+
   // Messages typed before Start — injected in order when engine starts.
   final List<String> _pendingUserMessages = [];
 
@@ -190,6 +200,9 @@ class _MainScreenState extends State<MainScreen> {
 
     // Start analytics tracking.
     _sessionAnalytics = SessionAnalytics(sessionName: session.name);
+
+    // Create steering engine after engine is created.
+    _steeringEngine = SteeringEngine(engine: _engine!);
 
     // Wire up ALL subscriptions BEFORE starting the engine so no messages
     // are missed on the broadcast stream.  Order matters:
@@ -319,6 +332,7 @@ class _MainScreenState extends State<MainScreen> {
     // Flush and dispose analytics.
     await _sessionAnalytics?.dispose();
     _sessionAnalytics = null;
+    _steeringEngine = null;
 
     await _logSub?.cancel();
     _logSub = null;
@@ -539,6 +553,13 @@ class _MainScreenState extends State<MainScreen> {
             isRunning: _isRunning,
             pendingCount: _pendingUserMessages.length,
             onSubmit: _onUserSubmit,
+            onToggleSteering: () =>
+                setState(() => _showSteering = !_showSteering),
+          ),
+          // ── Steering input bar ────────────────────────────────────────────
+          SteeringInputBar(
+            visible: _showSteering,
+            onSteer: (text) => _steeringEngine?.steer(text),
           ),
           // ── Status band ───────────────────────────────────────────────────
           StatusBand(

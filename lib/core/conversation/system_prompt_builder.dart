@@ -9,6 +9,7 @@ library system_prompt_builder;
 
 import '../mood/mood_score.dart';
 import '../ollama/hardware_detector.dart';
+import '../persona/user_persona.dart';
 import '../relationships/relationship_matrix.dart';
 import '../tools/tool_registry.dart';
 import 'participant.dart';
@@ -41,12 +42,14 @@ class SystemPromptBuilder {
   /// [hardware] is appended as an informational context note.
   /// [mood] when non-null appends a mood descriptor to the system prompt.
   /// [relationshipMatrix] when non-null injects non-neutral relationship descriptors.
+  /// [persona] when non-null injects the user persona description.
   static String build(
     Participant self,
     List<Participant> allParticipants,
     HardwareInfo hardware, {
     MoodScore? mood,
     RelationshipMatrix? relationshipMatrix,
+    UserPersona? persona,
   }) {
     final others =
         allParticipants.where((p) => p.name != self.name).toList();
@@ -73,6 +76,10 @@ class SystemPromptBuilder {
       relationshipMatrix,
     );
 
+    final personaBlock = (persona != null && !persona.isEmpty)
+        ? 'The user is: ${persona.text}\n'
+        : '';
+
     return '''${self.masterPrompt}
 
 --- Participant overview ---
@@ -93,7 +100,7 @@ Host: $hostName guides the conversation but does not outrank anyone.
 5. Never start your response with your own name.
 6. Never break character.
 
-${moodBlock.isNotEmpty ? '\n$moodBlock' : ''}${relationshipBlock.isNotEmpty ? '\n$relationshipBlock' : ''} $toolBlock
+${personaBlock}${moodBlock.isNotEmpty ? '\n$moodBlock' : ''}${relationshipBlock.isNotEmpty ? '\n$relationshipBlock' : ''} $toolBlock
 $hardwareBlock''';
   }
 

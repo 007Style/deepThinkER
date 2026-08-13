@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import '../../core/conversation/participant.dart';
 import '../../core/ollama/hardware_detector.dart';
 import '../../core/ollama/model_registry.dart';
+import '../../core/persona/user_persona.dart';
 import '../../core/session/name_generator.dart';
 import '../../core/session/participant_prefs.dart';
 import '../widgets/app_theme.dart';
@@ -53,6 +54,10 @@ class _StartupConfigScreenState extends State<StartupConfigScreen> {
   final TextEditingController _nameController = TextEditingController();
   final _nameGenerator = NameGenerator();
 
+  // ── User persona ─────────────────────────────────────────────────────────
+  UserPersona _persona = UserPersona();
+  final TextEditingController _personaController = TextEditingController();
+
   // ── Focus node ────────────────────────────────────────────────────────────
   final FocusNode _nameFocus = FocusNode();
 
@@ -73,6 +78,17 @@ class _StartupConfigScreenState extends State<StartupConfigScreen> {
 
     // Load last-used model + prompt for each character.
     _loadPrefs();
+    // Load persona.
+    _loadPersona();
+  }
+
+  Future<void> _loadPersona() async {
+    _persona = await UserPersona.load();
+    if (mounted) {
+      setState(() {
+        _personaController.text = _persona.text;
+      });
+    }
   }
 
   Future<void> _loadPrefs() async {
@@ -83,6 +99,7 @@ class _StartupConfigScreenState extends State<StartupConfigScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    _personaController.dispose();
     _nameFocus.dispose();
     super.dispose();
   }
@@ -141,8 +158,9 @@ class _StartupConfigScreenState extends State<StartupConfigScreen> {
       _nameController.text = sessionName;
     }
 
-    // Persist current model + prompt choices before launching.
+    // Persist current model + prompt choices and persona before launching.
     ParticipantPrefs.save(_participants);
+    _persona.save().ignore(); // fire-and-forget
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(
@@ -246,6 +264,46 @@ class _StartupConfigScreenState extends State<StartupConfigScreen> {
                 participants: _participants,
                 onModelChanged: _onModelChanged,
                 onPromptChanged: _onPromptChanged,
+              ),
+
+              const SizedBox(height: 24),
+
+              // ── User Persona ────────────────────────────────────────────
+              _SectionLabel(label: 'USER PERSONA'),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _personaController,
+                maxLength: UserPersona.maxLength,
+                maxLines: 2,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textPrimary,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Describe yourself (injected into all AI prompts)…',
+                  hintStyle: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                  filled: true,
+                  fillColor: AppColors.surface,
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 10),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(
+                        color: AppColors.accent, width: 1.4),
+                  ),
+                ),
+                onChanged: (v) => _persona.text = v,
               ),
 
               const SizedBox(height: 24),

@@ -31,11 +31,15 @@ class UserInputBar extends StatefulWidget {
   /// Called with the non-empty trimmed text when the user submits.
   final void Function(String) onSubmit;
 
+  /// Optional callback to toggle the steering bar.
+  final VoidCallback? onToggleSteering;
+
   const UserInputBar({
     required this.userName,
     required this.isRunning,
     required this.pendingCount,
     required this.onSubmit,
+    this.onToggleSteering,
     super.key,
   });
 
@@ -149,6 +153,25 @@ class _UserInputBarState extends State<UserInputBar> {
             ),
           ),
           const SizedBox(width: 8),
+          // Steer toggle button (optional)
+          if (widget.onToggleSteering != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: Tooltip(
+                message: 'Toggle steering input',
+                child: InkWell(
+                  onTap: widget.onToggleSteering,
+                  borderRadius: BorderRadius.circular(4),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                    child: Text(
+                      '🎯',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           // Send button — always enabled
           SizedBox(
             width: 64,
