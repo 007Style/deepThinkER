@@ -1,4 +1,5 @@
 // 2×2 grid of AiQuadrant panels with synchronized scrolling.
+// ignore_for_file: always_use_package_imports
 //
 // All four panels share a [SyncScrollController] so that scrolling any one
 // panel causes all others to move to the same fractional position in time.
@@ -27,6 +28,12 @@ class QuadrantData {
   /// Optional image event stream for the quadrant.
   final Stream<ImageDroppedEvent>? imageEventStream;
 
+  /// Estimated token count for this character.
+  final int tokenCount;
+
+  /// Context window size in tokens.
+  final int maxTokens;
+
   const QuadrantData({
     required this.participant,
     required this.messages,
@@ -34,6 +41,8 @@ class QuadrantData {
     required this.isThinking,
     required this.tokenStream,
     this.imageEventStream,
+    this.tokenCount = 0,
+    this.maxTokens = 8192,
   });
 }
 
@@ -203,6 +212,8 @@ class QuadrantGridState extends State<QuadrantGrid> {
       tokenStream: d.tokenStream,
       scrollController: _scrollControllers[index],
       imageEventStream: d.imageEventStream,
+      tokenCount: d.tokenCount,
+      maxTokens: d.maxTokens,
     );
   }
 }

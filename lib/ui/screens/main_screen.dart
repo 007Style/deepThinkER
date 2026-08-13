@@ -13,6 +13,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../core/analytics/session_analytics.dart';
 import '../../core/conversation/conversation_engine.dart';
 import '../../core/conversation/inference_worker.dart';
 import '../../core/conversation/message.dart';
@@ -25,6 +26,7 @@ import '../../core/session/session.dart';
 import '../../core/session/session_manager.dart';
 import '../../core/tools/file/file_tool_config.dart';
 import '../../core/tools/image/image_watcher.dart';
+import 'analytics_screen.dart';
 import '../avatars/avatar_widget.dart';
 import '../quadrants/quadrant_grid.dart';
 import '../widgets/app_theme.dart';
@@ -122,6 +124,9 @@ class _MainScreenState extends State<MainScreen> {
 
   StreamSubscription<ImageDroppedEvent>? _imageWatcherSub;
 
+  /// Session analytics (created on Start, disposed on Stop).
+  SessionAnalytics? _sessionAnalytics;
+
   // Messages typed before Start — injected in order when engine starts.
   final List<String> _pendingUserMessages = [];
 
@@ -182,6 +187,9 @@ class _MainScreenState extends State<MainScreen> {
       participants: widget.participants,
     );
     _session = session;
+
+    // Start analytics tracking.
+    _sessionAnalytics = SessionAnalytics(sessionName: session.name);
 
     // Wire up ALL subscriptions BEFORE starting the engine so no messages
     // are missed on the broadcast stream.  Order matters:
@@ -307,6 +315,10 @@ class _MainScreenState extends State<MainScreen> {
       await _sessionManager.endSession(_session!);
       _session = null;
     }
+
+    // Flush and dispose analytics.
+    await _sessionAnalytics?.dispose();
+    _sessionAnalytics = null;
 
     await _logSub?.cancel();
     _logSub = null;
@@ -494,6 +506,14 @@ class _MainScreenState extends State<MainScreen> {
             showRelationships: _showRelationships,
             onToggleRelationships: () =>
                 setState(() => _showRelationships = !_showRelationships),
+            onShowAnalytics: _sessionAnalytics != null
+                ? () {
+                    Navigator.of(context).push(MaterialPageRoute<void>(
+                      builder: (_) => AnalyticsScreen(
+                          analytics: _sessionAnalytics!),
+                    ));
+                  }
+                : null,
           ),
           // ── Relationship matrix panel (collapsible) ───────────────────────
           if (_showRelationships)
@@ -550,6 +570,7 @@ class _TopBar extends StatelessWidget {
   final HardwareInfo hardware;
   final bool showRelationships;
   final VoidCallback onToggleRelationships;
+  final VoidCallback? onShowAnalytics;
 
   const _TopBar({
     required this.isRunning,
@@ -566,6 +587,7 @@ class _TopBar extends StatelessWidget {
     required this.hardware,
     required this.showRelationships,
     required this.onToggleRelationships,
+    this.onShowAnalytics,
   });
 
   @override
@@ -666,6 +688,36 @@ class _TopBar extends StatelessWidget {
             active: showRelationships,
             onTap: onToggleRelationships,
           ),
+          if (onShowAnalytics != null) ...[
+            const SizedBox(width: 4),
+            Tooltip(
+              message: 'Session Analytics',
+              child: InkWell(
+                onTap: onShowAnalytics,
+                borderRadius: BorderRadius.circular(6),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.border.withValues(alpha: 0.7)),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.bar_chart_rounded, size: 13,
+                          color: AppColors.textSecondary),
+                      SizedBox(width: 4),
+                      Text('Analytics',
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
           const SizedBox(width: 4),
           _ReconfigureButton(onTap: onReconfigure, disabled: isBusy),
           const SizedBox(width: 4),

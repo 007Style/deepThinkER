@@ -25,6 +25,7 @@ import '../widgets/mood_indicator/mood_indicator.dart';
 import '../widgets/network_indicator/network_toggle.dart';
 import '../widgets/network_indicator/rate_limit_flash.dart';
 import '../widgets/network_indicator/search_activity_entry.dart';
+import '../widgets/token_counter/token_counter_widget.dart';
 import '../widgets/trust_badge/trust_badge.dart';
 
 // ---------------------------------------------------------------------------
@@ -96,6 +97,10 @@ class AiQuadrant extends StatefulWidget {
   /// Stream of image drop events to show inline in the quadrant.
   final Stream<ImageDroppedEvent>? imageEventStream;
 
+  /// Token counter fields.
+  final int tokenCount;
+  final int maxTokens;
+
   const AiQuadrant({
     required this.participant,
     required this.messages,
@@ -110,6 +115,8 @@ class AiQuadrant extends StatefulWidget {
     this.initialMoodScore,
     this.moodScoreStream,
     this.imageEventStream,
+    this.tokenCount = 0,
+    this.maxTokens = 8192,
     super.key,
   });
 
@@ -311,6 +318,8 @@ class _AiQuadrantState extends State<AiQuadrant> {
             rateLimitFlashController: widget.rateLimitFlashController,
             initialMoodScore: widget.initialMoodScore,
             moodScoreStream: widget.moodScoreStream,
+            tokenCount: widget.tokenCount,
+            maxTokens: widget.maxTokens,
           ),
           const Divider(height: 1, thickness: 1, color: AppColors.border),
           Expanded(
@@ -362,6 +371,8 @@ class _Header extends StatelessWidget {
   final RateLimitFlashController? rateLimitFlashController;
   final MoodScore? initialMoodScore;
   final Stream<MoodScore>? moodScoreStream;
+  final int tokenCount;
+  final int maxTokens;
 
   const _Header({
     required this.participant,
@@ -373,6 +384,8 @@ class _Header extends StatelessWidget {
     this.rateLimitFlashController,
     this.initialMoodScore,
     this.moodScoreStream,
+    this.tokenCount = 0,
+    this.maxTokens = 8192,
   });
 
   @override
@@ -432,6 +445,11 @@ class _Header extends StatelessWidget {
                 Row(
                   children: [
                     _ModelBadge(modelId: participant.assignedModelId),
+                    const SizedBox(width: 6),
+                    TokenCounterWidget(
+                      tokenCount: tokenCount,
+                      maxTokens: maxTokens,
+                    ),
                     const SizedBox(width: 6),
                     if (trustManager != null)
                       NetworkToggle(
