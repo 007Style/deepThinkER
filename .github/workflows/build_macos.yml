@@ -40,44 +40,44 @@ jobs:
 
       - name: Create DMG
         run: |
-          # Flutter names the bundle after pubspec.yaml `name:` → deep_think.app
-          APP_PATH="build/macos/Build/Products/Release/deep_think.app"
-          VERSION="${GITHUB_REF_NAME:-1.0.1}"
+          # Flutter names the bundle after pubspec.yaml `name:` → deep_think_er.app
+          APP_PATH="build/macos/Build/Products/Release/deep_think_er.app"
+          VERSION="${GITHUB_REF_NAME:-1.0.0}"
           VERSION="${VERSION#v}"   # strip leading 'v'
           create-dmg \
-            --volname "deepThink" \
+            --volname "deepThinkER" \
             --window-pos 200 120 \
             --window-size 600 400 \
             --icon-size 128 \
-            --icon "deep_think.app" 160 185 \
-            --hide-extension "deep_think.app" \
+            --icon "deep_think_er.app" 160 185 \
+            --hide-extension "deep_think_er.app" \
             --app-drop-link 430 185 \
-            "build/deepThink-v${VERSION}-macos.dmg" \
+            "build/deepThinkER-v${VERSION}-macos.dmg" \
             "${APP_PATH}"
 
       - name: Upload DMG artifact
         uses: actions/upload-artifact@v4
         with:
-          name: deepThink-macos-dmg
-          path: build/deepThink-v*-macos.dmg
+          name: deepThinkER-macos-dmg
+          path: build/deepThinkER-v*-macos.dmg
           retention-days: 30
 
       - name: Create GitHub Release (on tag)
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: build/deepThink-v*-macos.dmg
+          files: build/deepThinkER-v*-macos.dmg
           body: |
-            ## deepThink ${{ github.ref_name }}
+            ## deepThinkER ${{ github.ref_name }}
 
             ### macOS
-            Download `deepThink-${{ github.ref_name }}-macos.dmg`, open it, and drag **deepThink.app** to your Applications folder.
+            Download `deepThinkER-${{ github.ref_name }}-macos.dmg`, open it, and drag **deepThinkER.app** to your Applications folder.
 
             **Requirements:** macOS 13 Ventura or later · Apple Silicon (M1/M2/M3/M4) recommended · 32 GB RAM minimum for the full model stack.
 
             ### Windows
             A pre-compiled Windows installer is not yet available.
-            Windows users can compile from source — see [windows/BUILD.md](https://github.com/007Style/deepThink/blob/main/windows/BUILD.md).
+            Windows users can compile from source — see [windows/BUILD.md](https://github.com/007Style/deepThinkER/blob/main/windows/BUILD.md).
 
             ### AI Models (~22 GB total, downloaded on first launch)
 

@@ -1,8 +1,10 @@
-# deepThink — Windows Build Guide
+# deepThinkER — Windows Build Guide
 
-This document covers everything needed to compile and run `deepThink` on Windows from source.
+This document covers everything needed to compile and run `deepThinkER` on Windows from source.
 
 > **Note:** A pre-compiled Windows installer is not yet available in GitHub Releases. macOS `.dmg` is the primary distribution target. Windows users can compile from this repository using the instructions below.
+
+> **HTTP package note:** `deepThinkER` uses the `http` package (already declared in `pubspec.yaml`) for all outbound web requests. No additional configuration is required on Windows — outbound HTTP is permitted by default.
 
 ---
 
@@ -56,8 +58,8 @@ All items except Android and iOS should show `[✓]`.
 ### Step 1 — Clone the repository
 
 ```powershell
-git clone https://github.com/007Style/deepThink.git
-cd deepThink
+git clone https://github.com/007Style/deepThinkER.git
+cd deepThinkER
 ```
 
 ### Step 2 — Get dependencies
@@ -83,7 +85,7 @@ flutter build windows --release
 The compiled application will be at:
 
 ```
-build\windows\x64\runner\Release\deepThink.exe
+build\windows\x64\runner\Release\deepThinkER.exe
 ```
 
 > **Important:** The `Release` folder contains the `.exe` plus required `.dll` files and the `data\` folder. All of these must stay together — do not move the `.exe` alone.
@@ -100,11 +102,11 @@ build\windows\x64\runner\Release\deepThink.exe
 
 ```iss
 [Setup]
-AppName=deepThink
-AppVersion=1.0.1
-DefaultDirName={autopf}\deepThink
-DefaultGroupName=deepThink
-OutputBaseFilename=deepThink-Setup
+AppName=deepThinkER
+AppVersion=1.0.0
+DefaultDirName={autopf}\deepThinkER
+DefaultGroupName=deepThinkER
+OutputBaseFilename=deepThinkER-Setup
 Compression=lzma
 SolidCompression=yes
 
@@ -112,21 +114,21 @@ SolidCompression=yes
 Source: "..\..\build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: recursesubdirs
 
 [Icons]
-Name: "{group}\deepThink"; Filename: "{app}\deepThink.exe"
-Name: "{commondesktop}\deepThink"; Filename: "{app}\deepThink.exe"
+Name: "{group}\deepThinkER"; Filename: "{app}\deepThinkER.exe"
+Name: "{commondesktop}\deepThinkER"; Filename: "{app}\deepThinkER.exe"
 
 [Run]
-Filename: "{app}\deepThink.exe"; Description: "Launch deepThink"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\deepThinkER.exe"; Description: "Launch deepThinkER"; Flags: nowait postinstall skipifsilent
 ```
 
 4. Compile: right-click the `.iss` file → **Compile**
-5. Output: `Output\deepThink-Setup.exe`
+5. Output: `Output\deepThinkER-Setup.exe`
 
 ### Option B — NSIS
 
 1. Download NSIS from [nsis.sourceforge.io](https://nsis.sourceforge.io/)
 2. Use the MUI2 interface template
-3. Point `InstallDir` to `$PROGRAMFILES64\deepThink`
+3. Point `InstallDir` to `$PROGRAMFILES64\deepThinkER`
 4. Include all files from `build\windows\x64\runner\Release\`
 
 ---
@@ -152,13 +154,13 @@ To trigger a manual build:
 
 ## Ollama on Windows
 
-`deepThink` bundles an Ollama binary for Windows in `assets/ollama/windows/`. On first launch the app extracts and starts Ollama automatically in the background.
+`deepThinkER` bundles an Ollama binary for Windows in `assets/ollama/windows/`. On first launch the app extracts and starts Ollama automatically in the background.
 
 If the bundled binary fails or you prefer to use a system Ollama installation:
 
 1. Download Ollama for Windows from [ollama.com/download](https://ollama.com/download)
 2. Install it — Ollama will run as a background service
-3. `deepThink` will detect the running Ollama instance at `http://localhost:11434` automatically
+3. `deepThinkER` will detect the running Ollama instance at `http://localhost:11434` automatically
 
 Model storage on Windows: `%USERPROFILE%\.ollama\models\`
 
@@ -196,7 +198,7 @@ flutter devices
 
 | Item | Path |
 |------|------|
-| Session logs | `%USERPROFILE%\Documents\deepThink\sessions\` |
+| Session logs | `%USERPROFILE%\Documents\deepThinkER\sessions\` |
 | Ollama models | `%USERPROFILE%\.ollama\models\` |
 | Ollama config | `%USERPROFILE%\.ollama\` |
 
@@ -205,9 +207,9 @@ flutter devices
 ## Summary
 
 ```
-git clone https://github.com/007Style/deepThink.git
-cd deepThink
+git clone https://github.com/007Style/deepThinkER.git
+cd deepThinkER
 flutter pub get
 flutter build windows --release
-# Run: build\windows\x64\runner\Release\deepThink.exe
+# Run: build\windows\x64\runner\Release\deepThinkER.exe
 ```
