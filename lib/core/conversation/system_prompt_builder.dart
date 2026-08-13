@@ -7,6 +7,7 @@
 /// This file has zero Flutter imports — pure Dart only.
 library system_prompt_builder;
 
+import '../mood/mood_score.dart';
 import '../ollama/hardware_detector.dart';
 import '../tools/tool_registry.dart';
 import 'participant.dart';
@@ -37,11 +38,13 @@ class SystemPromptBuilder {
   ///
   /// [allParticipants] must include [self]; all four participants are expected.
   /// [hardware] is appended as an informational context note.
+  /// [mood] when non-null appends a mood descriptor to the system prompt.
   static String build(
     Participant self,
     List<Participant> allParticipants,
-    HardwareInfo hardware,
-  ) {
+    HardwareInfo hardware, {
+    MoodScore? mood,
+  }) {
     final others =
         allParticipants.where((p) => p.name != self.name).toList();
 
@@ -59,6 +62,8 @@ class SystemPromptBuilder {
         'Context window    : ${_contextWindow(self, hardware)} tokens';
 
     final toolBlock = _buildToolBlock();
+
+    final moodBlock = _buildMoodBlock(mood);
 
     return '''${self.masterPrompt}
 
@@ -80,7 +85,7 @@ Host: $hostName guides the conversation but does not outrank anyone.
 5. Never start your response with your own name.
 6. Never break character.
 
-$toolBlock
+${moodBlock.isNotEmpty ? '\n$moodBlock' : ''} $toolBlock
 $hardwareBlock''';
   }
 
@@ -143,5 +148,17 @@ $hardwareBlock''';
     );
 
     return lines.toString().trimRight();
+  }
+
+  /// Builds the mood descriptor block.
+  ///
+  /// Returns an empty string when [mood] is null or moodState is neutral.
+  static String _buildMoodBlock(MoodScore? mood) {
+    if (mood == null) return '';
+    if (mood.moodState == MoodState.neutral) return '';
+    final descriptor = mood.moodState.descriptor;
+    if (descriptor.isEmpty) return '';
+    return '--- Current mood ---\n'
+        'Your current mood: ${mood.moodState.name}. $descriptor\n';
   }
 }

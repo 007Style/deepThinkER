@@ -441,7 +441,7 @@ and the global rate-limit cap. Update the About screen to credit the extended-re
 
 ---
 
-### Sub-Task 11 — Character Memory & Recall (Core + UI)
+### Sub-Task 11 — Character Memory & Recall (Core + UI) ✅
 
 **Intent**
 Give each character a persistent long-term memory store that survives across sessions. Characters
@@ -476,7 +476,7 @@ editable by the user.
 - Memory summary in context reset: top 5 entries by recency, formatted as bullet points
 - User memory editing must not require app restart — live reload from file
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 

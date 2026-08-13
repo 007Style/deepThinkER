@@ -13,12 +13,14 @@ import 'package:flutter/material.dart';
 
 import '../../core/conversation/message.dart';
 import '../../core/conversation/participant.dart';
+import '../../core/mood/mood_score.dart';
 import '../../core/trust/trust_manager.dart';
 import '../../core/trust/trust_score.dart';
 import '../avatars/avatar_registry.dart';
 import '../avatars/avatar_widget.dart';
 import '../avatars/energy_orb/orb_config.dart';
 import '../widgets/app_theme.dart';
+import '../widgets/mood_indicator/mood_indicator.dart';
 import '../widgets/network_indicator/network_toggle.dart';
 import '../widgets/network_indicator/rate_limit_flash.dart';
 import '../widgets/network_indicator/search_activity_entry.dart';
@@ -84,6 +86,12 @@ class AiQuadrant extends StatefulWidget {
   /// Controller for triggering the rate-limit flash indicator.
   final RateLimitFlashController? rateLimitFlashController;
 
+  /// Initial mood score for the mood indicator.
+  final MoodScore? initialMoodScore;
+
+  /// Stream of mood score updates for this character.
+  final Stream<MoodScore>? moodScoreStream;
+
   const AiQuadrant({
     required this.participant,
     required this.messages,
@@ -95,6 +103,8 @@ class AiQuadrant extends StatefulWidget {
     this.initialTrustScore,
     this.trustScoreStream,
     this.rateLimitFlashController,
+    this.initialMoodScore,
+    this.moodScoreStream,
     super.key,
   });
 
@@ -276,6 +286,8 @@ class _AiQuadrantState extends State<AiQuadrant> {
             initialTrustScore: widget.initialTrustScore,
             trustScoreStream: widget.trustScoreStream,
             rateLimitFlashController: widget.rateLimitFlashController,
+            initialMoodScore: widget.initialMoodScore,
+            moodScoreStream: widget.moodScoreStream,
           ),
           const Divider(height: 1, thickness: 1, color: AppColors.border),
           Expanded(
@@ -324,6 +336,8 @@ class _Header extends StatelessWidget {
   final TrustScore? initialTrustScore;
   final Stream<TrustScore>? trustScoreStream;
   final RateLimitFlashController? rateLimitFlashController;
+  final MoodScore? initialMoodScore;
+  final Stream<MoodScore>? moodScoreStream;
 
   const _Header({
     required this.participant,
@@ -333,6 +347,8 @@ class _Header extends StatelessWidget {
     this.initialTrustScore,
     this.trustScoreStream,
     this.rateLimitFlashController,
+    this.initialMoodScore,
+    this.moodScoreStream,
   });
 
   @override
@@ -376,6 +392,15 @@ class _Header extends StatelessWidget {
                       const SizedBox(width: 4),
                       RateLimitFlash(
                           controller: rateLimitFlashController!),
+                    ],
+                    // Mood indicator — only shown when mood stream is provided.
+                    if (initialMoodScore != null &&
+                        moodScoreStream != null) ...[
+                      const SizedBox(width: 6),
+                      MoodIndicator(
+                        initialScore: initialMoodScore!,
+                        scoreStream: moodScoreStream!,
+                      ),
                     ],
                   ],
                 ),
