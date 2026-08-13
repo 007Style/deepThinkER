@@ -24,6 +24,7 @@ import '../tools/tool_call_interceptor.dart';
 import 'conversation_log.dart';
 import 'message.dart';
 import 'participant.dart';
+import 'whisper_message.dart';
 import 'system_prompt_builder.dart';
 
 // ---------------------------------------------------------------------------

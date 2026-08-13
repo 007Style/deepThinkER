@@ -18,6 +18,7 @@ import 'conversation_log.dart';
 import 'inference_worker.dart';
 import 'message.dart';
 import 'participant.dart';
+import 'whisper_message.dart';
 
 // ---------------------------------------------------------------------------
 // ConversationEngine
