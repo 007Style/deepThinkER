@@ -251,7 +251,7 @@ derived from each character's current trust tier, and records violations back to
 - Violation penalty: −2 trust points per violation (configurable in `RateLimitConfig`)
 - Global cap default: 10/min
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -277,6 +277,8 @@ returns raw truncated HTML, and handles errors gracefully.
 - DuckDuckGo HTML endpoint: `https://html.duckduckgo.com/html/?q=<query>`
 - Truncation: first 12,000 characters of response body (configurable in `rate_limit_config.dart`)
 - LLM receives: `[WEB_RESULT for <CHARACTER>]:\n<raw html>`
+
+**Status:** [x] done
 
 **Status:** [ ] pending
 
@@ -324,7 +326,7 @@ drop-in.
 - Per-character shell trust gate: shell tool checks `minimumTrust` against character's current `TrustTier` even when enabled
 - Context reset: web results are ephemeral and must not be included in the 10-message reset seed — `ContextManager` needs an `isEphemeral` flag on injected messages
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -356,7 +358,7 @@ search activity log entry to each AI quadrant in the main screen.
 - `search_activity_entry` sits inline in the message list, not in a separate panel
 - LLM notification on toggle: injected as a system message e.g. `[SYSTEM: User has disabled your network access]`
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -384,7 +386,7 @@ trust tier checks.
 - Low trust tier = proactive injection disabled for that character
 - Topic extractor is intentionally simple — extract nouns and named entities from last 3 messages
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -408,7 +410,7 @@ capabilities so users understand what the characters can do and how to interpret
 - Help screen already exists from deepThink Sub-Task 8 — this is an additive update only
 - Keep the model download content untouched
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -435,7 +437,7 @@ and the global rate-limit cap. Update the About screen to credit the extended-re
 - Stats persistence path: `~/Documents/deepThinkER/stats.json`
 - deepThinkER starts at v1.0.0 (independent version from deepThink's v1.0.2+3)
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
