@@ -280,7 +280,7 @@ returns raw truncated HTML, and handles errors gracefully.
 
 **Status:** [x] done
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -509,7 +509,7 @@ prompt tone, not their capabilities. It is visible in the UI as a mood indicator
 - Direct address detection: message contains character's name
 - Silence streak: character has not responded in last 6 messages
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -542,7 +542,7 @@ influence the tone characters use toward each other in their responses.
 - Disposition labels: −100 to −60=hostile, −59 to −20=sceptical, −19 to +19=neutral, +20 to +59=respectful, +60 to +100=allied
 - Relationship matrix persists across sessions — characters remember long-term alliances and feuds
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -576,7 +576,7 @@ calculator runs safe expression evaluation with no external dependencies.
 - File write creates the file if it doesn't exist; does not overwrite without a `[FILE_WRITE_FORCE:]` variant (reserved for future)
 - File tools are visible in the 🌐 search activity entry pattern — reuse `search_activity_entry` widget with a 📄 icon
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -610,7 +610,7 @@ from the character's normal model. The result is injected into all characters' c
 - Auto-inject broadcasts the image description to all 4 characters simultaneously
 - Image files are not deleted after analysis — user manages their workspace folder
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -644,7 +644,7 @@ trajectories, search activity, and a live token counter per quadrant visible dur
 - Heatmap: x-axis = time, y-axis = 4 characters + user, colour intensity = messages per time bucket
 - Analytics screen is read-only; no editing
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -674,7 +674,7 @@ across all sessions, with full details. Exportable as CSV.
 - Newline-delimited JSON (NDJSON) format: one JSON object per line — easy to append and stream-parse
 - CSV export: open system file picker to choose save location
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -706,7 +706,7 @@ appearing in the conversation log.
 - Persona is global — applies to all 4 characters every session
 - Steering is ephemeral — not carried through context resets
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -737,7 +737,7 @@ targeted questions, or testing isolation of information.
 - Session file log format: `[timestamp] USER→WATSON (whisper): message content`
 - Analytics: whisper messages counted separately from normal user messages
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -771,7 +771,7 @@ character receives a catch-up context injection of recent messages.
 - Built-in characters (WATSON, DEEP, NOVA, SAGE) can be swapped back in — they retain their original trust scores
 - Custom characters are stored locally; not synced
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -874,7 +874,7 @@ Rate limits and trust tiers remain fully enforced throughout.
 - Report format: Markdown — one section per character with their key findings and sources, one consensus section
 - Research sessions can be replayed via Sub-Task 22 (Conversation Replay)
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -903,7 +903,7 @@ build pipeline doc reflects the new dependencies.
 - `http` package is pure Dart — no additional platform-level config required for Windows
 - GitHub account: `007Style`
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -952,7 +952,7 @@ context and trigger tool execution. This must be neutralised before injection.
 - Only escape tags whose names match a registered tool in `ToolRegistry` — generic `[brackets]` in web content are not touched
 - Audit log entry on detection helps the user see if a site tried to hijack their characters
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -983,7 +983,7 @@ pure local keyword/pattern matching.
 - Character response filtering is the more controversial direction — keep it opt-in and clearly labelled
 - Keyword lists are bundled as plain text assets — user can inspect and modify them
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -1013,7 +1013,7 @@ This removes the on-demand download brittleness from Sub-Task 15.
 - RAM tooltip: "llava (~4.7GB) loaded on image analysis only"
 - Model registry RAM note applies to loaded state — UI should distinguish idle-downloaded vs active-loaded
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -1046,7 +1046,7 @@ This is the settings foundation every other sub-task should have been building a
 - `SettingsProvider` is a singleton initialised before `main()` starts the Flutter app
 - Settings screen tabs map to plan phases: Network tab covers Sub-Tasks 2/3/7/21; Tools tab covers Sub-Tasks 14/15; Safety tab covers Sub-Tasks 25/26; Display tab covers Sub-Tasks 31/32/35/36
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -1078,7 +1078,7 @@ inference workers gracefully, and notify the user — without losing the session
 - Workers are paused (not stopped) on crash — their state is preserved for resume
 - Session log continuous saving from deepThink already handles mid-session flush — confirm it covers new event types
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -1104,7 +1104,7 @@ shutdown — flushing all in-progress state to disk before the process ends.
 - SIGTERM handling: use `ProcessSignal.sigterm.watch()` from `dart:io` for force-quit best-effort
 - Workers stopped via `ConversationEngine.stop()` which already exists from deepThink
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -1134,7 +1134,7 @@ something happened even when the app is in the background or minimised.
 - Rate limit streak threshold: 3 consecutive denials for the same character within 5 minutes
 - Notifications must not fire when the app window is in the foreground — check `AppLifecycleState`
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -1163,7 +1163,7 @@ No external audio libraries — use Flutter's built-in `audioplayers` package wi
 - Sound assets should be royalty-free; source from freesound.org or generate with a tone generator
 - Sound plays on main isolate only — no sound from background workers
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -1198,7 +1198,7 @@ report (if any), and audit entries — as a named `.zip` file. Clean and shareab
 - `conversation_formatter.dart`: include speaker name + timestamp per message; strip `[WEB_RESULT...]`, `[SYSTEM_STEER...]`, `[PROACTIVE_WEB_RESULT...]` blocks
 - Export runs in a separate Dart isolate to avoid blocking UI
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -1223,7 +1223,7 @@ blog post, or sharing with someone who wasn't in the session.
 - Reuses `conversation_formatter.dart` logic from Sub-Task 33 — Markdown exporter calls formatter then applies Markdown structure
 - Whisper messages exported as `> 🤫 USER → WATSON (private): message` — visible in export since the export is owned by the user
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -1253,7 +1253,7 @@ without touching the mouse. All shortcuts are configurable.
 - Shortcut rebinding: detect key press in a recording widget, validate no conflict with existing bindings
 - macOS uses Cmd key; Windows uses Ctrl — `LogicalKeyboardKey` handles this cross-platform
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -1282,7 +1282,7 @@ usable for people with accessibility needs. All settings are in the Display tab 
 - Font scale is applied at the `ThemeData.textTheme` level — one change propagates everywhere
 - High-contrast mode is a theme swap, not a filter — define the palette explicitly
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -1314,7 +1314,7 @@ and testing of all deepThinkER systems without Ollama running. Available in debu
 - Fixtures stored as assets so they can be edited without recompile
 - Mock streaming delay: configurable 50–200ms per token to simulate real inference speed
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 
@@ -1345,7 +1345,7 @@ state changes.
 - `DebugController` calls the real `TrustManager`, `MoodEngine`, `RelationshipMatrix` etc. — not mocks — so the UI responds as it would in production
 - Panel is an overlay, not a screen — appears on top of main screen without navigation
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ```
 deepThinkER/
