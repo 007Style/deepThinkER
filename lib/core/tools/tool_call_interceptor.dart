@@ -6,6 +6,7 @@ library tool_call_interceptor;
 
 import 'dart:async';
 
+import '../audit/audit_log.dart';
 import '../network/rate_limiter.dart';
 import '../trust/trust_manager.dart';
 import '../trust/trust_score.dart';
@@ -72,6 +73,9 @@ class ToolCallInterceptor {
   final RateLimiter rateLimiter;
   final TrustManager trustManager;
 
+  /// Session name used to tag audit entries.  Can be updated each session.
+  String sessionName;
+
   final StreamController<ToolCallEvent> _eventController =
       StreamController<ToolCallEvent>.broadcast();
 
@@ -79,6 +83,7 @@ class ToolCallInterceptor {
     required this.registry,
     required this.rateLimiter,
     required this.trustManager,
+    this.sessionName = '',
   });
 
   /// Broadcast stream emitting a [ToolCallEvent] for each intercepted tag.
@@ -156,6 +161,19 @@ class ToolCallInterceptor {
       if (!_eventController.isClosed) {
         _eventController.add(event);
       }
+
+      // Record in audit log (fire-and-forget).
+      AuditLog.instance.record(
+        AuditEntry.create(
+          sessionName: sessionName,
+          characterName: characterName,
+          toolTag: call.tag,
+          argument: call.argument,
+          wasRateLimited: result.wasRateLimited,
+          wasDisabled: result.wasDisabled,
+          responseBytes: result.output.length,
+        ),
+      ).ignore();
 
       return InterceptResult(modifiedBuffer: modified, event: event);
     }

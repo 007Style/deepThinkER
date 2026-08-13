@@ -14,6 +14,7 @@ import '../../core/ollama/hardware_detector.dart';
 import '../../core/session/session_manager.dart';
 import '../widgets/app_theme.dart';
 import '../screens/about_screen.dart';
+import '../screens/audit_log_screen.dart';
 import '../screens/docs_screen.dart';
 import '../screens/memory_panel_screen.dart';
 import '../screens/model_help_screen.dart';
@@ -80,6 +81,11 @@ class HelpMenuButton extends StatelessWidget {
           icon: Icons.psychology_outlined,
           label: 'Character Memories',
         ),
+        _menuItem(
+          value: _HelpItem.auditLog,
+          icon: Icons.receipt_long_outlined,
+          label: 'Audit Log',
+        ),
         const PopupMenuDivider(),
         _menuItem(
           value: _HelpItem.about,
@@ -139,6 +145,10 @@ class HelpMenuButton extends StatelessWidget {
         Navigator.of(context).push(MaterialPageRoute<void>(
           builder: (_) => const MemoryPanelScreen(),
         ));
+      case _HelpItem.auditLog:
+        Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (_) => const AuditLogScreen(),
+        ));
       case _HelpItem.about:
         Navigator.of(context).push(MaterialPageRoute<void>(
           builder: (_) => AboutScreen(hardware: hardware),
@@ -168,5 +178,6 @@ enum _HelpItem {
   modelInstall,
   transcripts,
   memories,
+  auditLog,
   about,
 }
