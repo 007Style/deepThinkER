@@ -480,7 +480,7 @@ editable by the user.
 
 ---
 
-### Sub-Task 12 — Character Mood System (Core + UI)
+### Sub-Task 12 — Character Mood System (Core + UI) ✅
 
 **Intent**
 Add a per-character mood score that shifts based on conversation dynamics — how much they're

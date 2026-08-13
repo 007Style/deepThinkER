@@ -9,6 +9,7 @@ library system_prompt_builder;
 
 import '../mood/mood_score.dart';
 import '../ollama/hardware_detector.dart';
+import '../relationships/relationship_matrix.dart';
 import '../tools/tool_registry.dart';
 import 'participant.dart';
 
@@ -39,11 +40,13 @@ class SystemPromptBuilder {
   /// [allParticipants] must include [self]; all four participants are expected.
   /// [hardware] is appended as an informational context note.
   /// [mood] when non-null appends a mood descriptor to the system prompt.
+  /// [relationshipMatrix] when non-null injects non-neutral relationship descriptors.
   static String build(
     Participant self,
     List<Participant> allParticipants,
     HardwareInfo hardware, {
     MoodScore? mood,
+    RelationshipMatrix? relationshipMatrix,
   }) {
     final others =
         allParticipants.where((p) => p.name != self.name).toList();
@@ -65,6 +68,11 @@ class SystemPromptBuilder {
 
     final moodBlock = _buildMoodBlock(mood);
 
+    final relationshipBlock = _buildRelationshipBlock(
+      self.name,
+      relationshipMatrix,
+    );
+
     return '''${self.masterPrompt}
 
 --- Participant overview ---
@@ -85,7 +93,7 @@ Host: $hostName guides the conversation but does not outrank anyone.
 5. Never start your response with your own name.
 6. Never break character.
 
-${moodBlock.isNotEmpty ? '\n$moodBlock' : ''} $toolBlock
+${moodBlock.isNotEmpty ? '\n$moodBlock' : ''}${relationshipBlock.isNotEmpty ? '\n$relationshipBlock' : ''} $toolBlock
 $hardwareBlock''';
   }
 
@@ -148,6 +156,19 @@ $hardwareBlock''';
     );
 
     return lines.toString().trimRight();
+  }
+
+  /// Builds the relationship descriptor block for [characterName].
+  ///
+  /// Returns an empty string when [matrix] is null or all relationships neutral.
+  static String _buildRelationshipBlock(
+    String characterName,
+    RelationshipMatrix? matrix,
+  ) {
+    if (matrix == null) return '';
+    final descriptor = matrix.descriptorFor(characterName);
+    if (descriptor.isEmpty) return '';
+    return '--- Your relationships ---\n$descriptor\n';
   }
 
   /// Builds the mood descriptor block.

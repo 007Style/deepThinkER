@@ -20,12 +20,14 @@ import '../../core/conversation/participant.dart';
 import '../../core/conversation/user_name_detector.dart';
 import '../../core/ollama/hardware_detector.dart';
 import '../../core/ollama/ollama_client.dart';
+import '../../core/relationships/relationship_matrix.dart';
 import '../../core/session/session.dart';
 import '../../core/session/session_manager.dart';
 import '../avatars/avatar_widget.dart';
 import '../quadrants/quadrant_grid.dart';
 import '../widgets/app_theme.dart';
 import '../widgets/help_menu.dart';
+import '../widgets/relationship_matrix_widget.dart';
 import '../widgets/start_stop_button.dart';
 import '../widgets/status_band.dart';
 import '../widgets/user_input_bar.dart';
@@ -102,6 +104,12 @@ class _MainScreenState extends State<MainScreen> {
   bool _isBusy = false;
   String _userName = 'User';
   String _sessionName = '';
+
+  /// Whether the relationship matrix panel is visible.
+  bool _showRelationships = false;
+
+  /// Shared relationship matrix (session-scoped, instantiated in _start).
+  final RelationshipMatrix _relationshipMatrix = RelationshipMatrix();
 
   // Messages typed before Start — injected in order when engine starts.
   final List<String> _pendingUserMessages = [];
@@ -456,7 +464,18 @@ class _MainScreenState extends State<MainScreen> {
             onWarpToHead: _warpToHead,
             onReconfigure: _reconfigure,
             hardware: widget.hardware,
+            showRelationships: _showRelationships,
+            onToggleRelationships: () =>
+                setState(() => _showRelationships = !_showRelationships),
           ),
+          // ── Relationship matrix panel (collapsible) ───────────────────────
+          if (_showRelationships)
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: RelationshipMatrixWidget(
+                  matrix: _relationshipMatrix),
+            ),
           // ── Quadrant grid ─────────────────────────────────────────────────
           Expanded(
             child: Padding(
@@ -502,6 +521,8 @@ class _TopBar extends StatelessWidget {
   final VoidCallback onWarpToHead;
   final VoidCallback onReconfigure;
   final HardwareInfo hardware;
+  final bool showRelationships;
+  final VoidCallback onToggleRelationships;
 
   const _TopBar({
     required this.isRunning,
@@ -516,6 +537,8 @@ class _TopBar extends StatelessWidget {
     required this.onWarpToHead,
     required this.onReconfigure,
     required this.hardware,
+    required this.showRelationships,
+    required this.onToggleRelationships,
   });
 
   @override
@@ -610,6 +633,11 @@ class _TopBar extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+          ),
+          const SizedBox(width: 4),
+          _RelationshipsButton(
+            active: showRelationships,
+            onTap: onToggleRelationships,
           ),
           const SizedBox(width: 4),
           _ReconfigureButton(onTap: onReconfigure, disabled: isBusy),
@@ -757,6 +785,58 @@ class _ReconfigureButton extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 'Configure',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: color,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// _RelationshipsButton
+// ---------------------------------------------------------------------------
+
+class _RelationshipsButton extends StatelessWidget {
+  final bool active;
+  final VoidCallback onTap;
+
+  const _RelationshipsButton({
+    required this.active,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = active ? AppColors.accent : AppColors.textSecondary;
+    return Tooltip(
+      message: active ? 'Hide relationship matrix' : 'Show relationship matrix',
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(6),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+          decoration: BoxDecoration(
+            border: Border.all(
+                color: active
+                    ? AppColors.accent.withValues(alpha: 0.55)
+                    : AppColors.border.withValues(alpha: 0.7)),
+            borderRadius: BorderRadius.circular(6),
+            color: active ? AppColors.accent.withValues(alpha: 0.08) : null,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.people_outline, size: 13, color: color),
+              const SizedBox(width: 4),
+              Text(
+                'Relations',
                 style: TextStyle(
                   fontSize: 11,
                   color: color,
