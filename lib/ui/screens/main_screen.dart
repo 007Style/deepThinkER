@@ -11,7 +11,9 @@
 //   • Messages carry a roundIndex for color-banding in the quadrant panels.
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../core/analytics/session_analytics.dart';
 import '../../core/conversation/conversation_engine.dart';
@@ -33,7 +35,9 @@ import '../../core/tools/file/file_tool_config.dart';
 import '../../core/tools/image/image_watcher.dart';
 import 'analytics_screen.dart';
 import 'research_mode_screen.dart';
+import 'settings_screen.dart';
 import '../avatars/avatar_widget.dart';
+import '../debug/state_simulator_panel.dart';
 import '../quadrants/quadrant_grid.dart';
 import '../widgets/app_theme.dart';
 import '../widgets/help_menu.dart';
@@ -156,6 +160,9 @@ class _MainScreenState extends State<MainScreen> {
 
   /// Whether the steering bar is visible.
   bool _showSteering = false;
+
+  /// Whether the debug state simulator panel is visible (debug builds only).
+  bool _showDebugPanel = false;
 
   /// Steering engine (created after engine starts).
   SteeringEngine? _steeringEngine;
@@ -548,9 +555,47 @@ class _MainScreenState extends State<MainScreen> {
       );
     });
 
+    // Keyboard shortcuts: Cmd+, → Settings, Cmd+Shift+D → Debug panel
+    return Shortcuts(
+      shortcuts: {
+        const SingleActivator(LogicalKeyboardKey.comma, meta: true):
+            const _OpenSettingsIntent(),
+        if (kDebugMode)
+          const SingleActivator(LogicalKeyboardKey.keyD,
+              meta: true, shift: true): const _ToggleDebugPanelIntent(),
+      },
+      child: Actions(
+        actions: {
+          _OpenSettingsIntent: CallbackAction<_OpenSettingsIntent>(
+            onInvoke: (_) {
+              Navigator.of(context).push(MaterialPageRoute<void>(
+                builder: (_) => const SettingsScreen(),
+              ));
+              return null;
+            },
+          ),
+          if (kDebugMode)
+            _ToggleDebugPanelIntent: CallbackAction<_ToggleDebugPanelIntent>(
+              onInvoke: (_) {
+                setState(() => _showDebugPanel = !_showDebugPanel);
+                return null;
+              },
+            ),
+        },
+        child: Focus(
+          autofocus: true,
+          child: _buildBody(context, quadrantDataList),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, List<QuadrantData> quadrantDataList) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
+      body: Stack(
+        children: [
+          Column(
         children: [
           // ── Replay banner (shown when in replay mode) ─────────────────────
           if (_showReplayBanner && widget.replaySessionName != null)
@@ -634,15 +679,54 @@ class _MainScreenState extends State<MainScreen> {
             visible: _showSteering,
             onSteer: (text) => _steeringEngine?.steer(text),
           ),
-          // ── Status band ───────────────────────────────────────────────────
-          StatusBand(
-            hardware: widget.hardware,
-            sessionName: _sessionName,
+            // ── Status band ─────────────────────────────────────────────────
+            StatusBand(
+              hardware: widget.hardware,
+              sessionName: _sessionName,
+            ),
+          ],
+        ),
+        // ── Debug state simulator overlay (debug builds only) ─────────────
+        if (kDebugMode && _showDebugPanel)
+          StateSimulatorPanel(
+            onClose: () => setState(() => _showDebugPanel = false),
           ),
-        ],
-      ),
-    );
+        // ── Settings FAB ───────────────────────────────────────────────────
+        Positioned(
+          bottom: 52,  // above status band
+          right: 12,
+          child: Tooltip(
+            message: 'Settings  (⌘,)',
+            child: FloatingActionButton.small(
+              heroTag: 'settings_fab',
+              backgroundColor: AppColors.surface,
+              foregroundColor: AppColors.textSecondary,
+              elevation: 2,
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const SettingsScreen(),
+                ),
+              ),
+              child: const Icon(Icons.settings_outlined, size: 18),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
   }
+}
+
+// ---------------------------------------------------------------------------
+// Intents for keyboard shortcuts
+// ---------------------------------------------------------------------------
+
+class _OpenSettingsIntent extends Intent {
+  const _OpenSettingsIntent();
+}
+
+class _ToggleDebugPanelIntent extends Intent {
+  const _ToggleDebugPanelIntent();
 }
 
 // ---------------------------------------------------------------------------

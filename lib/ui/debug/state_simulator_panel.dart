@@ -22,9 +22,13 @@ class StateSimulatorPanel extends StatefulWidget {
   /// Character names to include in the trust/mood controls.
   final List<String> characterNames;
 
+  /// Called when the user taps the close button.
+  final VoidCallback? onClose;
+
   const StateSimulatorPanel({
     super.key,
-    this.characterNames = const ['Aria', 'Max', 'Zara'],
+    this.characterNames = const ['WATSON', 'DEEP', 'NOVA', 'SAGE'],
+    this.onClose,
   });
 
   @override
@@ -101,8 +105,19 @@ class _StateSimulatorPanelState extends State<StateSimulatorPanel> {
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white, size: 16),
+                  icon: const Icon(Icons.minimize, color: Colors.white70, size: 16),
+                  tooltip: 'Collapse',
                   onPressed: () => setState(() => _expanded = false),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white, size: 16),
+                  tooltip: 'Close panel',
+                  onPressed: () {
+                    setState(() => _expanded = false);
+                    widget.onClose?.call();
+                  },
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 ),

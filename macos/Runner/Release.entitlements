@@ -19,6 +19,9 @@
 	<true/>
 	<key>com.apple.security.files.downloads.read-write</key>
 	<true/>
+	<!-- Required by flutter_local_notifications for macOS user notifications -->
+	<key>com.apple.security.automation.apple-events</key>
+	<true/>
 	<key>com.apple.security.temporary-exception.files.home-relative-path.read-write</key>
 	<array>
 		<string>/Documents/deepThinkER/</string>

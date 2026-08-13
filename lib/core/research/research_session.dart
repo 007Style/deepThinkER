@@ -51,7 +51,7 @@ class ResearchSession {
   final Map<String, String> synthesisStatements;
 
   /// Whether the session is currently paused.
-  bool isPaused;
+  bool isPaused = false;
 
   ResearchSession._({
     required this.topic,

@@ -8,6 +8,7 @@
 //   • About deepThink     → AboutScreen
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/ollama/hardware_detector.dart';
@@ -18,6 +19,8 @@ import '../screens/audit_log_screen.dart';
 import '../screens/docs_screen.dart';
 import '../screens/memory_panel_screen.dart';
 import '../screens/model_help_screen.dart';
+import '../screens/settings_screen.dart';
+import '../screens/shortcut_editor.dart';
 
 // ---------------------------------------------------------------------------
 // HelpMenuButton
@@ -50,6 +53,12 @@ class HelpMenuButton extends StatelessWidget {
       ),
       offset: const Offset(0, 36),
       itemBuilder: (_) => [
+        _menuItem(
+          value: _HelpItem.settings,
+          icon: Icons.settings_outlined,
+          label: 'Settings',
+        ),
+        const PopupMenuDivider(),
         _menuItem(
           value: _HelpItem.userGuide,
           icon: Icons.menu_book_rounded,
@@ -86,12 +95,25 @@ class HelpMenuButton extends StatelessWidget {
           icon: Icons.receipt_long_outlined,
           label: 'Audit Log',
         ),
+        _menuItem(
+          value: _HelpItem.shortcuts,
+          icon: Icons.keyboard_outlined,
+          label: 'Keyboard Shortcuts',
+        ),
         const PopupMenuDivider(),
         _menuItem(
           value: _HelpItem.about,
           icon: Icons.info_outline,
           label: 'About deepThink',
         ),
+        if (kDebugMode) ...[
+          const PopupMenuDivider(),
+          _menuItem(
+            value: _HelpItem.debugPanel,
+            icon: Icons.bug_report_outlined,
+            label: 'State Simulator (debug)',
+          ),
+        ],
       ],
       onSelected: (item) => _onSelected(context, item),
     );
@@ -123,6 +145,23 @@ class HelpMenuButton extends StatelessWidget {
 
   void _onSelected(BuildContext context, _HelpItem item) {
     switch (item) {
+      case _HelpItem.settings:
+        Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (_) => const SettingsScreen(),
+        ));
+      case _HelpItem.shortcuts:
+        Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (_) => const ShortcutEditor(),
+        ));
+      case _HelpItem.debugPanel:
+        // Handled by the parent via a callback — pop a notification back up.
+        // For now, show a snackbar directing the user to Cmd+Shift+D.
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Press Cmd+Shift+D to open the State Simulator panel'),
+            duration: Duration(seconds: 3),
+          ),
+        );
       case _HelpItem.userGuide:
         Navigator.of(context).push(MaterialPageRoute<void>(
           builder: (_) => const DocsScreen(initialTab: 0),
@@ -172,6 +211,7 @@ class HelpMenuButton extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 enum _HelpItem {
+  settings,
   userGuide,
   architecture,
   development,
@@ -179,5 +219,7 @@ enum _HelpItem {
   transcripts,
   memories,
   auditLog,
+  shortcuts,
   about,
+  debugPanel,
 }
