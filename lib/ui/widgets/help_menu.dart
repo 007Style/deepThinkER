@@ -15,6 +15,7 @@ import '../../core/session/session_manager.dart';
 import '../widgets/app_theme.dart';
 import '../screens/about_screen.dart';
 import '../screens/docs_screen.dart';
+import '../screens/memory_panel_screen.dart';
 import '../screens/model_help_screen.dart';
 
 // ---------------------------------------------------------------------------
@@ -74,6 +75,11 @@ class HelpMenuButton extends StatelessWidget {
           icon: Icons.history_rounded,
           label: 'Session Transcripts',
         ),
+        _menuItem(
+          value: _HelpItem.memories,
+          icon: Icons.psychology_outlined,
+          label: 'Character Memories',
+        ),
         const PopupMenuDivider(),
         _menuItem(
           value: _HelpItem.about,
@@ -129,6 +135,10 @@ class HelpMenuButton extends StatelessWidget {
         ));
       case _HelpItem.transcripts:
         _openTranscriptsFolder(context);
+      case _HelpItem.memories:
+        Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (_) => const MemoryPanelScreen(),
+        ));
       case _HelpItem.about:
         Navigator.of(context).push(MaterialPageRoute<void>(
           builder: (_) => AboutScreen(hardware: hardware),
@@ -151,4 +161,12 @@ class HelpMenuButton extends StatelessWidget {
 // _HelpItem
 // ---------------------------------------------------------------------------
 
-enum _HelpItem { userGuide, architecture, development, modelInstall, transcripts, about }
+enum _HelpItem {
+  userGuide,
+  architecture,
+  development,
+  modelInstall,
+  transcripts,
+  memories,
+  about,
+}

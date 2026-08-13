@@ -112,6 +112,24 @@ $hardwareBlock''';
           lines.writeln('  [SEARCH: query] — search the web via DuckDuckGo.');
         case 'FETCH':
           lines.writeln('  [FETCH: url] — fetch a web page directly.');
+        case 'REMEMBER':
+          lines.writeln(
+              '  [REMEMBER: fact] — store a fact in your persistent memory.');
+        case 'RECALL':
+          lines.writeln(
+              '  [RECALL: topic] — retrieve memories matching a topic.');
+        case 'FILE_READ':
+          lines.writeln(
+              '  [FILE_READ: path] — read a file from the workspace.');
+        case 'FILE_WRITE':
+          lines.writeln(
+              '  [FILE_WRITE: path | content] — write content to a file.');
+        case 'CALC':
+          lines.writeln(
+              '  [CALC: expression] — evaluate a math expression.');
+        case 'IMAGE':
+          lines.writeln(
+              '  [IMAGE: filename] — analyse an image in the workspace.');
         default:
           lines.writeln('  [${tool.tag}: argument]');
       }

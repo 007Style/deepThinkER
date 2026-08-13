@@ -9,6 +9,7 @@ library context_manager;
 
 import '../conversation/conversation_log.dart';
 import '../conversation/message.dart';
+import '../memory/memory_store.dart';
 
 // ---------------------------------------------------------------------------
 // ContextManager
@@ -90,6 +91,24 @@ class ContextManager {
         .getLastNPerParticipant(participantNames, 2)
         .where((m) => !m.isEphemeral)
         .toList();
+
+    // Append per-character memory summaries as ephemeral system messages so
+    // each worker has a brief memory recap after a context reset.
+    for (final name in participantNames) {
+      // Skip pseudo-participants like 'User' or 'System'.
+      if (name == 'User' || name == 'System') continue;
+      final store = MemoryStoreRegistry.storeFor(name);
+      final summary = store.recentSummary(n: 5);
+      if (summary.isNotEmpty) {
+        seed.add(Message(
+          participantName: 'System',
+          content: '[MEMORY_SUMMARY for $name]:\n$summary',
+          isUser: false,
+          isEphemeral: true,
+        ));
+      }
+    }
+
     // Cap at the maximum seed size.
     if (seed.length <= _seedMaxMessages) return seed;
     return seed.sublist(seed.length - _seedMaxMessages);
