@@ -73,9 +73,12 @@ class ContextManager {
     _tokenCounts.remove(participantName);
   }
 
-  /// Builds the context-reset seed: the last 2 non-pass messages from each
-  /// participant in [participantNames], sorted chronologically, capped at
-  /// [_seedMaxMessages] messages total.
+  /// Builds the context-reset seed: the last 2 non-pass, non-ephemeral
+  /// messages from each participant in [participantNames], sorted
+  /// chronologically, capped at [_seedMaxMessages] messages total.
+  ///
+  /// Ephemeral messages (tool-result injections) are excluded so they do not
+  /// burn tokens in the fresh context window.
   ///
   /// This seed is prepended to a fresh context window so the AI has minimal
   /// but meaningful history after a reset.
@@ -83,7 +86,10 @@ class ContextManager {
     ConversationLog log,
     List<String> participantNames,
   ) {
-    final seed = log.getLastNPerParticipant(participantNames, 2);
+    final seed = log
+        .getLastNPerParticipant(participantNames, 2)
+        .where((m) => !m.isEphemeral)
+        .toList();
     // Cap at the maximum seed size.
     if (seed.length <= _seedMaxMessages) return seed;
     return seed.sublist(seed.length - _seedMaxMessages);

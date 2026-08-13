@@ -1,10 +1,15 @@
-/// Per-AI inference worker for deepThink.
+/// Per-AI inference worker for deepThinkER.
 ///
 /// Each [InferenceWorker] monitors the shared [ConversationLog], applies a
 /// random jitter before responding, calls [OllamaClient.generateStream], and
 /// streams [InferenceEvent] tokens back to the [ConversationEngine].
 ///
 /// Context-window resets are handled transparently via [ContextManager].
+///
+/// Tool-call interception: if a [ToolCallInterceptor] is attached, the
+/// response buffer is scanned after streaming completes.  When a tag is found
+/// the interceptor executes the tool and injects the result as a system
+/// message into the conversation log.
 ///
 /// This file has zero Flutter imports — pure Dart only.
 library inference_worker;
@@ -15,6 +20,7 @@ import 'dart:math';
 import '../context/context_manager.dart';
 import '../ollama/hardware_detector.dart';
 import '../ollama/ollama_client.dart';
+import '../tools/tool_call_interceptor.dart';
 import 'conversation_log.dart';
 import 'message.dart';
 import 'participant.dart';
@@ -100,6 +106,10 @@ class InferenceWorker {
 
   /// Shared context manager — tracks token usage across all workers.
   final ContextManager contextManager;
+
+  /// Optional tool-call interceptor.  When set, the response buffer is scanned
+  /// after every token and tool calls are processed inline.
+  ToolCallInterceptor? interceptor;
 
   final StreamController<InferenceEvent> _eventController =
       StreamController<InferenceEvent>.broadcast();
@@ -261,7 +271,28 @@ class InferenceWorker {
         },
       );
 
-      final fullResponse = responseBuffer.toString().trim();
+      // After streaming completes, check for any tool-call tags in the buffer.
+      // We process one tag per generation turn to keep behaviour predictable.
+      String fullResponseRaw = responseBuffer.toString();
+      if (interceptor != null) {
+        final intercept =
+            await interceptor!.process(fullResponseRaw, participant.name);
+        if (intercept.event != null) {
+          // Inject tool result as an ephemeral system message so the LLM can
+          // read it in the next turn's context.
+          final injection = Message(
+            participantName: 'System',
+            content: intercept.modifiedBuffer,
+            isUser: false,
+            roundIndex: log.currentRoundIndex,
+            isEphemeral: true,
+          );
+          log.append(injection);
+          fullResponseRaw = intercept.modifiedBuffer;
+        }
+      }
+
+      final fullResponse = fullResponseRaw.trim();
       final isPass = fullResponse.isEmpty;
 
       // Record token usage (estimate from response length).

@@ -31,7 +31,7 @@ String _uuid4() {
 // Message
 // ---------------------------------------------------------------------------
 
-/// A single utterance in the deepThink conversation.
+/// A single utterance in the deepThinkER conversation.
 ///
 /// Each message records who said it ([participantName]), what they said
 /// ([content]), when they said it ([timestamp]), and whether it is a
@@ -41,6 +41,9 @@ String _uuid4() {
 /// triggered by the same user or kickoff message share the same index.
 /// The UI uses this to apply a consistent color band across all four panels,
 /// so you can visually see which responses belong together.
+///
+/// [isEphemeral] marks tool-result injections that should not be included
+/// in the context-reset seed (they are too large and are one-shot).
 class Message {
   /// Unique UUID v4 identifier for this message.
   final String id;
@@ -72,12 +75,17 @@ class Message {
   /// Used by the UI to apply a color band grouping responses together.
   final int roundIndex;
 
+  /// `true` for tool-result injection messages that should not be carried
+  /// forward in a context-window reset seed.
+  final bool isEphemeral;
+
   /// Creates a [Message] with an auto-generated UUID and current timestamp.
   Message({
     required this.participantName,
     required this.content,
     required this.isUser,
     this.roundIndex = 0,
+    this.isEphemeral = false,
     String? id,
     DateTime? timestamp,
   })  : id = id ?? _uuid4(),

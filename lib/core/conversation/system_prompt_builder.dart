@@ -8,6 +8,7 @@
 library system_prompt_builder;
 
 import '../ollama/hardware_detector.dart';
+import '../tools/tool_registry.dart';
 import 'participant.dart';
 
 // ---------------------------------------------------------------------------
@@ -57,6 +58,8 @@ class SystemPromptBuilder {
         'Inference backend : ${hardware.backendDisplayName}\n'
         'Context window    : ${_contextWindow(self, hardware)} tokens';
 
+    final toolBlock = _buildToolBlock();
+
     return '''${self.masterPrompt}
 
 --- Participant overview ---
@@ -77,6 +80,7 @@ Host: $hostName guides the conversation but does not outrank anyone.
 5. Never start your response with your own name.
 6. Never break character.
 
+$toolBlock
 $hardwareBlock''';
   }
 
@@ -89,5 +93,37 @@ $hardwareBlock''';
     return isHighCtx
         ? hardware.highContextWindow
         : hardware.standardContextWindow;
+  }
+
+  /// Builds the tool-call instructions block for all currently enabled tools.
+  ///
+  /// Returns an empty string if no tools are enabled.
+  static String _buildToolBlock() {
+    final tools = ToolRegistry.instance.enabledTools;
+    if (tools.isEmpty) return '';
+
+    final lines = StringBuffer()
+      ..writeln('--- Tool access ---')
+      ..writeln('You have access to the following tools:');
+
+    for (final tool in tools) {
+      switch (tool.tag) {
+        case 'SEARCH':
+          lines.writeln('  [SEARCH: query] — search the web via DuckDuckGo.');
+        case 'FETCH':
+          lines.writeln('  [FETCH: url] — fetch a web page directly.');
+        default:
+          lines.writeln('  [${tool.tag}: argument]');
+      }
+    }
+
+    lines.writeln(
+      'To use a tool, emit the tag in your response and your generation will '
+      'pause while the result is fetched and injected back into context. '
+      'Use tools when you need current or specific factual information. '
+      'Do not emit a tool tag unless you genuinely need real-time data.',
+    );
+
+    return lines.toString().trimRight();
   }
 }
