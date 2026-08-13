@@ -205,6 +205,21 @@ class ConversationEngine {
     );
     _log.append(message);
   }
+
+  /// Sends a whisper message visible only to [targetCharacter].
+  ///
+  /// The [WhisperMessage] is appended to the log; [InferenceWorker] instances
+  /// for other characters ignore it based on the `isWhisper` + `targetCharacter`
+  /// check.
+  void sendWhisper(String userName, String content, String targetCharacter) {
+    if (content.trim().isEmpty) return;
+    final msg = WhisperMessage(
+      participantName: userName,
+      content: content.trim(),
+      targetCharacter: targetCharacter,
+    );
+    _log.append(msg);
+  }
 }
 
 // ---------------------------------------------------------------------------

@@ -17,6 +17,7 @@ import '../../core/analytics/session_analytics.dart';
 import '../../core/conversation/conversation_engine.dart';
 import '../../core/conversation/inference_worker.dart';
 import '../../core/conversation/message.dart';
+import '../../core/conversation/whisper_message.dart';
 import '../../core/conversation/participant.dart';
 import '../../core/conversation/user_name_detector.dart';
 import '../../core/ollama/hardware_detector.dart';
@@ -407,8 +408,13 @@ class _MainScreenState extends State<MainScreen> {
     if (msg.isPass) return;
 
     setState(() {
-      if (msg.isUser) {
-        // User messages appear in ALL quadrant panels.
+      if (msg.isWhisper) {
+        // Whisper: only appears in the target character's quadrant.
+        final target = (msg as WhisperMessage).targetCharacter;
+        final qs = _quadrantStates[target];
+        qs?.messages.add(msg);
+      } else if (msg.isUser) {
+        // Normal user messages appear in ALL quadrant panels.
         for (final qs in _quadrantStates.values) {
           qs.messages.add(msg);
         }
@@ -555,6 +561,10 @@ class _MainScreenState extends State<MainScreen> {
             onSubmit: _onUserSubmit,
             onToggleSteering: () =>
                 setState(() => _showSteering = !_showSteering),
+            onWhisper: _isRunning
+                ? (text, target) =>
+                    _engine?.sendWhisper(_userName, text, target)
+                : null,
           ),
           // ── Steering input bar ────────────────────────────────────────────
           SteeringInputBar(

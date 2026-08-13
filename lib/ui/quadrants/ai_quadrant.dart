@@ -12,6 +12,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../core/conversation/message.dart';
+import '../../core/conversation/whisper_message.dart';
 import '../../core/conversation/participant.dart';
 import '../../core/mood/mood_score.dart';
 import '../../core/tools/image/image_watcher.dart';
@@ -571,12 +572,16 @@ class _MessageArea extends StatelessWidget {
               rawHtml: msg.content,
             );
           }
+          final whisperTarget = msg.isWhisper
+              ? (msg as WhisperMessage).targetCharacter
+              : null;
           return _MessageRow(
             name: msg.participantName,
             content: msg.content,
             isUser: msg.isUser,
             roundIndex: msg.roundIndex,
             ownerColor: charColor,
+            whisperTarget: whisperTarget,
           );
         }
         // Live streaming row — always in the latest round.
@@ -668,6 +673,8 @@ class _MessageRow extends StatelessWidget {
   final int roundIndex;
   final Color ownerColor;
   final bool isStreaming;
+  /// Non-null when this is a whisper message; holds the target character name.
+  final String? whisperTarget;
 
   const _MessageRow({
     required this.name,
@@ -676,11 +683,18 @@ class _MessageRow extends StatelessWidget {
     required this.roundIndex,
     required this.ownerColor,
     this.isStreaming = false,
+    this.whisperTarget,
   });
 
   @override
   Widget build(BuildContext context) {
     final bg = _roundColor(roundIndex);
+    final isWhisper = whisperTarget != null;
+
+    // Whisper label: "🤫 name → TARGET"
+    final nameLabel = isWhisper
+        ? '🤫 $name→$whisperTarget  '
+        : (isUser ? '$name  ' : '');
 
     return Container(
       color: bg,
@@ -689,20 +703,24 @@ class _MessageRow extends StatelessWidget {
         text: TextSpan(
           children: [
             TextSpan(
-              text: isUser ? '$name  ' : '',
-              style: const TextStyle(
+              text: nameLabel,
+              style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
-                color: AppColors.accent,
+                color: isWhisper
+                    ? const Color(0xFF9B59B6)
+                    : AppColors.accent,
                 letterSpacing: 0.5,
               ),
             ),
-            if (isUser)
+            if (isUser || isWhisper)
               TextSpan(
                 text: content,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
-                  color: AppColors.accent,
+                  color: isWhisper
+                      ? const Color(0xFFCE93D8)
+                      : AppColors.accent,
                   height: 1.5,
                   fontStyle: FontStyle.italic,
                 ),

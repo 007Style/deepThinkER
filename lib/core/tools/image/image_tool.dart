@@ -9,7 +9,6 @@ import '../../tools/file/file_tool_config.dart';
 import '../agent_tool.dart';
 import '../tool_result.dart';
 import '../../trust/trust_score.dart';
-import 'image_tool_config.dart';
 import 'vision_client.dart';
 
 // ---------------------------------------------------------------------------

@@ -162,6 +162,13 @@ class InferenceWorker {
       if (message.participantName == participant.name) return;
       if (!_running) return;
 
+      // Whisper routing: ignore whispers directed at other characters.
+      if (message.isWhisper &&
+          message is WhisperMessage &&
+          message.targetCharacter != participant.name) {
+        return;
+      }
+
       if (_inferencing) {
         // Another inference is already in flight — flag for a follow-up.
         _pendingResponse = true;

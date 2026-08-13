@@ -5,7 +5,6 @@ library vision_client;
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'image_tool_config.dart';
 

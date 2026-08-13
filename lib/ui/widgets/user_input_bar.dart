@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'app_theme.dart';
+import 'whisper_selector.dart';
 
 // ---------------------------------------------------------------------------
 // UserInputBar
@@ -34,12 +35,16 @@ class UserInputBar extends StatefulWidget {
   /// Optional callback to toggle the steering bar.
   final VoidCallback? onToggleSteering;
 
+  /// Called with (text, targetCharacter) for whispers, or null for normal.
+  final void Function(String, String)? onWhisper;
+
   const UserInputBar({
     required this.userName,
     required this.isRunning,
     required this.pendingCount,
     required this.onSubmit,
     this.onToggleSteering,
+    this.onWhisper,
     super.key,
   });
 
@@ -51,10 +56,17 @@ class _UserInputBarState extends State<UserInputBar> {
   final TextEditingController _ctrl = TextEditingController();
   final FocusNode _focus = FocusNode();
 
+  /// Non-null when whisper mode is active.
+  String? _whisperTarget;
+
   void _submit() {
     final text = _ctrl.text.trim();
     if (text.isEmpty) return;
-    widget.onSubmit(text);
+    if (_whisperTarget != null && widget.onWhisper != null) {
+      widget.onWhisper!(text, _whisperTarget!);
+    } else {
+      widget.onSubmit(text);
+    }
     _ctrl.clear();
     _focus.requestFocus();
   }
@@ -152,6 +164,14 @@ class _UserInputBarState extends State<UserInputBar> {
               ),
             ),
           ),
+          // Whisper selector (only shown when onWhisper is set)
+          if (widget.onWhisper != null) ...[
+            const SizedBox(width: 6),
+            WhisperSelector(
+              onWhisperChanged: (target) =>
+                  setState(() => _whisperTarget = target),
+            ),
+          ],
           const SizedBox(width: 8),
           // Steer toggle button (optional)
           if (widget.onToggleSteering != null)
@@ -193,7 +213,13 @@ class _UserInputBarState extends State<UserInputBar> {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              child: Text(preStart ? 'Queue' : 'Send'),
+              child: Text(
+                _whisperTarget != null
+                    ? '🤫 Whisper'
+                    : preStart
+                        ? 'Queue'
+                        : 'Send',
+              ),
             ),
           ),
         ],

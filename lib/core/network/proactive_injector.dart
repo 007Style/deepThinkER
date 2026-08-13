@@ -16,7 +16,6 @@ import 'dart:async';
 import '../conversation/conversation_log.dart';
 import '../conversation/message.dart';
 import '../trust/trust_manager.dart';
-import '../trust/trust_score.dart';
 import 'network_fetcher.dart';
 import 'rate_limit_config.dart';
 import 'rate_limiter.dart';

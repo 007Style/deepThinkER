@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../core/relationships/relationship_matrix.dart';
-import '../../core/relationships/relationship_score.dart';
 import '../widgets/app_theme.dart';
 
 // ---------------------------------------------------------------------------

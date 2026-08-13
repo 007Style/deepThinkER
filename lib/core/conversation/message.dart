@@ -79,6 +79,9 @@ class Message {
   /// forward in a context-window reset seed.
   final bool isEphemeral;
 
+  /// `true` for whisper messages (visible only to the target character).
+  bool get isWhisper => false;
+
   /// Creates a [Message] with an auto-generated UUID and current timestamp.
   Message({
     required this.participantName,
