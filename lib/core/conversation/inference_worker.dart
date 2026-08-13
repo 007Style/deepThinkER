@@ -53,6 +53,12 @@ class InferenceEvent {
   /// `true` when the participant decided to pass (empty response).
   final bool isPass;
 
+  /// The complete response text, populated only when [isDone] is `true`.
+  final String? fullResponse;
+
+  /// The tool call event fired during this inference turn, if any.
+  final ToolCallEvent? toolCallEvent;
+
   /// Creates an [InferenceEvent].
   const InferenceEvent({
     required this.participantName,
@@ -60,6 +66,8 @@ class InferenceEvent {
     this.isDone = false,
     this.isThinking = false,
     this.isPass = false,
+    this.fullResponse,
+    this.toolCallEvent,
   });
 
   @override
@@ -320,6 +328,8 @@ class InferenceWorker {
         participantName: participant.name,
         isDone: true,
         isPass: isPass,
+        fullResponse: isPass ? null : fullResponse,
+        toolCallEvent: interceptor?.lastEvent,
       ));
     } catch (_) {
       // Emit done on error so consumers do not hang.

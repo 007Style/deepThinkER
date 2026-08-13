@@ -207,6 +207,15 @@ class ConversationEngine {
   ///
   /// [userName] is the current display name for the user (default `"User"`).
   /// [content] must be non-empty.
+  /// Injects a system [message] into the shared log.
+  ///
+  /// All workers will see it on the next inference turn.
+  /// Typically used by [ResearchEngine] for phase directives and by
+  /// [SteeringEngine] for silent steering nudges.
+  void injectSystemMessage(Message message) {
+    _log.append(message);
+  }
+
   void injectUserMessage(String userName, String content) {
     if (content.trim().isEmpty) return;
 

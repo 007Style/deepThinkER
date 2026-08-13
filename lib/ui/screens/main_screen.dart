@@ -32,6 +32,7 @@ import '../../core/session/replay_mode.dart';
 import '../../core/tools/file/file_tool_config.dart';
 import '../../core/tools/image/image_watcher.dart';
 import 'analytics_screen.dart';
+import 'research_mode_screen.dart';
 import '../avatars/avatar_widget.dart';
 import '../quadrants/quadrant_grid.dart';
 import '../widgets/app_theme.dart';
@@ -583,6 +584,19 @@ class _MainScreenState extends State<MainScreen> {
                     ));
                   }
                 : null,
+            onShowResearch: _isRunning && _engine != null
+                ? () {
+                    Navigator.of(context).push(MaterialPageRoute<void>(
+                      builder: (_) => ResearchModeScreen(
+                        engine: _engine!,
+                        characterNames: widget.participants
+                            .map((p) => p.name)
+                            .toList(),
+                        ollamaClient: _engine!.client,
+                      ),
+                    ));
+                  }
+                : null,
           ),
           // ── Relationship matrix panel (collapsible) ───────────────────────
           if (_showRelationships)
@@ -636,6 +650,7 @@ class _MainScreenState extends State<MainScreen> {
 // ---------------------------------------------------------------------------
 
 class _TopBar extends StatelessWidget {
+  // ignore_for_file: prefer_const_constructors
   final bool isRunning;
   final bool isPaused;
   final bool isBusy;
@@ -651,6 +666,7 @@ class _TopBar extends StatelessWidget {
   final bool showRelationships;
   final VoidCallback onToggleRelationships;
   final VoidCallback? onShowAnalytics;
+  final VoidCallback? onShowResearch;
 
   const _TopBar({
     required this.isRunning,
@@ -668,6 +684,7 @@ class _TopBar extends StatelessWidget {
     required this.showRelationships,
     required this.onToggleRelationships,
     this.onShowAnalytics,
+    this.onShowResearch,
   });
 
   @override
@@ -788,6 +805,35 @@ class _TopBar extends StatelessWidget {
                           color: AppColors.textSecondary),
                       SizedBox(width: 4),
                       Text('Analytics',
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+          if (onShowResearch != null) ...[
+            const SizedBox(width: 4),
+            Tooltip(
+              message: 'Autonomous Research Mode',
+              child: InkWell(
+                onTap: onShowResearch,
+                borderRadius: BorderRadius.circular(6),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.border.withValues(alpha: 0.7)),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('🔬', style: TextStyle(fontSize: 11)),
+                      SizedBox(width: 4),
+                      Text('Research',
                           style: TextStyle(
                               fontSize: 11,
                               color: AppColors.textSecondary,

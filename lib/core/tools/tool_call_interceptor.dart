@@ -86,6 +86,11 @@ class ToolCallInterceptor {
     this.sessionName = '',
   });
 
+  /// The most recent [ToolCallEvent] produced by [process], or `null`.
+  /// Reset to `null` at the start of each [process] call.
+  ToolCallEvent? _lastEvent;
+  ToolCallEvent? get lastEvent => _lastEvent;
+
   /// Broadcast stream emitting a [ToolCallEvent] for each intercepted tag.
   Stream<ToolCallEvent> get eventStream => _eventController.stream;
 
@@ -98,6 +103,7 @@ class ToolCallInterceptor {
     String tokenBuffer,
     String characterName,
   ) async {
+    _lastEvent = null; // Reset for this call.
     final calls = ToolCallParser.parse(tokenBuffer);
     if (calls.isEmpty) {
       return InterceptResult(modifiedBuffer: tokenBuffer);
@@ -157,6 +163,8 @@ class ToolCallInterceptor {
         argument: call.argument,
         result: result,
       );
+
+      _lastEvent = event;
 
       if (!_eventController.isClosed) {
         _eventController.add(event);
