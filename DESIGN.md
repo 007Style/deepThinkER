@@ -741,7 +741,7 @@ targeted questions, or testing isolation of information.
 
 ---
 
-### Sub-Task 20 — Character Hot-Swap (Core + UI)
+### Sub-Task 20 — Character Hot-Swap (Core + UI) [x] done
 
 **Intent**
 Allow the user to replace one of the four active characters mid-session with a different
@@ -802,7 +802,7 @@ domain whitelist that restricts which URLs characters can fetch regardless of tr
 - Empty whitelist = no restriction (whitelist disabled); any entry = whitelist active
 - Domain matching: hostname only (strip protocol and path before comparison)
 
-**Status:** [ ] pending
+**Status:** [x] done
 
 ---
 

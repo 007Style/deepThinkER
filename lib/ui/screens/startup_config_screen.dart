@@ -18,6 +18,7 @@ import '../widgets/app_theme.dart';
 import '../widgets/character_config_card.dart';
 import '../widgets/help_menu.dart';
 import '../widgets/ram_total_display.dart';
+import '../widgets/whitelist_editor.dart';
 import 'main_screen.dart';
 
 // ---------------------------------------------------------------------------
@@ -312,6 +313,13 @@ class _StartupConfigScreenState extends State<StartupConfigScreen> {
               _SectionLabel(label: 'NETWORK ACCESS'),
               const SizedBox(height: 12),
               _NetworkAccessSection(participants: _participants),
+
+              const SizedBox(height: 24),
+
+              // ── Domain Whitelist ─────────────────────────────────────────
+              _SectionLabel(label: 'DOMAIN WHITELIST'),
+              const SizedBox(height: 12),
+              const WhitelistEditor(),
 
               const SizedBox(height: 24),
 

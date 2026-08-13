@@ -6,10 +6,11 @@
 /// This file has zero Flutter imports — pure Dart only.
 library network_fetch_tool;
 
-import '../../trust/trust_score.dart';
-import '../agent_tool.dart';
+import '../../network/domain_whitelist.dart';
 import '../../network/fetch_result.dart';
 import '../../network/network_fetcher.dart';
+import '../../trust/trust_score.dart';
+import '../agent_tool.dart';
 import '../tool_result.dart';
 
 // ---------------------------------------------------------------------------
@@ -39,6 +40,15 @@ class NetworkFetchTool implements AgentTool {
 
   @override
   Future<ToolResult> execute(String argument, String characterName) async {
+    // Check domain whitelist before fetching.
+    if (!DomainWhitelist.instance.isAllowed(argument)) {
+      final hostname = DomainWhitelist.instance.hostnameOf(argument);
+      return ToolResult.success(
+        tag: tag,
+        output: '[FETCH_BLOCKED: domain $hostname is not in the whitelist]',
+        characterName: characterName,
+      );
+    }
     final result = await fetcher.fetch(argument, characterName);
     return _toToolResult(result);
   }

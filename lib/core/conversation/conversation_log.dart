@@ -117,6 +117,19 @@ class ConversationLog {
         .join('\n');
   }
 
+  /// Replaces the current log contents with [messages].
+  ///
+  /// Clears all existing messages (without emitting them), then appends each
+  /// message from [messages] in order, emitting each on [messageStream].
+  /// Used by [ConversationEngine.loadReplay] to seed a replay session.
+  void seedFrom(List<Message> messages) {
+    _messages.clear();
+    _currentRoundIndex = 0;
+    for (final msg in messages) {
+      append(msg);
+    }
+  }
+
   /// Closes the underlying stream controller.
   ///
   /// Call when the conversation session ends to release resources.

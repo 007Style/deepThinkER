@@ -29,6 +29,7 @@ import '../widgets/network_indicator/rate_limit_flash.dart';
 import '../widgets/network_indicator/search_activity_entry.dart';
 import '../widgets/token_counter/token_counter_widget.dart';
 import '../widgets/trust_badge/trust_badge.dart';
+import '../widgets/trust_badge/trust_sparkline_widget.dart';
 
 // ---------------------------------------------------------------------------
 // Round palette — subtle background tints cycling per conversation round.
@@ -433,6 +434,13 @@ class _Header extends StatelessWidget {
                         scoreStream: trustScoreStream!,
                         initialScore: initialTrustScore!,
                       ),
+                      if (trustManager != null) ...[
+                        const SizedBox(width: 4),
+                        TrustSparklineWidget(
+                          trustManager: trustManager!,
+                          characterName: participant.name,
+                        ),
+                      ],
                     ],
                     if (rateLimitFlashController != null) ...[
                       const SizedBox(width: 4),

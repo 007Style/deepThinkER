@@ -48,6 +48,9 @@ class TrustManager {
   // Current scores, keyed by character name.
   final Map<String, TrustScore> _scores = {};
 
+  // Score history: last 60 samples per character (one per tick).
+  final Map<String, List<double>> _scoreHistory = {};
+
   // Tracks whether a rate-limit violation fired in the current tick window,
   // per character — suppresses the gain portion of that tick.
   final Map<String, bool> _violatedThisTick = {};
@@ -76,6 +79,7 @@ class TrustManager {
     final persisted = await TrustPersistence.load();
 
     for (final name in characterNames) {
+      _scoreHistory[name] = [];
       final loaded = persisted[name];
       if (loaded != null) {
         _scores[name] = loaded;
@@ -109,6 +113,13 @@ class TrustManager {
 
   /// Broadcast stream of [TrustEvent]s. UI and [RateLimiter] subscribe here.
   Stream<TrustEvent> get trustStream => _streamController.stream;
+
+  /// Returns the last 60 trust score samples for [characterName].
+  ///
+  /// One sample is pushed per tick (default: 1/min). Returns empty list if
+  /// no history has been accumulated yet.
+  List<double> historyFor(String characterName) =>
+      List.unmodifiable(_scoreHistory[characterName] ?? []);
 
   /// Returns the current [TrustScore] for [characterName].
   ///
@@ -240,6 +251,12 @@ class TrustManager {
       reason: reason,
       networkEnabled: newNetworkEnabled,
     ));
+
+    // Push to history (keep last 60 samples).
+    final hist = _scoreHistory[characterName] ?? [];
+    hist.add(newScore);
+    if (hist.length > 60) hist.removeAt(0);
+    _scoreHistory[characterName] = hist;
 
     await _persist();
   }
