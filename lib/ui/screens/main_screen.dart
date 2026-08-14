@@ -23,12 +23,18 @@ import '../../core/conversation/message.dart';
 import '../../core/conversation/whisper_message.dart';
 import '../../core/conversation/participant.dart';
 import '../../core/conversation/user_name_detector.dart';
+import '../../core/mood/mood_engine.dart';
+import '../../core/network/rate_limiter.dart';
 import '../../core/ollama/hardware_detector.dart';
 import '../../core/ollama/ollama_client.dart';
 import '../../core/relationships/relationship_matrix.dart';
+import '../../core/security/content_filter.dart';
 import '../../core/session/session.dart';
 import '../../core/session/session_manager.dart';
 import '../../core/steering/steering_engine.dart';
+import '../../core/tools/tool_call_interceptor.dart';
+import '../../core/tools/tool_registry.dart';
+import '../../core/trust/trust_manager.dart';
 
 import '../../core/session/replay_mode.dart';
 import '../../core/tools/file/file_tool_config.dart';
@@ -41,6 +47,7 @@ import '../debug/state_simulator_panel.dart';
 import '../quadrants/quadrant_grid.dart';
 import '../widgets/app_theme.dart';
 import '../widgets/help_menu.dart';
+import '../widgets/network_indicator/rate_limit_flash.dart';
 import '../widgets/relationship_matrix_widget.dart';
 import '../widgets/replay_banner.dart';
 import '../widgets/start_stop_button.dart';
@@ -173,6 +180,35 @@ class _MainScreenState extends State<MainScreen> {
   // One _QuadrantState per participant (keyed by participant name).
   final Map<String, _QuadrantState> _quadrantStates = {};
 
+  // ── Trust / mood / network ───────────────────────────────────────────────
+
+  /// Session-scoped trust manager (created on Start, disposed on Stop).
+  TrustManager? _trustManager;
+
+  /// Session-scoped rate limiter (created on Start, disposed on Stop).
+  RateLimiter? _rateLimiter;
+
+  /// Session-scoped mood engine (created on Start, disposed on Stop).
+  MoodEngine? _moodEngine;
+
+  /// Per-character rate-limit flash controllers (created on Start, cleared on Stop).
+  final Map<String, RateLimitFlashController> _rateLimitControllers = {};
+
+  /// Per-character broadcast stream controllers for live TrustScore updates.
+  final Map<String, StreamController<TrustScore>> _trustStreamControllers = {};
+
+  /// Per-character broadcast stream controllers for live MoodScore updates.
+  final Map<String, StreamController<MoodScore>> _moodStreamControllers = {};
+
+  /// Subscription to the TrustManager event stream.
+  StreamSubscription<TrustEvent>? _trustSub;
+
+  /// Subscription to the MoodEngine mood stream.
+  StreamSubscription<MoodChangeEvent>? _moodSub;
+
+  /// Subscription to the ToolCallInterceptor event stream.
+  StreamSubscription<ToolCallEvent>? _toolEventSub;
+
   // -------------------------------------------------------------------------
   // Lifecycle
   // -------------------------------------------------------------------------
@@ -224,6 +260,16 @@ class _MainScreenState extends State<MainScreen> {
     for (final qs in _quadrantStates.values) {
       qs.dispose();
     }
+    // Dispose trust/mood stream controllers.
+    for (final sc in _trustStreamControllers.values) {
+      sc.close();
+    }
+    for (final sc in _moodStreamControllers.values) {
+      sc.close();
+    }
+    for (final ctrl in _rateLimitControllers.values) {
+      ctrl.dispose();
+    }
     super.dispose();
   }
 
@@ -235,8 +281,59 @@ class _MainScreenState extends State<MainScreen> {
     if (_isRunning || _isBusy) return;
     setState(() => _isBusy = true);
 
-    // Always create a fresh engine — ConversationEngine is single-use because
-    // stop() closes its internal ConversationLog stream controller.
+    final names = widget.participants.map((p) => p.name).toList();
+
+    // ── Trust / mood / network setup ────────────────────────────────────────
+
+    // Create per-character stream controllers (reuse existing if already
+    // created; create fresh ones on first start).
+    for (final name in names) {
+      _trustStreamControllers.putIfAbsent(
+          name, () => StreamController<TrustScore>.broadcast());
+      _moodStreamControllers.putIfAbsent(
+          name, () => StreamController<MoodScore>.broadcast());
+      _rateLimitControllers.putIfAbsent(
+          name, () => RateLimitFlashController());
+    }
+
+    // TrustManager — fresh per session so scores accumulate correctly.
+    _trustManager = TrustManager(characterNames: names);
+    await _trustManager!.init();
+
+    // RateLimiter wired to the TrustManager.
+    _rateLimiter = RateLimiter(
+      config: const RateLimitConfig(),
+      trustManager: _trustManager!,
+    );
+    _rateLimiter!.init();
+
+    // MoodEngine — fresh per session.
+    _moodEngine = MoodEngine(characterNames: names);
+
+    // Subscribe to trust events → fan-out per-character TrustScore streams.
+    // event.newScore is a double; we fetch the full TrustScore from the manager.
+    // Also trigger the rate-limit flash when a violation is recorded.
+    _trustSub = _trustManager!.trustStream.listen((event) {
+      final sc = _trustStreamControllers[event.characterName];
+      if (sc != null && !sc.isClosed) {
+        sc.add(_trustManager!.scoreFor(event.characterName));
+      }
+      if (event.reason == TrustEventReason.rateLimitViolation) {
+        _rateLimitControllers[event.characterName]?.trigger();
+      }
+    });
+
+    // Subscribe to mood events → fan-out per-character MoodScore streams.
+    // event.newScore is an int; we fetch the full MoodScore from the engine.
+    _moodSub = _moodEngine!.moodStream.listen((event) {
+      final sc = _moodStreamControllers[event.characterName];
+      if (sc != null && !sc.isClosed) {
+        sc.add(_moodEngine!.scoreFor(event.characterName));
+      }
+    });
+
+    // ── Always create a fresh engine — ConversationEngine is single-use ─────
+
     _engine = ConversationEngine(client: OllamaClient());
 
     // Create session.
@@ -266,6 +363,22 @@ class _MainScreenState extends State<MainScreen> {
 
     // Start the engine (appends kickoff message — workers see it immediately).
     await _engine!.start(widget.participants, widget.hardware);
+
+    // ── Wire interceptor (must be after engine.start so workers exist) ──────
+    final interceptor = ToolCallInterceptor(
+      registry: ToolRegistry.instance,
+      rateLimiter: _rateLimiter!,
+      trustManager: _trustManager!,
+      sessionName: session.name,
+      contentFilter: ContentFilter.empty(),
+    );
+    _engine!.setInterceptorOnAllWorkers(interceptor);
+
+    // Subscribe to tool-call events → show search activity inline.
+    _toolEventSub = interceptor.eventStream.listen(_handleToolCallEvent);
+
+    // Feed mood engine from the log message stream.
+    _engine!.log.messageStream.listen((msg) => _moodEngine?.onMessage(msg));
 
     // Clear the local preview messages that were shown while the engine was
     // stopped — the real messages will arrive via _handleLogMessage as the
@@ -364,6 +477,14 @@ class _MainScreenState extends State<MainScreen> {
     await _logMessageSub?.cancel();
     _logMessageSub = null;
 
+    // Cancel trust / mood / tool-call subscriptions.
+    await _trustSub?.cancel();
+    _trustSub = null;
+    await _moodSub?.cancel();
+    _moodSub = null;
+    await _toolEventSub?.cancel();
+    _toolEventSub = null;
+
     // Stop the engine (stops workers, unloads models, disposes log stream).
     await _engine?.stop();
     _engine = null;
@@ -380,6 +501,12 @@ class _MainScreenState extends State<MainScreen> {
     await _sessionAnalytics?.dispose();
     _sessionAnalytics = null;
     _steeringEngine = null;
+
+    // Dispose trust + mood engines.
+    await _trustManager?.dispose();
+    _trustManager = null;
+    _rateLimiter = null;
+    _moodEngine = null;
 
     await _logSub?.cancel();
     _logSub = null;
@@ -472,6 +599,41 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  /// Handles a [ToolCallEvent] from the interceptor.
+  ///
+  /// For network tools (SEARCH / FETCH) the call is surfaced as an inline
+  /// activity notice in the owning character's quadrant message list.
+  void _handleToolCallEvent(ToolCallEvent event) {
+    if (!mounted) return;
+    final qs = _quadrantStates[event.characterName];
+    if (qs == null) return;
+
+    final isSearch = event.tag == 'SEARCH';
+    final isFetch = event.tag == 'FETCH';
+    if (!isSearch && !isFetch) return; // Only surface network tool calls.
+
+    // Build a synthetic ephemeral message so the quadrant panel can render it
+    // as a SearchActivityEntry.  We use isEphemeral=true so it never appears
+    // in exports or session logs.
+    final label = event.result.wasRateLimited
+        ? '🚫 ${event.tag} rate-limited: ${event.argument}'
+        : event.result.wasDisabled
+            ? '⛔ ${event.tag} disabled: ${event.argument}'
+            : '🔍 ${event.tag}: ${event.argument}';
+
+    final activityMsg = Message(
+      participantName: event.characterName,
+      content: label,
+      isUser: false,
+      isEphemeral: true,
+      roundIndex: 0,
+    );
+
+    setState(() {
+      qs.messages.add(activityMsg);
+    });
+  }
+
   // -------------------------------------------------------------------------
   // User input
   // -------------------------------------------------------------------------
@@ -552,6 +714,13 @@ class _MainScreenState extends State<MainScreen> {
         onSwap: _isRunning
             ? (newP) => _engine?.swapCharacter(i, newP)
             : null,
+        // ── Trust / network / mood ─────────────────────────────────────────
+        trustManager: _trustManager,
+        initialTrustScore: _trustManager?.scoreFor(p.name),
+        trustScoreStream: _trustStreamControllers[p.name]?.stream,
+        rateLimitFlashController: _rateLimitControllers[p.name],
+        initialMoodScore: _moodEngine?.scoreFor(p.name),
+        moodScoreStream: _moodStreamControllers[p.name]?.stream,
       );
     });
 

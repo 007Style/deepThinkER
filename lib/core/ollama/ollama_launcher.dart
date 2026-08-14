@@ -87,6 +87,11 @@ class OllamaLauncher {
 
   /// Kills all Ollama processes recorded in the PID file and removes it.
   ///
+  /// On macOS/Linux sends SIGKILL to the entire process **group** (negative PID
+  /// argument to `kill`) so that every `llama-server` child spawned by Ollama
+  /// is also killed.  A follow-up `pkill -9 -f llama-server` sweeps any
+  /// orphans whose process-group membership may have changed.
+  ///
   /// Safe to call from any isolate or from the Dart VM shutdown hook.
   static void killAll() {
     try {
@@ -94,7 +99,16 @@ class OllamaLauncher {
       if (!f.existsSync()) return;
       final pid = int.tryParse(f.readAsStringSync().trim());
       if (pid != null && pid > 0) {
-        Process.killPid(pid, ProcessSignal.sigkill);
+        if (!Platform.isWindows) {
+          // Kill the entire process group (includes llama-server children).
+          // `kill -9 -<pgid>` sends SIGKILL to every process in the group.
+          Process.runSync('kill', ['-9', '-$pid']);
+          // Belt-and-suspenders: sweep any llama-server orphans by name.
+          Process.runSync('pkill', ['-9', '-f', 'llama-server']);
+        } else {
+          // Windows: use taskkill with /T to terminate the whole process tree.
+          Process.runSync('taskkill', ['/F', '/T', '/PID', '$pid']);
+        }
       }
       f.deleteSync();
     } catch (_) {}

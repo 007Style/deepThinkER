@@ -14,8 +14,8 @@ class AppDelegate: FlutterAppDelegate {
   /// Called by macOS before the app process exits — guaranteed for ⌘Q,
   /// Dock → Quit, and window close (because shouldTerminateAfterLastWindowClosed = true).
   ///
-  /// We kill the Ollama child process synchronously here so it cannot be
-  /// left running as an orphan after the app exits.
+  /// We kill the Ollama child process **and its entire process group** so
+  /// that every `llama-server` child spawned by Ollama is also terminated.
   override func applicationWillTerminate(_ notification: Notification) {
     killOllamaIfRunning()
   }
@@ -42,8 +42,18 @@ class AppDelegate: FlutterAppDelegate {
       pid > 0
     else { return }
 
-    // SIGKILL — no mercy, we need the GPU memory freed immediately.
-    kill(pid, SIGKILL)
+    // Kill the entire process group so that every llama-server child that
+    // Ollama spawns is also SIGKILL'd.  killpg(pgid, sig) sends the signal
+    // to every process whose process group ID equals pgid.
+    killpg(pid_t(pid), SIGKILL)
+
+    // Belt-and-suspenders: sweep any llama-server orphans whose pgid may
+    // have changed (e.g. double-forked children).
+    let task = Process()
+    task.executableURL = URL(fileURLWithPath: "/usr/bin/pkill")
+    task.arguments = ["-9", "-f", "llama-server"]
+    try? task.run()
+    // We do not wait — this fires async; the app is already exiting.
 
     // Remove the PID file so a subsequent launch doesn't try to kill a
     // recycled PID.

@@ -14,12 +14,15 @@ import 'core/ollama/hardware_detector.dart';
 import 'core/ollama/model_manager.dart';
 import 'core/ollama/ollama_client.dart';
 import 'core/ollama/ollama_launcher.dart';
+import 'core/network/network_fetcher.dart';
 import 'core/tools/calc/calc_tool.dart';
 import 'core/tools/file/file_read_tool.dart';
 import 'core/tools/file/file_write_tool.dart';
 import 'core/tools/image/image_tool.dart';
 import 'core/tools/memory/recall_tool.dart';
 import 'core/tools/memory/remember_tool.dart';
+import 'core/tools/network/network_fetch_tool.dart';
+import 'core/tools/network/network_search_tool.dart';
 import 'core/tools/tool_registry.dart';
 import 'ui/avatars/avatar_registry.dart';
 import 'ui/screens/external_ollama_screen.dart';
@@ -31,14 +34,17 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   AvatarRegistry.registerDefaults();
 
-  // Register all tools.
+  // Register all tools — including network tools.
+  final fetcher = NetworkFetcher();
   ToolRegistry.instance
     ..register(RememberTool())
     ..register(RecallTool())
     ..register(FileReadTool())
     ..register(FileWriteTool())
     ..register(CalcTool())
-    ..register(ImageTool());
+    ..register(ImageTool())
+    ..register(NetworkSearchTool(fetcher))
+    ..register(NetworkFetchTool(fetcher));
 
   // Belt-and-suspenders: if the Dart VM exits for any reason (crash, signal,
   // etc.) kill the Ollama process we may have spawned.  AppDelegate handles

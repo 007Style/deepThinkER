@@ -14,6 +14,7 @@ import '../ollama/hardware_detector.dart';
 import '../ollama/model_registry.dart';
 import '../ollama/ollama_client.dart';
 import '../session/replay_mode.dart';
+import '../tools/tool_call_interceptor.dart';
 import 'character_swap_event.dart';
 import 'conversation_log.dart';
 import 'inference_worker.dart';
@@ -200,6 +201,20 @@ class ConversationEngine {
     await _log.dispose();
   }
 
+  /// Sets [interceptor] on all currently-running workers and stores it so
+  /// workers created later (e.g. via [swapCharacter]) inherit it too.
+  ///
+  /// Call this after [start] so the workers already exist.
+  void setInterceptorOnAllWorkers(ToolCallInterceptor interceptor) {
+    _interceptor = interceptor;
+    for (final w in _workers) {
+      w.interceptor = interceptor;
+    }
+  }
+
+  /// Currently-active interceptor (may be null before [setInterceptorOnAllWorkers]).
+  ToolCallInterceptor? _interceptor;
+
   /// Injects a message from the human user into the shared log.
   ///
   /// All workers will see the message on [ConversationLog.messageStream] and
@@ -269,6 +284,11 @@ class ConversationEngine {
       hardware: _hardware!,
       contextManager: _contextManager,
     );
+
+    // Inherit the active interceptor (if any).
+    if (_interceptor != null) {
+      newWorker.interceptor = _interceptor;
+    }
 
     // Wire the new worker into the event controller.
     newWorker.eventStream.listen(

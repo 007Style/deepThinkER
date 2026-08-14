@@ -7,8 +7,12 @@ import 'package:flutter/material.dart';
 
 import '../../core/conversation/message.dart';
 import '../../core/conversation/participant.dart';
+import '../../core/mood/mood_score.dart';
 import '../../core/tools/image/image_watcher.dart';
+import '../../core/trust/trust_manager.dart';
+import '../../core/trust/trust_score.dart';
 import '../avatars/avatar_widget.dart';
+import '../widgets/network_indicator/rate_limit_flash.dart';
 import 'ai_quadrant.dart'; // also provides AiQuadrant
 
 // ---------------------------------------------------------------------------
@@ -37,6 +41,28 @@ class QuadrantData {
   /// Optional swap callback — passed through to [AiQuadrant.onSwap].
   final void Function(Participant)? onSwap;
 
+  // ── Trust / network ──────────────────────────────────────────────────────
+
+  /// [TrustManager] so the quadrant's network toggle can call back.
+  final TrustManager? trustManager;
+
+  /// Initial trust score for this character.
+  final TrustScore? initialTrustScore;
+
+  /// Live stream of [TrustScore] updates for this character.
+  final Stream<TrustScore>? trustScoreStream;
+
+  /// Controller for triggering the rate-limit flash indicator.
+  final RateLimitFlashController? rateLimitFlashController;
+
+  // ── Mood ─────────────────────────────────────────────────────────────────
+
+  /// Initial mood score for this character.
+  final MoodScore? initialMoodScore;
+
+  /// Live stream of [MoodScore] updates for this character.
+  final Stream<MoodScore>? moodScoreStream;
+
   const QuadrantData({
     required this.participant,
     required this.messages,
@@ -47,6 +73,12 @@ class QuadrantData {
     this.tokenCount = 0,
     this.maxTokens = 8192,
     this.onSwap,
+    this.trustManager,
+    this.initialTrustScore,
+    this.trustScoreStream,
+    this.rateLimitFlashController,
+    this.initialMoodScore,
+    this.moodScoreStream,
   });
 }
 
@@ -219,6 +251,12 @@ class QuadrantGridState extends State<QuadrantGrid> {
       tokenCount: d.tokenCount,
       maxTokens: d.maxTokens,
       onSwap: d.onSwap,
+      trustManager: d.trustManager,
+      initialTrustScore: d.initialTrustScore,
+      trustScoreStream: d.trustScoreStream,
+      rateLimitFlashController: d.rateLimitFlashController,
+      initialMoodScore: d.initialMoodScore,
+      moodScoreStream: d.moodScoreStream,
     );
   }
 }
