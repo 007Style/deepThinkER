@@ -75,7 +75,7 @@ class DeepThinkApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'deepThink',
+      title: 'deepThinkER',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       home: const _AppLoader(),
@@ -221,7 +221,7 @@ class _SplashScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'deepThink',
+              'deepThinkER',
               style: TextStyle(
                 fontSize: 42,
                 fontWeight: FontWeight.w800,
@@ -291,7 +291,7 @@ class _ErrorScreen extends StatelessWidget {
                     color: Color(0xFFF44336), size: 48),
                 const SizedBox(height: 20),
                 const Text(
-                  'deepThink could not start',
+                  'deepThinkER could not start',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,

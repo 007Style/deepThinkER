@@ -786,7 +786,7 @@ class _TopBar extends StatelessWidget {
         children: [
           // App name — left
           const Text(
-            'deepThink',
+            'deepThinkER',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,

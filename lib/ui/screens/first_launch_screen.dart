@@ -267,7 +267,7 @@ class _FirstLaunchScreenState extends State<FirstLaunchScreen>
 
                 // ── Title ─────────────────────────────────────────────────
                 const Text(
-                  'Setting up deepThink',
+                  'Setting up deepThinkER',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,

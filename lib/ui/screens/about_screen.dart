@@ -251,7 +251,7 @@ class _AnimatedTitle extends StatelessWidget {
               children: [
                 // Glow halo
                 Text(
-                  'deepThink',
+                  'deepThinkER',
                   style: TextStyle(
                     fontSize: 52,
                     fontWeight: FontWeight.w800,
@@ -261,7 +261,7 @@ class _AnimatedTitle extends StatelessWidget {
                 ),
                 // Crisp foreground text
                 const Text(
-                  'deepThink',
+                  'deepThinkER',
                   style: TextStyle(
                     fontSize: 52,
                     fontWeight: FontWeight.w800,

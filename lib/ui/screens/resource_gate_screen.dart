@@ -235,7 +235,7 @@ class _ResourceGateScreenState extends State<ResourceGateScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'deepThink needs more memory',
+                'deepThinkER needs more memory',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,

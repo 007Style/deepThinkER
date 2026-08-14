@@ -30,7 +30,7 @@ class ParticipantPrefs {
         ? Platform.environment['USERPROFILE']
         : Platform.environment['HOME'];
     if (home == null || home.isEmpty) return '';
-    final base = [home, 'Documents', 'deepThink'].join(Platform.pathSeparator);
+    final base = [home, 'Documents', 'deepThinkER'].join(Platform.pathSeparator);
     return [base, 'participant_prefs.json'].join(Platform.pathSeparator);
   }
 

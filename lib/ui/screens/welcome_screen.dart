@@ -113,12 +113,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   Widget _buildHeader() {
     final greeting = _anyMissing
-        ? 'Welcome to deepThink'
-        : 'Welcome back to deepThink';
+        ? 'Welcome to deepThinkER'
+        : 'Welcome back to deepThinkER';
 
     final subtitle = _anyMissing
         ? 'Four AI minds — one conversation. Before we begin,\n'
-          'deepThink needs to download its AI models (~22 GB total).\n'
+          'deepThinkER needs to download its AI models (~22 GB total).\n'
           'This happens once and the app runs fully offline after that.'
         : 'All four AI models are installed and ready.\n'
           'Your machine is set up and good to go.';
@@ -286,7 +286,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     if (!_anyMissing) return const SizedBox.shrink();
     return const Text(
       'A stable internet connection is required for the download.\n'
-      'After that, deepThink runs completely offline — forever.',
+      'After that, deepThinkER runs completely offline — forever.',
       textAlign: TextAlign.center,
       style: TextStyle(fontSize: 11, color: AppColors.textSecondary, height: 1.5),
     );
@@ -456,12 +456,12 @@ class _RamWarningBanner extends StatelessWidget {
     final needed = _stackGb - free;
     final message = isCritical
         ? 'Only ${free.toStringAsFixed(1)} GB of RAM is free right now. '
-          'deepThink needs ~${_stackGb.toStringAsFixed(0)} GB to run all four models — '
+          'deepThinkER needs ~${_stackGb.toStringAsFixed(0)} GB to run all four models — '
           'you\'re ${needed.toStringAsFixed(1)} GB short. '
           'Close other apps (especially any other AI tools) before continuing, '
           'or the app will swap heavily and likely crash.'
         : 'Only ${free.toStringAsFixed(1)} GB of RAM is free right now. '
-          'deepThink performs best with ~${_stackGb.toStringAsFixed(0)} GB available. '
+          'deepThinkER performs best with ~${_stackGb.toStringAsFixed(0)} GB available. '
           'Consider closing other apps — especially any other AI or browser processes — '
           'before starting a session.';
 
@@ -663,7 +663,7 @@ class _ManualInstallDialog extends StatelessWidget {
               const SizedBox(height: 16),
               const _DialogSectionHeader('Step 1 — Install Ollama (if needed)'),
               const _DialogBody(
-                'The bundled Ollama engine inside deepThink handles this '
+                'The bundled Ollama engine inside deepThinkER handles this '
                 'automatically. If models are not appearing, open Terminal and run:',
               ),
               _CodeBlock('ollama list'),
@@ -679,13 +679,13 @@ class _ManualInstallDialog extends StatelessWidget {
               const SizedBox(height: 4),
               const _DialogBody(
                 'Each model occupies its own subdirectory there. '
-                'deepThink reads them automatically on next launch.',
+                'deepThinkER reads them automatically on next launch.',
               ),
               const SizedBox(height: 12),
               const _DialogSectionHeader('Step 4 — Verify'),
               _CodeBlock('ollama list'),
               const _DialogBody(
-                'You should see all four models listed. Restart deepThink '
+                'You should see all four models listed. Restart deepThinkER '
                 'and it will detect them automatically.',
               ),
             ],

@@ -71,7 +71,7 @@ class _DocsScreenState extends State<DocsScreen>
                 ),
                 // Title
                 const Text(
-                  'deepThink Docs',
+                  'deepThinkER Docs',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
@@ -391,9 +391,9 @@ class _DocTab extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 const _kUserGuide = r'''
-# deepThink — User Guide
+# deepThinkER — User Guide
 
-deepThink puts four AI personalities into a shared conversation and lets them debate,
+deepThinkER puts four AI personalities into a shared conversation and lets them debate,
 challenge, and build on each other's ideas — in parallel, in real time, right on your
 machine. No cloud. No accounts. No monthly bill.
 
@@ -455,7 +455,7 @@ The full model stack needs ~22.5 GB of free RAM:
 - phi3:14b       8.2 GB
 - Total:        22.5 GB
 
-If you don't have enough free RAM, deepThink shows a live Resource Gate
+If you don't have enough free RAM, deepThinkER shows a live Resource Gate
 that monitors your system every 2 seconds and auto-starts provisioning
 the moment you free enough memory.
 
@@ -470,7 +470,7 @@ Then tap Retry in the download screen.
 ## Sessions & Logs
 
 Every session is saved to:
-  ~/Documents/deepThink/sessions/
+  ~/Documents/deepThinkER/sessions/
 
 Each session produces an NDJSON file (one JSON message per line) and a
 .meta.json file with session metadata.
@@ -497,11 +497,11 @@ The ? button (top right) opens:
 - Architecture — technical design documentation
 - Development Guide — how to build, test, and release
 - Model Downloads — manual installation instructions
-- About deepThink — IBM history, credits, and more
+- About deepThinkER — Extended Reach history, credits, and more
 ''';
 
 const _kArchitecture = r'''
-# deepThink — Architecture
+# deepThinkER — Architecture
 
 Version: v1.0.2
 Platform: macOS (primary) · Windows (self-compile)
@@ -531,7 +531,7 @@ this — the forceRespond flag appends a system reminder that the human
 must receive a reply.
 
 ### Offline After Setup
-After the one-time model download (~22.5 GB), deepThink runs 100% offline.
+After the one-time model download (~22.5 GB), deepThinkER runs 100% offline.
 No telemetry. No cloud calls. No accounts.
 
 ## Layer Breakdown
@@ -634,7 +634,7 @@ counter and re-records seed, maintaining continuity.
 ## Ollama Integration
 
 Binary path (macOS):
-  <app>.app/Contents/MacOS/deep_think → ../../Resources/ollama/ollama
+  <app>.app/Contents/MacOS/deepThinkER → ../../Resources/ollama/ollama
 
 Environment on spawn:
   OLLAMA_KEEP_ALIVE = -1        (keep all models in VRAM indefinitely)
@@ -651,7 +651,7 @@ Why ProcessStartMode.normal for Ollama?
 
 Why disable App Sandbox?
   Process.start() is completely blocked inside a sandboxed macOS app.
-  deepThink is distributed outside the Mac App Store (direct DMG).
+  deepThinkER is distributed outside the Mac App Store (direct DMG).
 
 Why OLLAMA_KEEP_ALIVE=-1?
   All four models must remain loaded in VRAM simultaneously for instant
@@ -664,9 +664,9 @@ Why freeRamGb instead of totalRamGb?
 ''';
 
 const _kDevelopment = r'''
-# deepThink — Development Guide
+# deepThinkER — Development Guide
 
-Everything you need to build, run, test, and release deepThink from source.
+Everything you need to build, run, test, and release deepThinkER from source.
 
 ## Prerequisites (macOS)
 
@@ -683,8 +683,8 @@ Enable macOS desktop target once:
 
 ## Clone & Setup
 
-    git clone https://github.com/007Style/deepThink.git
-    cd deepThink
+    git clone https://github.com/007Style/deepThinkER.git
+    cd deepThinkER
     git lfs pull
     flutter pub get
     cd macos && pod install && cd ..
@@ -702,7 +702,7 @@ Debug run (hot-reload):
     flutter run -d macos
 
 Direct launch (after first build):
-    open build/macos/Build/Products/Debug/deep_think.app
+    open build/macos/Build/Products/Debug/deepThinkER.app
 
 Note: "Failed to foreground app; open returned 1" in the terminal is a
 Flutter DevTools quirk — the app is running fine.
@@ -801,7 +801,7 @@ Enable verbose logging:
 |-----------------|--------------------------------------------|
 | flutter         | UI framework                               |
 | http            | Reserved for future use                    |
-| path_provider   | ~/Documents/deepThink/ for session logs    |
+| path_provider   | ~/Documents/deepThinkER/ for session logs    |
 | url_launcher    | External URLs from Help menu / About       |
 | flutter_lints   | Lint rules (dev)                           |
 | test            | Pure-Dart test runner (dev)                |

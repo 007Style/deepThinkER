@@ -59,7 +59,7 @@ class _ExternalOllamaScreenState extends State<ExternalOllamaScreen> {
 
     setState(() {
       _phase = _Phase.done;
-      _detail = 'Done — restarting deepThink engine…';
+      _detail = 'Done — restarting deepThinkER engine…';
     });
 
     await Future<void>.delayed(const Duration(milliseconds: 600));
@@ -119,7 +119,7 @@ class _ExternalOllamaScreenState extends State<ExternalOllamaScreen> {
 
                 // ── Explanation ─────────────────────────────────────────────
                 const Text(
-                  'deepThink bundles its own Ollama engine, but port 11434 is '
+                  'deepThinkER bundles its own Ollama engine, but port 11434 is '
                   'already occupied by a separate process that isn\'t responding. '
                   'This is usually a leftover Ollama instance from a previous run '
                   'or another AI tool.',

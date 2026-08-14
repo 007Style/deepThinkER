@@ -4,7 +4,7 @@
 /// indexing, and cumulative app-stats persistence.
 ///
 /// Log file location:
-/// - macOS:   `~/Documents/deepThink/sessions/<name>_<timestamp>.txt`
+/// - macOS:   `~/Documents/deepThinkER/sessions/<name>_<timestamp>.txt`
 /// - Windows: `%USERPROFILE%\Documents\deepThink\sessions\<name>_<timestamp>.txt`
 ///
 /// This file has zero Flutter imports — pure Dart only.
@@ -52,7 +52,7 @@ class SessionManager {
   // Directory / path helpers
   // -------------------------------------------------------------------------
 
-  /// Returns the base `~/Documents/deepThink/` directory path for the current
+  /// Returns the base `~/Documents/deepThinkER/` directory path for the current
   /// platform, using `HOME` (macOS/Linux) or `USERPROFILE` (Windows).
   static String _baseDir() {
     final home = Platform.isWindows
@@ -64,7 +64,7 @@ class SessionManager {
         'neither HOME nor USERPROFILE environment variable is set.',
       );
     }
-    return [home, 'Documents', 'deepThink'].join(Platform.pathSeparator);
+    return [home, 'Documents', 'deepThinkER'].join(Platform.pathSeparator);
   }
 
   /// Returns the `…/deepThink/sessions/` directory path.
@@ -270,7 +270,7 @@ class SessionManager {
   Future<void> _writeLogHeader(Session session) async {
     final buf = StringBuffer();
     buf.writeln('═' * 60);
-    buf.writeln('  deepThink Session Log');
+    buf.writeln('  deepThinkER Session Log');
     buf.writeln('  Session : ${session.name}');
     buf.writeln('  ID      : ${session.id}');
     buf.writeln('  Started : ${_formatDatetime(session.startTime)}');

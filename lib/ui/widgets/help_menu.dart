@@ -5,7 +5,7 @@
 //   • Architecture        → DocsScreen (tab 1)
 //   • Development Guide   → DocsScreen (tab 2)
 //   • Model Downloads     → ModelHelpScreen
-//   • About deepThink     → AboutScreen
+//   • About deepThinkER     → AboutScreen
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -104,7 +104,7 @@ class HelpMenuButton extends StatelessWidget {
         _menuItem(
           value: _HelpItem.about,
           icon: Icons.info_outline,
-          label: 'About deepThink',
+          label: 'About deepThinkER',
         ),
         if (kDebugMode) ...[
           const PopupMenuDivider(),
