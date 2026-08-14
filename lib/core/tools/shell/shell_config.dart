@@ -32,7 +32,7 @@ class ShellConfig {
   const ShellConfig({
     this.enabled = false,
     this.allowedCommands = const <String>[],
-    this.workingDirectory = '~/Documents/deepThinkER/workspace',
+    this.workingDirectory = '~/Library/Application Support/deepThinkER/workspace',
     this.timeoutSeconds = 30,
     this.requiresHighTrust = true,
   });

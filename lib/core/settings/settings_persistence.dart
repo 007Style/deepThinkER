@@ -1,6 +1,6 @@
 /// SettingsPersistence — loads and saves AppSettings to disk.
 ///
-/// Stores settings as JSON in `~/Documents/deepThinkER/settings.json`.
+/// Stores settings as JSON in the app data directory (settings.json).
 ///
 /// This file has zero Flutter imports — pure Dart only.
 library settings_persistence;
@@ -8,23 +8,16 @@ library settings_persistence;
 import 'dart:convert';
 import 'dart:io';
 
+import '../paths/app_paths.dart';
 import 'app_settings.dart';
 
 // ---------------------------------------------------------------------------
 // SettingsPersistence
 // ---------------------------------------------------------------------------
 
-/// Reads and writes [AppSettings] to `~/Documents/deepThinkER/settings.json`.
+/// Reads and writes [AppSettings] to the app data directory.
 class SettingsPersistence {
-  /// The directory used to store the settings file.
-  static String get _dirPath {
-    final home = Platform.environment['HOME'] ??
-        Platform.environment['USERPROFILE'] ??
-        '.';
-    return '$home/Documents/deepThinkER';
-  }
-
-  static String get _filePath => '$_dirPath/settings.json';
+  static String get _filePath => AppPaths.settings;
 
   /// Loads settings from disk.
   ///
@@ -46,7 +39,7 @@ class SettingsPersistence {
   ///
   /// Creates the parent directory if it does not exist.
   Future<void> save(AppSettings settings) async {
-    final dir = Directory(_dirPath);
+    final dir = Directory(AppPaths.base);
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }

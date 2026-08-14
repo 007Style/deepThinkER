@@ -38,6 +38,9 @@ class UserInputBar extends StatefulWidget {
   /// Called with (text, targetCharacter) for whispers, or null for normal.
   final void Function(String, String)? onWhisper;
 
+  /// Called when the settings ⚙ button is tapped.
+  final VoidCallback? onSettings;
+
   const UserInputBar({
     required this.userName,
     required this.isRunning,
@@ -45,6 +48,7 @@ class UserInputBar extends StatefulWidget {
     required this.onSubmit,
     this.onToggleSteering,
     this.onWhisper,
+    this.onSettings,
     super.key,
   });
 
@@ -192,6 +196,30 @@ class _UserInputBarState extends State<UserInputBar> {
                 ),
               ),
             ),
+          // Settings button — right of Send
+          if (widget.onSettings != null) ...[
+            const SizedBox(width: 6),
+            Tooltip(
+              message: 'Settings  (⌘,)',
+              child: SizedBox(
+                width: 34,
+                height: 34,
+                child: OutlinedButton(
+                  onPressed: widget.onSettings,
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    side: const BorderSide(color: AppColors.border),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    foregroundColor: AppColors.textSecondary,
+                  ),
+                  child: const Icon(Icons.settings_outlined, size: 16),
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(width: 6),
           // Send button — always enabled
           SizedBox(
             width: 64,

@@ -470,7 +470,7 @@ Then tap Retry in the download screen.
 ## Sessions & Logs
 
 Every session is saved to:
-  ~/Documents/deepThinkER/sessions/
+  ~/Library/Application Support/deepThinkER/sessions/
 
 Each session produces an NDJSON file (one JSON message per line) and a
 .meta.json file with session metadata.

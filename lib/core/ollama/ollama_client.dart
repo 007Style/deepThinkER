@@ -347,6 +347,24 @@ class OllamaClient {
     }
   }
 
+  /// Deletes [modelTag] from the local Ollama instance via `DELETE /api/delete`.
+  ///
+  /// Returns `true` if the model was deleted, `false` if it wasn't found.
+  /// Throws on other HTTP errors.
+  Future<bool> deleteModel(String modelTag) async {
+    final uri = Uri.parse('$baseUrl/api/delete');
+    final request = await _http.deleteUrl(uri);
+    request.headers.contentType = ContentType.json;
+    request.add(utf8.encode(jsonEncode({'name': modelTag})));
+    final response = await request.close();
+    await response.drain<void>();
+    if (response.statusCode == 200) return true;
+    if (response.statusCode == 404) return false;
+    throw HttpException(
+      'DELETE /api/delete returned ${response.statusCode} for $modelTag',
+    );
+  }
+
   // -------------------------------------------------------------------------
   // HTTP helpers
   // -------------------------------------------------------------------------

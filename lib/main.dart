@@ -5,7 +5,7 @@
 //   2. If any models missing  → WelcomeScreen (greet user, ask permission to download).
 //   3. If all models present  → WelcomeScreen (greet user, show where models live, go).
 //   4. After welcome          → StartupConfigScreen (configure & launch session).
-import 'dart:io' show ProcessSignal, exit;
+import 'dart:io' show Directory, Platform, ProcessSignal, exit;
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter/material.dart';
@@ -14,6 +14,7 @@ import 'core/ollama/hardware_detector.dart';
 import 'core/ollama/model_manager.dart';
 import 'core/ollama/ollama_client.dart';
 import 'core/ollama/ollama_launcher.dart';
+import 'core/paths/app_paths.dart';
 import 'core/network/network_fetcher.dart';
 import 'core/tools/calc/calc_tool.dart';
 import 'core/tools/file/file_read_tool.dart';
@@ -124,6 +125,29 @@ class _AppLoaderState extends State<_AppLoader> {
         _externalOllama = null;
         _status = 'Starting Ollama\u2026';
       });
+    }
+
+    // Guard: verify app data directory is accessible before doing anything else.
+    // macOS TCC will silently deny writes to ~/Library if the user dismissed the
+    // permission prompt (though Library/Application Support does not prompt).
+    // This also catches a completely missing home directory.
+    try {
+      final testDir = AppPaths.base;
+      final dir = Directory(testDir);
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = 'App data directory is not accessible.\n\n'
+            'Expected: ${AppPaths.base}\n\nError: $e\n\n'
+            'This can happen if macOS has denied file access. '
+            'Go to System Settings → Privacy & Security → Files and Folders '
+            'and allow deepThinkER to access the required folder, then restart the app.';
+        _done = true;
+      });
+      return;
     }
 
     try {

@@ -1,13 +1,12 @@
 /// MemoryPersistence — read/write per-character memory JSON files.
 ///
-/// Saves to: ~/Documents/deepThinkER/memory/<characterName>.json
-///
 /// This file has zero Flutter imports — pure Dart only.
 library memory_persistence;
 
 import 'dart:convert';
 import 'dart:io';
 
+import '../paths/app_paths.dart';
 import 'memory_entry.dart';
 import 'memory_store.dart';
 
@@ -19,12 +18,7 @@ import 'memory_store.dart';
 class MemoryPersistence {
   MemoryPersistence._();
 
-  static String _dir() {
-    final home = Platform.environment['HOME'] ??
-        Platform.environment['USERPROFILE'] ??
-        '.';
-    return '$home/Documents/deepThinkER/memory';
-  }
+  static String _dir() => AppPaths.memory;
 
   static String _filePath(String characterName) =>
       '${_dir()}/${characterName.toUpperCase()}.json';

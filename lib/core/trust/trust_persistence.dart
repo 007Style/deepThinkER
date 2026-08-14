@@ -1,15 +1,12 @@
 /// Handles reading and writing trust scores to disk.
 ///
-/// Storage location:
-/// - macOS:   `~/Documents/deepThinkER/trust.json`
-/// - Windows: `%USERPROFILE%\Documents\deepThinkER\trust.json`
-///
 /// This file has zero Flutter imports — pure Dart only.
 library trust_persistence;
 
 import 'dart:convert';
 import 'dart:io';
 
+import '../paths/app_paths.dart';
 import 'trust_score.dart';
 
 // ---------------------------------------------------------------------------
@@ -31,24 +28,10 @@ class TrustPersistence {
   // Path helpers
   // -------------------------------------------------------------------------
 
-  static String _baseDir() {
-    final home = Platform.isWindows
-        ? Platform.environment['USERPROFILE']
-        : Platform.environment['HOME'];
-    if (home == null || home.isEmpty) {
-      throw StateError(
-        'Cannot determine home directory: '
-        'neither HOME nor USERPROFILE is set.',
-      );
-    }
-    return [home, 'Documents', 'deepThinkER'].join(Platform.pathSeparator);
-  }
-
-  static String _trustPath() =>
-      [_baseDir(), 'trust.json'].join(Platform.pathSeparator);
+  static String _trustPath() => AppPaths.trust;
 
   static Future<void> _ensureDir() async {
-    final dir = Directory(_baseDir());
+    final dir = Directory(AppPaths.base);
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }

@@ -1,13 +1,12 @@
 /// RelationshipPersistence — read/write relationship matrix to disk.
 ///
-/// Saves to: ~/Documents/deepThinkER/relationships.json
-///
 /// This file has zero Flutter imports — pure Dart only.
 library relationship_persistence;
 
 import 'dart:convert';
 import 'dart:io';
 
+import '../paths/app_paths.dart';
 import 'relationship_matrix.dart';
 import 'relationship_score.dart';
 
@@ -19,12 +18,7 @@ import 'relationship_score.dart';
 class RelationshipPersistence {
   RelationshipPersistence._();
 
-  static String _path() {
-    final home = Platform.environment['HOME'] ??
-        Platform.environment['USERPROFILE'] ??
-        '.';
-    return '$home/Documents/deepThinkER/relationships.json';
-  }
+  static String _path() => AppPaths.relationships;
 
   /// Loads relationship scores from disk.
   ///

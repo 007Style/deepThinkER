@@ -7,6 +7,9 @@
 /// This file has zero Flutter imports — pure Dart only.
 library model_manager;
 
+import 'dart:io';
+
+import '../paths/app_paths.dart';
 import 'ollama_client.dart';
 import 'model_registry.dart';
 
@@ -133,5 +136,53 @@ class ModelManager {
         if (progress.isDone) break;
       }
     }
+  }
+
+  // -------------------------------------------------------------------------
+  // Delete all models + app data
+  // -------------------------------------------------------------------------
+
+  /// Deletes every installed registry model from Ollama and wipes all app data.
+  ///
+  /// [onStatus] receives progress strings so the UI can display what's happening.
+  /// Any individual error is caught and reported via [onStatus] without stopping
+  /// the remaining steps, so the clean-up is as thorough as possible.
+  Future<void> deleteAllModelsAndData({
+    required void Function(String message) onStatus,
+  }) async {
+    // ── 1. Delete models from Ollama ─────────────────────────────────────────
+    List<String> installed;
+    try {
+      installed = await client.listModels();
+    } catch (e) {
+      installed = [];
+      onStatus('Could not list models: $e');
+    }
+
+    for (final tag in installed) {
+      onStatus('Deleting model $tag…');
+      try {
+        await client.deleteModel(tag);
+        onStatus('  ✓ $tag removed');
+      } catch (e) {
+        onStatus('  ✗ $tag failed: $e');
+      }
+    }
+
+    // ── 2. Wipe app data directory ────────────────────────────────────────────
+    final baseDir = Directory(AppPaths.base);
+    onStatus('Deleting app data at ${AppPaths.base}…');
+    try {
+      if (await baseDir.exists()) {
+        await baseDir.delete(recursive: true);
+        onStatus('  ✓ App data removed');
+      } else {
+        onStatus('  (no app data directory found)');
+      }
+    } catch (e) {
+      onStatus('  ✗ App data deletion failed: $e');
+    }
+
+    onStatus('Done.');
   }
 }

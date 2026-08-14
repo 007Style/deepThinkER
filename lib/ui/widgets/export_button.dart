@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../core/export/session_exporter.dart';
+import '../../core/paths/app_paths.dart';
 
 // ---------------------------------------------------------------------------
 // ExportButton
@@ -71,8 +72,7 @@ class _ExportButtonState extends State<ExportButton> {
         auditCsv: widget.auditCsv,
       );
 
-      final dir = widget.exportDirectory ??
-          '${Platform.environment['HOME'] ?? '.'}/Documents/deepThinkER/exports';
+      final dir = widget.exportDirectory ?? AppPaths.exports;
 
       await Directory(dir).create(recursive: true);
 

@@ -1,13 +1,12 @@
 /// AuditPersistence — append-only NDJSON audit log file.
 ///
-/// Appends to: ~/Documents/deepThinkER/audit.ndjson
-///
 /// This file has zero Flutter imports — pure Dart only.
 library audit_persistence;
 
 import 'dart:convert';
 import 'dart:io';
 
+import '../paths/app_paths.dart';
 import 'audit_entry.dart';
 
 // ---------------------------------------------------------------------------
@@ -18,12 +17,7 @@ import 'audit_entry.dart';
 class AuditPersistence {
   AuditPersistence._();
 
-  static String _path() {
-    final home = Platform.environment['HOME'] ??
-        Platform.environment['USERPROFILE'] ??
-        '.';
-    return '$home/Documents/deepThinkER/audit.ndjson';
-  }
+  static String _path() => AppPaths.audit;
 
   /// Appends [entry] as a single JSON line to the audit file.
   static Future<void> append(AuditEntry entry) async {

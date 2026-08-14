@@ -7,6 +7,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import '../paths/app_paths.dart';
 import 'analytics_event.dart';
 
 export 'analytics_event.dart';
@@ -124,10 +125,5 @@ class SessionAnalytics {
     _events.add(event);
   }
 
-  static String _analyticsDir() {
-    final home = Platform.environment['HOME'] ??
-        Platform.environment['USERPROFILE'] ??
-        '.';
-    return '$home/Documents/deepThinkER/analytics';
-  }
+  static String _analyticsDir() => AppPaths.analytics;
 }

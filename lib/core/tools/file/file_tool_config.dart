@@ -5,6 +5,8 @@ library file_tool_config;
 
 import 'dart:io';
 
+import '../../paths/app_paths.dart';
+
 // ---------------------------------------------------------------------------
 // FileToolConfig
 // ---------------------------------------------------------------------------
@@ -25,12 +27,7 @@ class FileToolConfig {
 
   FileToolConfig({required this.workspacePath});
 
-  static String _defaultPath() {
-    final home = Platform.environment['HOME'] ??
-        Platform.environment['USERPROFILE'] ??
-        '.';
-    return '$home/Documents/deepThinkER/workspace';
-  }
+  static String _defaultPath() => AppPaths.workspace;
 
   /// Resolves [relativePath] against [workspacePath] and returns the absolute path.
   ///

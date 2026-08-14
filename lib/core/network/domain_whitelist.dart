@@ -10,6 +10,8 @@ library domain_whitelist;
 import 'dart:convert';
 import 'dart:io';
 
+import '../paths/app_paths.dart';
+
 // ---------------------------------------------------------------------------
 // DomainWhitelist
 // ---------------------------------------------------------------------------
@@ -67,10 +69,7 @@ class DomainWhitelist {
   // Persistence
   // -------------------------------------------------------------------------
 
-  static String get _filePath {
-    final home = Platform.environment['HOME'] ?? '';
-    return '$home/Documents/deepThinkER/whitelist.json';
-  }
+  static String get _filePath => AppPaths.whitelist;
 
   /// Loads the whitelist from disk. No-op on error (whitelist stays empty).
   Future<void> load() async {

@@ -24,9 +24,11 @@ import '../../core/conversation/whisper_message.dart';
 import '../../core/conversation/participant.dart';
 import '../../core/conversation/user_name_detector.dart';
 import '../../core/mood/mood_engine.dart';
+import '../../core/network/network_request_record.dart';
 import '../../core/network/rate_limiter.dart';
 import '../../core/ollama/hardware_detector.dart';
 import '../../core/ollama/ollama_client.dart';
+import '../../core/relationships/relationship_analyser.dart';
 import '../../core/relationships/relationship_matrix.dart';
 import '../../core/security/content_filter.dart';
 import '../../core/session/session.dart';
@@ -152,6 +154,19 @@ class _MainScreenState extends State<MainScreen> {
 
   /// Shared relationship matrix (session-scoped, instantiated in _start).
   final RelationshipMatrix _relationshipMatrix = RelationshipMatrix();
+
+  /// Relationship analyser — wired to message stream on Start.
+  RelationshipAnalyser? _relationshipAnalyser;
+
+  /// Subscription for feeding the relationship analyser.
+  StreamSubscription<Message>? _relationshipSub;
+
+  /// Number of network searches currently in-flight (shown in top bar).
+  int _activeSearchCount = 0;
+
+  /// Accumulated network request log for the current session view.
+  /// Passed to SettingsScreen so it can show live request history.
+  final List<NetworkRequestRecord> _networkLog = [];
 
   /// Image watcher — monitors workspace for dropped images.
   ImageWatcher? _imageWatcher;
@@ -321,6 +336,9 @@ class _MainScreenState extends State<MainScreen> {
       if (event.reason == TrustEventReason.rateLimitViolation) {
         _rateLimitControllers[event.characterName]?.trigger();
       }
+      // Record trust snapshot in analytics.
+      _sessionAnalytics?.recordTrustSnapshot(
+          event.characterName, event.newScore);
     });
 
     // Subscribe to mood events → fan-out per-character MoodScore streams.
@@ -330,6 +348,9 @@ class _MainScreenState extends State<MainScreen> {
       if (sc != null && !sc.isClosed) {
         sc.add(_moodEngine!.scoreFor(event.characterName));
       }
+      // Record mood change in analytics.
+      _sessionAnalytics?.recordMoodChange(
+          event.characterName, event.newState.name);
     });
 
     // ── Always create a fresh engine — ConversationEngine is single-use ─────
@@ -377,8 +398,15 @@ class _MainScreenState extends State<MainScreen> {
     // Subscribe to tool-call events → show search activity inline.
     _toolEventSub = interceptor.eventStream.listen(_handleToolCallEvent);
 
-    // Feed mood engine from the log message stream.
-    _engine!.log.messageStream.listen((msg) => _moodEngine?.onMessage(msg));
+    // Feed mood engine, relationship analyser, and analytics from message stream.
+    _relationshipAnalyser = RelationshipAnalyser(matrix: _relationshipMatrix);
+    _relationshipSub = _engine!.log.messageStream.listen((msg) {
+      _moodEngine?.onMessage(msg);
+      _relationshipAnalyser?.onMessage(msg);
+      if (!msg.isPass && !msg.isEphemeral && !msg.isUser) {
+        _sessionAnalytics?.recordMessage(msg.participantName);
+      }
+    });
 
     // Clear the local preview messages that were shown while the engine was
     // stopped — the real messages will arrive via _handleLogMessage as the
@@ -477,13 +505,16 @@ class _MainScreenState extends State<MainScreen> {
     await _logMessageSub?.cancel();
     _logMessageSub = null;
 
-    // Cancel trust / mood / tool-call subscriptions.
+    // Cancel trust / mood / tool-call / relationship subscriptions.
     await _trustSub?.cancel();
     _trustSub = null;
     await _moodSub?.cancel();
     _moodSub = null;
     await _toolEventSub?.cancel();
     _toolEventSub = null;
+    await _relationshipSub?.cancel();
+    _relationshipSub = null;
+    _relationshipAnalyser = null;
 
     // Stop the engine (stops workers, unloads models, disposes log stream).
     await _engine?.stop();
@@ -524,6 +555,8 @@ class _MainScreenState extends State<MainScreen> {
         _isPaused = false;
         _isBusy = false;
         _sessionName = '';
+        _activeSearchCount = 0;
+        _networkLog.clear();
       });
     }
   }
@@ -602,7 +635,8 @@ class _MainScreenState extends State<MainScreen> {
   /// Handles a [ToolCallEvent] from the interceptor.
   ///
   /// For network tools (SEARCH / FETCH) the call is surfaced as an inline
-  /// activity notice in the owning character's quadrant message list.
+  /// activity notice in the owning character's quadrant message list, and
+  /// the top-bar search counter is briefly incremented.
   void _handleToolCallEvent(ToolCallEvent event) {
     if (!mounted) return;
     final qs = _quadrantStates[event.characterName];
@@ -611,6 +645,29 @@ class _MainScreenState extends State<MainScreen> {
     final isSearch = event.tag == 'SEARCH';
     final isFetch = event.tag == 'FETCH';
     if (!isSearch && !isFetch) return; // Only surface network tool calls.
+
+    // Record in analytics (allowed, rate-limited, or disabled).
+    _sessionAnalytics?.recordToolCall(
+      event.characterName,
+      event.tag,
+      event.result.wasRateLimited,
+    );
+
+    // Accumulate into the network log for the Settings → Network tab.
+    final status = event.result.wasRateLimited
+        ? NetworkRequestStatus.rateLimited
+        : event.result.wasDisabled
+            ? NetworkRequestStatus.blocked
+            : NetworkRequestStatus.success;
+    _networkLog.add(NetworkRequestRecord(
+      characterName: event.characterName,
+      tag: event.tag,
+      query: event.argument,
+      status: status,
+      responseText: event.result.output,
+      responseBytes: event.result.output.length,
+      timestamp: event.timestamp,
+    ));
 
     // Build a synthetic ephemeral message so the quadrant panel can render it
     // as a SearchActivityEntry.  We use isEphemeral=true so it never appears
@@ -631,6 +688,13 @@ class _MainScreenState extends State<MainScreen> {
 
     setState(() {
       qs.messages.add(activityMsg);
+      // Increment the top-bar search badge; auto-decrement after 4 s.
+      if (!event.result.wasRateLimited && !event.result.wasDisabled) {
+        _activeSearchCount++;
+        Future<void>.delayed(const Duration(seconds: 4), () {
+          if (mounted) setState(() => _activeSearchCount--);
+        });
+      }
     });
   }
 
@@ -711,6 +775,8 @@ class _MainScreenState extends State<MainScreen> {
         isThinking: qs.isThinking,
         tokenStream: qs.tokenStream,
         imageEventStream: _imageEventController.stream,
+        tokenCount: _engine?.tokenCountFor(p.name) ?? 0,
+        maxTokens: _engine?.contextWindowFor(p.name) ?? 0,
         onSwap: _isRunning
             ? (newP) => _engine?.swapCharacter(i, newP)
             : null,
@@ -738,7 +804,8 @@ class _MainScreenState extends State<MainScreen> {
           _OpenSettingsIntent: CallbackAction<_OpenSettingsIntent>(
             onInvoke: (_) {
               Navigator.of(context).push(MaterialPageRoute<void>(
-                builder: (_) => const SettingsScreen(),
+                builder: (_) =>
+                    SettingsScreen(networkLog: List.unmodifiable(_networkLog)),
               ));
               return null;
             },
@@ -780,6 +847,7 @@ class _MainScreenState extends State<MainScreen> {
             isBusy: _isBusy,
             sessionName: _sessionName,
             pendingCount: _pendingUserMessages.length,
+            activeSearchCount: _activeSearchCount,
             onStart: _start,
             onStop: _stop,
             onPause: _pause,
@@ -842,6 +910,12 @@ class _MainScreenState extends State<MainScreen> {
                 ? (text, target) =>
                     _engine?.sendWhisper(_userName, text, target)
                 : null,
+            onSettings: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => SettingsScreen(
+                    networkLog: List.unmodifiable(_networkLog)),
+              ),
+            ),
           ),
           // ── Steering input bar ────────────────────────────────────────────
           SteeringInputBar(
@@ -860,26 +934,6 @@ class _MainScreenState extends State<MainScreen> {
           StateSimulatorPanel(
             onClose: () => setState(() => _showDebugPanel = false),
           ),
-        // ── Settings FAB ───────────────────────────────────────────────────
-        Positioned(
-          bottom: 52,  // above status band
-          right: 12,
-          child: Tooltip(
-            message: 'Settings  (⌘,)',
-            child: FloatingActionButton.small(
-              heroTag: 'settings_fab',
-              backgroundColor: AppColors.surface,
-              foregroundColor: AppColors.textSecondary,
-              elevation: 2,
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const SettingsScreen(),
-                ),
-              ),
-              child: const Icon(Icons.settings_outlined, size: 18),
-            ),
-          ),
-        ),
       ],
     ),
   );
@@ -909,6 +963,7 @@ class _TopBar extends StatelessWidget {
   final bool isBusy;
   final String sessionName;
   final int pendingCount;
+  final int activeSearchCount;
   final VoidCallback onStart;
   final VoidCallback onStop;
   final VoidCallback onPause;
@@ -927,6 +982,7 @@ class _TopBar extends StatelessWidget {
     required this.isBusy,
     required this.sessionName,
     required this.pendingCount,
+    required this.activeSearchCount,
     required this.onStart,
     required this.onStop,
     required this.onPause,
@@ -1014,6 +1070,44 @@ class _TopBar extends StatelessWidget {
                   color: AppColors.accent,
                   fontWeight: FontWeight.w600,
                 ),
+              ),
+            ),
+          ],
+          // Live search activity badge — visible while any search is in flight.
+          if (activeSearchCount > 0) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+              decoration: BoxDecoration(
+                color: const Color(0xFF00897B).withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: const Color(0xFF00897B).withValues(alpha: 0.55),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(
+                    width: 8,
+                    height: 8,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.5,
+                      color: Color(0xFF00897B),
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    activeSearchCount == 1
+                        ? '🌐 searching…'
+                        : '🌐 $activeSearchCount searches…',
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: Color(0xFF4DB6AC),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

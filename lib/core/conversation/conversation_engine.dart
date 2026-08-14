@@ -83,6 +83,25 @@ class ConversationEngine {
   /// The shared conversation log.
   ConversationLog get log => _log;
 
+  /// Returns the estimated token count for [participantName].
+  ///
+  /// Returns 0 before [start] is called or if the name is unknown.
+  int tokenCountFor(String participantName) =>
+      _contextManager.tokenCount(participantName);
+
+  /// Returns the context window size in tokens for [participantName].
+  ///
+  /// Returns 0 before [start] is called (hardware not yet known).
+  int contextWindowFor(String participantName) {
+    final hw = _hardware;
+    if (hw == null) return 0;
+    final worker = _workers.where(
+        (w) => w.participant.name == participantName).firstOrNull;
+    if (worker == null) return 0;
+    final isHighCtx = worker.participant.assignedModelId.startsWith('phi3');
+    return isHighCtx ? hw.highContextWindow : hw.standardContextWindow;
+  }
+
   /// Broadcast stream of [CharacterSwapEvent]s.
   Stream<CharacterSwapEvent> get swapStream => _swapController.stream;
 

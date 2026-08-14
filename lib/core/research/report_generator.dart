@@ -6,6 +6,7 @@ library report_generator;
 import 'dart:convert';
 import 'dart:io';
 
+import '../paths/app_paths.dart';
 import 'research_session.dart';
 
 // ---------------------------------------------------------------------------
@@ -175,16 +176,7 @@ class ReportGenerator {
     return filePath;
   }
 
-  static String _reportsDir() {
-    final home = Platform.isWindows
-        ? Platform.environment['USERPROFILE']
-        : Platform.environment['HOME'];
-    if (home == null || home.isEmpty) {
-      throw StateError('Cannot determine home directory.');
-    }
-    return [home, 'Documents', 'deepThinkER', 'reports']
-        .join(Platform.pathSeparator);
-  }
+  static String _reportsDir() => AppPaths.reports;
 
   static String _formatDate(DateTime dt) {
     final d = dt.toLocal();

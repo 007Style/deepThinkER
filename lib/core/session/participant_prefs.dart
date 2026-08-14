@@ -4,7 +4,6 @@
 /// the four AI characters so that the startup config screen remembers the
 /// last state on every launch.
 ///
-/// File location: ~/Documents/deepThink/participant_prefs.json
 /// This file has zero Flutter imports — pure Dart only.
 library participant_prefs;
 
@@ -13,6 +12,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../conversation/participant.dart';
+import '../paths/app_paths.dart';
 
 // ---------------------------------------------------------------------------
 // ParticipantPrefs
@@ -25,14 +25,7 @@ class ParticipantPrefs {
   // Path helper
   // -------------------------------------------------------------------------
 
-  static String _prefsPath() {
-    final home = Platform.isWindows
-        ? Platform.environment['USERPROFILE']
-        : Platform.environment['HOME'];
-    if (home == null || home.isEmpty) return '';
-    final base = [home, 'Documents', 'deepThinkER'].join(Platform.pathSeparator);
-    return [base, 'participant_prefs.json'].join(Platform.pathSeparator);
-  }
+  static String _prefsPath() => AppPaths.participantPrefs;
 
   // -------------------------------------------------------------------------
   // Public API

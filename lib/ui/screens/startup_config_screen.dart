@@ -6,14 +6,18 @@
 //   • See the live total RAM allocation
 //   • View detected hardware info
 //   • Launch into MainScreen
+import 'dart:async' show unawaited;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 
 import '../../core/conversation/conversation_log.dart';
 import '../../core/conversation/participant.dart';
+import '../../core/ollama/model_manager.dart';
+import '../../core/ollama/ollama_client.dart';
 import '../../core/ollama/hardware_detector.dart';
 import '../../core/ollama/model_registry.dart';
+import '../../core/paths/app_paths.dart';
 import '../../core/persona/user_persona.dart';
 import '../../core/session/name_generator.dart';
 import '../../core/session/participant_prefs.dart';
@@ -189,15 +193,124 @@ class _StartupConfigScreenState extends State<StartupConfigScreen> {
     });
   }
 
+  /// Shows a confirmation dialog then deletes all Ollama models and all app data.
+  Future<void> _deleteAllModelsAndData() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: const BorderSide(color: AppColors.border),
+        ),
+        title: const Text(
+          'Delete All Models & App Data?',
+          style: TextStyle(
+            color: Color(0xFFF44336),
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        content: const Text(
+          'This will:\n'
+          '  • Remove all Ollama models from disk\n'
+          '  • Delete all sessions, memory, settings and\n'
+          '    every other file in the app data folder\n\n'
+          'This cannot be undone.',
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 13,
+            height: 1.5,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel',
+                style: TextStyle(color: AppColors.textSecondary)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text(
+              'Delete Everything',
+              style: TextStyle(color: Color(0xFFF44336)),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    // Show progress dialog while deletion runs.
+    final statusLines = <String>[];
+    final progressKey = GlobalKey<_DeleteProgressDialogState>();
+
+    unawaited(showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => _DeleteProgressDialog(key: progressKey),
+    ));
+
+    final manager = ModelManager(client: OllamaClient());
+    await manager.deleteAllModelsAndData(
+      onStatus: (msg) {
+        statusLines.add(msg);
+        progressKey.currentState?.addLine(msg);
+      },
+    );
+
+    if (!mounted) return;
+    // Close progress dialog.
+    Navigator.of(context).pop();
+
+    // Show completion summary.
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: const BorderSide(color: AppColors.border),
+        ),
+        title: const Text(
+          'Clean-up Complete',
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        content: SizedBox(
+          width: 400,
+          child: Text(
+            statusLines.join('\n'),
+            style: const TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 11,
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('OK',
+                style: TextStyle(color: AppColors.accent)),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Opens a dialog listing past session .txt files for replay.
   Future<void> _loadPastSession() async {
     final hw = _hardware;
     if (hw == null) return;
 
     // Locate the sessions directory.
-    final home = Platform.environment['HOME'] ?? '';
-    final sessionsDir =
-        Directory('$home/Documents/deepThinkER/sessions');
+    final sessionsDir = Directory(AppPaths.sessions);
 
     List<FileSystemEntity> files = [];
     if (await sessionsDir.exists()) {
@@ -450,6 +563,19 @@ class _StartupConfigScreenState extends State<StartupConfigScreen> {
                     label: const Text('Reset to Defaults'),
                     style: TextButton.styleFrom(
                       foregroundColor: AppColors.textSecondary,
+                      textStyle: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Delete all models & app data — destructive, subdued
+                  TextButton.icon(
+                    onPressed: _deleteAllModelsAndData,
+                    icon: const Icon(Icons.delete_forever_outlined, size: 15,
+                        color: Color(0xFFE57373)),
+                    label: const Text('Delete All Models & App Data',
+                        style: TextStyle(color: Color(0xFFE57373))),
+                    style: TextButton.styleFrom(
+                      foregroundColor: const Color(0xFFE57373),
                       textStyle: const TextStyle(fontSize: 12),
                     ),
                   ),
@@ -1071,6 +1197,71 @@ class _SessionPickerDialog extends StatelessWidget {
               style: TextStyle(color: AppColors.textSecondary)),
         ),
       ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// _DeleteProgressDialog — live log shown while deletion runs
+// ---------------------------------------------------------------------------
+
+class _DeleteProgressDialog extends StatefulWidget {
+  const _DeleteProgressDialog({super.key});
+
+  @override
+  State<_DeleteProgressDialog> createState() => _DeleteProgressDialogState();
+}
+
+class _DeleteProgressDialogState extends State<_DeleteProgressDialog> {
+  final List<String> _lines = [];
+
+  /// Called from outside the widget to push a new status line.
+  void addLine(String line) {
+    if (mounted) setState(() => _lines.add(line));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: AppColors.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: const BorderSide(color: AppColors.border),
+      ),
+      title: const Row(
+        children: [
+          SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(
+                color: AppColors.accent, strokeWidth: 2),
+          ),
+          SizedBox(width: 12),
+          Text(
+            'Deleting…',
+            style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 14,
+                fontWeight: FontWeight.w700),
+          ),
+        ],
+      ),
+      content: SizedBox(
+        width: 400,
+        height: 200,
+        child: SingleChildScrollView(
+          reverse: true,
+          child: Text(
+            _lines.join('\n'),
+            style: const TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 11,
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

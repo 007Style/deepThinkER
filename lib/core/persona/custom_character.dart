@@ -1,12 +1,12 @@
 /// CustomCharacter — a user-defined AI character profile.
 ///
-/// Persisted to ~/Documents/deepThinkER/custom_characters.json as a list.
-///
 /// This file has zero Flutter imports — pure Dart only.
 library custom_character;
 
 import 'dart:convert';
 import 'dart:io';
+
+import '../paths/app_paths.dart';
 
 // ---------------------------------------------------------------------------
 // CustomCharacter
@@ -63,10 +63,7 @@ class CustomCharacter {
   // Persistence
   // -------------------------------------------------------------------------
 
-  static String get _filePath {
-    final home = Platform.environment['HOME'] ?? '';
-    return '$home/Documents/deepThinkER/custom_characters.json';
-  }
+  static String get _filePath => AppPaths.customCharacters;
 
   /// Loads all custom characters from disk.  Returns empty list on error.
   static Future<List<CustomCharacter>> loadAll() async {

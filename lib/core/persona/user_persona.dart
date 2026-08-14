@@ -6,6 +6,8 @@ library user_persona;
 import 'dart:convert';
 import 'dart:io';
 
+import '../paths/app_paths.dart';
+
 // ---------------------------------------------------------------------------
 // UserPersona
 // ---------------------------------------------------------------------------
@@ -34,12 +36,7 @@ class UserPersona {
   // Persistence
   // -------------------------------------------------------------------------
 
-  static String _path() {
-    final home = Platform.environment['HOME'] ??
-        Platform.environment['USERPROFILE'] ??
-        '.';
-    return '$home/Documents/deepThinkER/persona.json';
-  }
+  static String _path() => AppPaths.persona;
 
   /// Loads the persona from disk.  Returns an empty persona if none saved.
   static Future<UserPersona> load() async {
@@ -56,11 +53,12 @@ class UserPersona {
 
   /// Saves this persona to disk.
   Future<void> save() async {
-    final dir = File(_path()).parent;
+    final path = _path();
+    final dir = File(path).parent;
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }
-    await File(_path()).writeAsString(json.encode({'text': _text}));
+    await File(path).writeAsString(json.encode({'text': _text}));
   }
 
   static String _cap(String s) =>

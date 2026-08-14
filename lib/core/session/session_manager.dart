@@ -4,8 +4,8 @@
 /// indexing, and cumulative app-stats persistence.
 ///
 /// Log file location:
-/// - macOS:   `~/Documents/deepThinkER/sessions/<name>_<timestamp>.txt`
-/// - Windows: `%USERPROFILE%\Documents\deepThink\sessions\<name>_<timestamp>.txt`
+/// - macOS:   `~/Library/Application Support/deepThinkER/sessions/<name>_<timestamp>.txt`
+/// - Windows: `%APPDATA%\deepThinkER\sessions\<name>_<timestamp>.txt`
 ///
 /// This file has zero Flutter imports — pure Dart only.
 library session_manager;
@@ -16,6 +16,7 @@ import 'dart:io';
 
 import '../conversation/message.dart';
 import '../conversation/participant.dart';
+import '../paths/app_paths.dart';
 import 'app_stats.dart';
 import 'name_generator.dart';
 import 'session.dart';
@@ -52,31 +53,17 @@ class SessionManager {
   // Directory / path helpers
   // -------------------------------------------------------------------------
 
-  /// Returns the base `~/Documents/deepThinkER/` directory path for the current
-  /// platform, using `HOME` (macOS/Linux) or `USERPROFILE` (Windows).
-  static String _baseDir() {
-    final home = Platform.isWindows
-        ? Platform.environment['USERPROFILE']
-        : Platform.environment['HOME'];
-    if (home == null || home.isEmpty) {
-      throw StateError(
-        'Cannot determine home directory: '
-        'neither HOME nor USERPROFILE environment variable is set.',
-      );
-    }
-    return [home, 'Documents', 'deepThinkER'].join(Platform.pathSeparator);
-  }
+  /// Returns the base app-data directory path.
+  static String _baseDir() => AppPaths.base;
 
-  /// Returns the `…/deepThink/sessions/` directory path.
-  static String _sessionsDir() =>
-      [_baseDir(), 'sessions'].join(Platform.pathSeparator);
+  /// Returns the `…/sessions/` directory path.
+  static String _sessionsDir() => AppPaths.sessions;
 
   /// Public accessor so the UI can open the sessions directory in Finder.
   static String sessionsDir() => _sessionsDir();
 
   /// Returns the absolute path to `stats.json`.
-  static String _statsPath() =>
-      [_baseDir(), 'stats.json'].join(Platform.pathSeparator);
+  static String _statsPath() => AppPaths.stats;
 
   /// Returns the absolute path to `sessions/index.json`.
   static String _indexPath() =>
