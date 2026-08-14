@@ -149,7 +149,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ),
         const SizedBox(height: 4),
         const Text(
-          'v1.0.2',
+          'v1.1.0',
           style: TextStyle(
             fontSize: 11,
             color: AppColors.textSecondary,

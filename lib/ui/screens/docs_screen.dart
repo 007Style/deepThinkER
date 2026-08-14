@@ -503,7 +503,7 @@ The ? button (top right) opens:
 const _kArchitecture = r'''
 # deepThinkER — Architecture
 
-Version: v1.0.2
+Version: v1.1.0
 Platform: macOS (primary) · Windows (self-compile)
 Stack: Flutter / Dart · Ollama v0.32.9 · four local LLMs
 
@@ -730,7 +730,7 @@ The script:
 1. Runs flutter test (fails fast if broken)
 2. flutter build macos --release
 3. Packages .app into .dmg via create-dmg
-4. Creates and pushes git tag v1.0.3
+4. Creates and pushes git tag v1.1.1
 5. Creates GitHub Release and uploads the DMG
 
 ## Project Structure
