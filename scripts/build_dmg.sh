@@ -4,14 +4,14 @@ set -euo pipefail
 # build_dmg.sh — Build and package deepThinkER as a macOS DMG
 #
 # Usage:
-#   ./scripts/build_dmg.sh           # uses default version 1.0.0
+#   ./scripts/build_dmg.sh           # uses default version 1.1.0
 #   ./scripts/build_dmg.sh 1.2.0     # override version
 #
 # Requirements:
 #   - Flutter SDK in PATH
 #   - create-dmg  (auto-installed via brew if missing)
 
-VERSION="${1:-1.0.0}"
+VERSION="${1:-1.1.0}"
 DISPLAY_NAME="deepThinkER"
 BUNDLE_NAME="deepThinkER"            # Xcode target name (product name)
 BUILD_DIR="build/macos/Build/Products/Release"
