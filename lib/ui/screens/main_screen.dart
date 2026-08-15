@@ -672,11 +672,20 @@ class _MainScreenState extends State<MainScreen> {
     // Build a synthetic ephemeral message so the quadrant panel can render it
     // as a SearchActivityEntry.  We use isEphemeral=true so it never appears
     // in exports or session logs.
+    //
+    // content  = one-line label shown collapsed (query + source)
+    // responseBody = full tool output shown when expanded
+    final source = event.tag == 'FETCH'
+        ? event.argument          // URL is the source for FETCH
+        : 'DuckDuckGo';           // search engine for SEARCH
+
     final label = event.result.wasRateLimited
         ? '🚫 ${event.tag} rate-limited: ${event.argument}'
         : event.result.wasDisabled
             ? '⛔ ${event.tag} disabled: ${event.argument}'
-            : '🔍 ${event.tag}: ${event.argument}';
+            : event.tag == 'FETCH'
+                ? '🌐 FETCH  ${event.argument}'
+                : '🔍 SEARCH  "${event.argument}"  via $source';
 
     final activityMsg = Message(
       participantName: event.characterName,
@@ -684,6 +693,9 @@ class _MainScreenState extends State<MainScreen> {
       isUser: false,
       isEphemeral: true,
       roundIndex: 0,
+      responseBody: (event.result.wasRateLimited || event.result.wasDisabled)
+          ? null
+          : event.result.output,
     );
 
     setState(() {

@@ -79,6 +79,12 @@ class Message {
   /// forward in a context-window reset seed.
   final bool isEphemeral;
 
+  /// Full response body for ephemeral search/fetch messages.
+  ///
+  /// Non-null only when [isEphemeral] is true and the tool returned content.
+  /// Never persisted — only used for in-session UI display.
+  final String? responseBody;
+
   /// `true` for whisper messages (visible only to the target character).
   bool get isWhisper => false;
 
@@ -89,6 +95,7 @@ class Message {
     required this.isUser,
     this.roundIndex = 0,
     this.isEphemeral = false,
+    this.responseBody,
     String? id,
     DateTime? timestamp,
   })  : id = id ?? _uuid4(),

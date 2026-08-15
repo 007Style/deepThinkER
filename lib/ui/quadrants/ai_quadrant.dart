@@ -602,11 +602,9 @@ class _MessageArea extends StatelessWidget {
           if (msg.isPass) return const SizedBox.shrink();
           // Ephemeral web-result injections render as collapsible search entries.
           if (msg.isEphemeral) {
-            // Extract the query from the injection content if possible.
-            final query = _extractQuery(msg.content);
             return SearchActivityEntry(
-              query: query,
-              rawHtml: msg.content,
+              label: msg.content,
+              responseBody: msg.responseBody,
             );
           }
           final whisperTarget = msg.isWhisper
@@ -637,17 +635,8 @@ class _MessageArea extends StatelessWidget {
     );
   }
 
-  /// Tries to extract the search query from an injected web-result message.
-  ///
-  /// The injection format is `[WEB_RESULT for CHARACTER]:\n<html>`.
-  /// Falls back to a truncated preview of the content.
-  static String _extractQuery(String content) {
-    // Look for the original [SEARCH: query] tag if still present.
-    final searchMatch = RegExp(r'\[SEARCH:\s*(.*?)\]').firstMatch(content);
-    if (searchMatch != null) return searchMatch.group(1)?.trim() ?? 'unknown';
-    final fetchMatch = RegExp(r'\[FETCH:\s*(.*?)\]').firstMatch(content);
-    if (fetchMatch != null) return fetchMatch.group(1)?.trim() ?? 'unknown';
-    // Fallback: first 60 chars of content.
+  /// Truncates [content] to at most [maxLen] characters for compact display.
+  static String _truncate(String content, {int maxLen = 60}) {
     final preview = content.replaceAll('\n', ' ').trim();
     return preview.length > 60 ? '${preview.substring(0, 57)}...' : preview;
   }
