@@ -1,8 +1,7 @@
-/// InjectionGuard — scans text for prompt-injection patterns matching
-/// registered ToolRegistry tags and escapes them.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library injection_guard;
+// InjectionGuard — scans text for prompt-injection patterns matching
+// registered ToolRegistry tags and escapes them.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../tools/tool_registry.dart';
 

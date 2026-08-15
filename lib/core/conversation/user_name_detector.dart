@@ -1,11 +1,10 @@
-/// User-name detector for deepThink.
-///
-/// Scans AI responses for natural-language signals that the user has given
-/// (or been given) a name, and extracts that name so the UI can update the
-/// user's display label dynamically.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library user_name_detector;
+// User-name detector for deepThink.
+//
+// Scans AI responses for natural-language signals that the user has given
+// (or been given) a name, and extracts that name so the UI can update the
+// user's display label dynamically.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // UserNameDetector

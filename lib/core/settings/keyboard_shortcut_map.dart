@@ -1,7 +1,6 @@
-/// KeyboardShortcutMap — pure Dart model of default keyboard shortcut bindings.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library keyboard_shortcut_map;
+// KeyboardShortcutMap — pure Dart model of default keyboard shortcut bindings.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // KeyboardShortcutMap

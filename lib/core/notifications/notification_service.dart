@@ -1,10 +1,9 @@
-/// NotificationService — wraps flutter_local_notifications to deliver
-/// typed [NotificationEvent]s as desktop/system notifications.
-///
-/// NOTE: This file is in lib/core/ but imports flutter_local_notifications,
-/// which transitively depends on Flutter. This is intentional — the package
-/// only supports Flutter apps, and deepThinkER is a Flutter app.
-library notification_service;
+// NotificationService — wraps flutter_local_notifications to deliver
+// typed [NotificationEvent]s as desktop/system notifications.
+//
+// NOTE: This file is in lib/core/ but imports flutter_local_notifications,
+// which transitively depends on Flutter. This is intentional — the package
+// only supports Flutter apps, and deepThinkER is a Flutter app.
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 

@@ -1,7 +1,6 @@
-/// CharacterSwapEvent — emitted when a character is hot-swapped mid-session.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library character_swap_event;
+// CharacterSwapEvent — emitted when a character is hot-swapped mid-session.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // CharacterSwapEvent

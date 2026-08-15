@@ -1,7 +1,6 @@
-/// ImageToolConfig — configuration for the image analysis tool.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library image_tool_config;
+// ImageToolConfig — configuration for the image analysis tool.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // ImageToolConfig

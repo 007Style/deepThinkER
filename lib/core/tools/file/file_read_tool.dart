@@ -1,14 +1,12 @@
-/// FileReadTool — AgentTool that reads files from the workspace.
-///
-/// Tag: [FILE_READ: path]
-///
-/// This file has zero Flutter imports — pure Dart only.
-library file_read_tool;
+// FileReadTool — AgentTool that reads files from the workspace.
+//
+// Tag: [FILE_READ: path]
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:io';
 
 import '../agent_tool.dart';
-import '../tool_result.dart';
 import '../../trust/trust_score.dart';
 import 'file_tool_config.dart';
 
@@ -63,7 +61,7 @@ class FileReadTool implements AgentTool {
       }
       final raw = await file.readAsString();
       final content = raw.length > _maxChars
-          ? raw.substring(0, _maxChars) + '\n[...truncated]'
+          ? '${raw.substring(0, _maxChars)}\n[...truncated]'
           : raw;
       return ToolResult.success(
         tag: tag,

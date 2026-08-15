@@ -5,7 +5,7 @@
 //   2. If any models missing  → WelcomeScreen (greet user, ask permission to download).
 //   3. If all models present  → WelcomeScreen (greet user, show where models live, go).
 //   4. After welcome          → StartupConfigScreen (configure & launch session).
-import 'dart:io' show Directory, Platform, ProcessSignal, exit;
+import 'dart:io' show Directory, ProcessSignal, exit;
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter/material.dart';

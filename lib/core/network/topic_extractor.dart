@@ -1,11 +1,10 @@
-/// TopicExtractor — derives key topics from recent conversation messages.
-///
-/// Simple approach: split content to words, lowercase, filter stopwords,
-/// keep words >4 chars, deduplicate, return top N by frequency.
-/// No ML or external dependencies.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library topic_extractor;
+// TopicExtractor — derives key topics from recent conversation messages.
+//
+// Simple approach: split content to words, lowercase, filter stopwords,
+// keep words >4 chars, deduplicate, return top N by frequency.
+// No ML or external dependencies.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../conversation/message.dart';
 

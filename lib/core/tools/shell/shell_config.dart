@@ -1,7 +1,6 @@
-/// Shell tool configuration model.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library shell_config;
+// Shell tool configuration model.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // ShellConfig

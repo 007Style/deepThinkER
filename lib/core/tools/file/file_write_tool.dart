@@ -1,17 +1,15 @@
-/// FileWriteTool — AgentTool that writes files to the workspace.
-///
-/// Tag: [FILE_WRITE: path | content]
-/// Argument format: "relative/path | content to write"
-///
-/// Does NOT overwrite existing files — returns an error if file exists.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library file_write_tool;
+// FileWriteTool — AgentTool that writes files to the workspace.
+//
+// Tag: [FILE_WRITE: path | content]
+// Argument format: "relative/path | content to write"
+//
+// Does NOT overwrite existing files — returns an error if file exists.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:io';
 
 import '../agent_tool.dart';
-import '../tool_result.dart';
 import '../../trust/trust_score.dart';
 import 'file_tool_config.dart';
 

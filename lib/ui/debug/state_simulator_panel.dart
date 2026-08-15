@@ -1,7 +1,6 @@
-/// StateSimulatorPanel — debug overlay for manipulating app state.
-///
-/// Only rendered when [kDebugMode] is true.
-library state_simulator_panel;
+// StateSimulatorPanel — debug overlay for manipulating app state.
+//
+// Only rendered when [kDebugMode] is true.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

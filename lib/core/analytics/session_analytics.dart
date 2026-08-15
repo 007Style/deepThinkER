@@ -1,7 +1,6 @@
-/// SessionAnalytics — accumulates and persists session analytics events.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library session_analytics;
+// SessionAnalytics — accumulates and persists session analytics events.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 import 'dart:convert';

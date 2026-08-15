@@ -2,7 +2,6 @@ import 'package:test/test.dart';
 import 'package:deep_think_er/core/security/injection_guard.dart';
 import 'package:deep_think_er/core/tools/tool_registry.dart';
 import 'package:deep_think_er/core/tools/agent_tool.dart';
-import 'package:deep_think_er/core/tools/tool_result.dart';
 import 'package:deep_think_er/core/trust/trust_score.dart';
 
 class _StubTool implements AgentTool {

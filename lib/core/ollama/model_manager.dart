@@ -1,11 +1,10 @@
-/// Model lifecycle manager for deepThink.
-///
-/// Checks which of the four registry models are installed in Ollama, downloads
-/// missing models with progress reporting, and exposes a convenience method
-/// to download all missing models sequentially.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library model_manager;
+// Model lifecycle manager for deepThink.
+//
+// Checks which of the four registry models are installed in Ollama, downloads
+// missing models with progress reporting, and exposes a convenience method
+// to download all missing models sequentially.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:io';
 

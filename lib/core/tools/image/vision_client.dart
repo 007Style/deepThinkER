@@ -1,7 +1,6 @@
-/// VisionClient — calls Ollama /api/generate with an image payload.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library vision_client;
+// VisionClient — calls Ollama /api/generate with an image payload.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 import 'dart:io';

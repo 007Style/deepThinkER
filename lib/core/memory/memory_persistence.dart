@@ -1,13 +1,11 @@
-/// MemoryPersistence — read/write per-character memory JSON files.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library memory_persistence;
+// MemoryPersistence — read/write per-character memory JSON files.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 import 'dart:io';
 
 import '../paths/app_paths.dart';
-import 'memory_entry.dart';
 import 'memory_store.dart';
 
 // ---------------------------------------------------------------------------

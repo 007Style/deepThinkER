@@ -1,10 +1,9 @@
-/// Parser for LLM tool-call tags embedded in a text stream.
-///
-/// Scans text for patterns like `[SEARCH: query]` or `[FETCH: https://...]`
-/// and returns a list of [ParsedToolCall] value objects.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library tool_call_parser;
+// Parser for LLM tool-call tags embedded in a text stream.
+//
+// Scans text for patterns like `[SEARCH: query]` or `[FETCH: https://...]`
+// and returns a list of [ParsedToolCall] value objects.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // ParsedToolCall

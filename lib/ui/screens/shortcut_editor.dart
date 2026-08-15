@@ -1,5 +1,4 @@
-/// ShortcutEditor — Flutter screen displaying current keyboard shortcut bindings.
-library shortcut_editor;
+// ShortcutEditor — Flutter screen displaying current keyboard shortcut bindings.
 
 import 'package:flutter/material.dart';
 
@@ -33,7 +32,7 @@ class _ShortcutEditorState extends State<ShortcutEditor> {
       body: ListView.separated(
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemCount: actions.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
+        separatorBuilder: (_, _) => const Divider(height: 1),
         itemBuilder: (context, index) {
           final action = actions[index];
           final binding = _map.binding(action) ?? '';

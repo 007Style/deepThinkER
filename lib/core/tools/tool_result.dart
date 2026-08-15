@@ -1,7 +1,6 @@
-/// ToolResult — value object returned by every AgentTool execution.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library tool_result;
+// ToolResult — value object returned by every AgentTool execution.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // ToolResult

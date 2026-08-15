@@ -10,7 +10,6 @@ import '../../core/conversation/participant.dart';
 import '../../core/mood/mood_score.dart';
 import '../../core/tools/image/image_watcher.dart';
 import '../../core/trust/trust_manager.dart';
-import '../../core/trust/trust_score.dart';
 import '../avatars/avatar_widget.dart';
 import '../widgets/network_indicator/rate_limit_flash.dart';
 import 'ai_quadrant.dart'; // also provides AiQuadrant
@@ -173,7 +172,7 @@ class QuadrantGrid extends StatefulWidget {
   }) : assert(quadrants.length == 4,
             'QuadrantGrid requires exactly 4 QuadrantData entries');
 
-  /// Scroll all panels to the top.  Call via GlobalKey<QuadrantGridState>.
+  /// Scroll all panels to the top.  Call via `GlobalKey<QuadrantGridState>`.
   static void warpToHead(GlobalKey<QuadrantGridState> key) {
     key.currentState?._sync.scrollAllToTop();
   }

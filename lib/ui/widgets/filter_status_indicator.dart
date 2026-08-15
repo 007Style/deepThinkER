@@ -1,5 +1,4 @@
-/// FilterStatusIndicator — small shield icon showing content filter state.
-library filter_status_indicator;
+// FilterStatusIndicator — small shield icon showing content filter state.
 
 import 'package:flutter/material.dart';
 

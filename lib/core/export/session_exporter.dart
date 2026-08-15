@@ -1,7 +1,6 @@
-/// SessionExporter — assembles session artefacts into a zip archive in memory.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library session_exporter;
+// SessionExporter — assembles session artefacts into a zip archive in memory.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'package:archive/archive.dart';
 

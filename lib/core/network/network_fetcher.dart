@@ -1,10 +1,9 @@
-/// Network fetcher for deepThinkER.
-///
-/// Executes [SEARCH:] and [FETCH:] tool calls: fetches raw HTML via HTTP,
-/// truncates to the configured character limit, and returns a [FetchResult].
-///
-/// This file has zero Flutter imports — pure Dart only.
-library network_fetcher;
+// Network fetcher for deepThinkER.
+//
+// Executes [SEARCH:] and [FETCH:] tool calls: fetches raw HTML via HTTP,
+// truncates to the configured character limit, and returns a [FetchResult].
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 

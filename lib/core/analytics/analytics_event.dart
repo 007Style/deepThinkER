@@ -1,7 +1,6 @@
-/// AnalyticsEvent — event model for session analytics.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library analytics_event;
+// AnalyticsEvent — event model for session analytics.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // AnalyticsEventType

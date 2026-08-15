@@ -1,5 +1,4 @@
-/// ExportButton — Flutter button that triggers session export to a zip file.
-library export_button;
+// ExportButton — Flutter button that triggers session export to a zip file.
 
 import 'dart:io';
 

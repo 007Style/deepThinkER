@@ -1,7 +1,6 @@
-/// MoodConfig — per-character mood sensitivity configuration.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library mood_config;
+// MoodConfig — per-character mood sensitivity configuration.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // MoodConfig

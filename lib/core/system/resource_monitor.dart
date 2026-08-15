@@ -1,11 +1,10 @@
-/// Real-time system resource monitor for deepThink.
-///
-/// Polls available (free + reclaimable) RAM every [pollInterval] and exposes
-/// it as a broadcast [Stream<ResourceSnapshot>]. Also captures the top memory-
-/// consuming processes so the UI can tell the user exactly what to close.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library resource_monitor;
+// Real-time system resource monitor for deepThink.
+//
+// Polls available (free + reclaimable) RAM every [pollInterval] and exposes
+// it as a broadcast [Stream<ResourceSnapshot>]. Also captures the top memory-
+// consuming processes so the UI can tell the user exactly what to close.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 import 'dart:io';

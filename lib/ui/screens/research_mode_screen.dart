@@ -6,7 +6,6 @@ import '../../core/conversation/conversation_engine.dart';
 import '../../core/conversation/inference_worker.dart';
 import '../../core/ollama/ollama_client.dart';
 import '../../core/research/research_engine.dart';
-import '../../core/research/research_session.dart';
 import '../widgets/research/phase_indicator.dart';
 import '../widgets/research/report_preview_widget.dart';
 

@@ -1,11 +1,10 @@
-/// Persistence for per-character model and prompt preferences.
-///
-/// Saves and loads the user's chosen model ID and master prompt for each of
-/// the four AI characters so that the startup config screen remembers the
-/// last state on every launch.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library participant_prefs;
+// Persistence for per-character model and prompt preferences.
+//
+// Saves and loads the user's chosen model ID and master prompt for each of
+// the four AI characters so that the startup config screen remembers the
+// last state on every launch.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 import 'dart:convert';

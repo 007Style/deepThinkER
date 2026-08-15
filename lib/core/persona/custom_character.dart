@@ -1,7 +1,6 @@
-/// CustomCharacter — a user-defined AI character profile.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library custom_character;
+// CustomCharacter — a user-defined AI character profile.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 import 'dart:io';

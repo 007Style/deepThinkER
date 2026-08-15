@@ -1,8 +1,7 @@
-/// TrustManager — tracks per-character trust scores, drives decay/gain,
-/// handles network toggle events, and persists state to disk.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library trust_manager;
+// TrustManager — tracks per-character trust scores, drives decay/gain,
+// handles network toggle events, and persists state to disk.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 

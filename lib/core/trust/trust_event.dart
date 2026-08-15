@@ -1,7 +1,6 @@
-/// Event emitted by [TrustManager] whenever a character's trust state changes.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library trust_event;
+// Event emitted by [TrustManager] whenever a character's trust state changes.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'trust_score.dart';
 

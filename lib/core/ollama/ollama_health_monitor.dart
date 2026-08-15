@@ -1,10 +1,9 @@
-/// OllamaHealthMonitor — pings Ollama every 10 s and emits health events.
-///
-/// Automatically attempts up to 3 restarts with 5 s backoff when the service
-/// becomes unreachable.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library ollama_health_monitor;
+// OllamaHealthMonitor — pings Ollama every 10 s and emits health events.
+//
+// Automatically attempts up to 3 restarts with 5 s backoff when the service
+// becomes unreachable.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 import 'dart:io';

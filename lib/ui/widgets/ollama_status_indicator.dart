@@ -1,5 +1,4 @@
-/// OllamaStatusIndicator — small colored dot showing Ollama health.
-library ollama_status_indicator;
+// OllamaStatusIndicator — small colored dot showing Ollama health.
 
 import 'package:flutter/material.dart';
 

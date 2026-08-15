@@ -1,9 +1,8 @@
-/// SettingsPersistence — loads and saves AppSettings to disk.
-///
-/// Stores settings as JSON in the app data directory (settings.json).
-///
-/// This file has zero Flutter imports — pure Dart only.
-library settings_persistence;
+// SettingsPersistence — loads and saves AppSettings to disk.
+//
+// Stores settings as JSON in the app data directory (settings.json).
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 import 'dart:io';

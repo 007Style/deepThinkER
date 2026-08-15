@@ -1,6 +1,5 @@
-/// MotionPolicyScope — InheritedWidget that propagates AnimationPolicy down
-/// the widget tree.
-library motion_policy;
+// MotionPolicyScope — InheritedWidget that propagates AnimationPolicy down
+// the widget tree.
 
 import 'package:flutter/material.dart';
 

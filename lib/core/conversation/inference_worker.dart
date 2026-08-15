@@ -1,18 +1,17 @@
-/// Per-AI inference worker for deepThinkER.
-///
-/// Each [InferenceWorker] monitors the shared [ConversationLog], applies a
-/// random jitter before responding, calls [OllamaClient.generateStream], and
-/// streams [InferenceEvent] tokens back to the [ConversationEngine].
-///
-/// Context-window resets are handled transparently via [ContextManager].
-///
-/// Tool-call interception: if a [ToolCallInterceptor] is attached, the
-/// response buffer is scanned after streaming completes.  When a tag is found
-/// the interceptor executes the tool and injects the result as a system
-/// message into the conversation log.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library inference_worker;
+// Per-AI inference worker for deepThinkER.
+//
+// Each [InferenceWorker] monitors the shared [ConversationLog], applies a
+// random jitter before responding, calls [OllamaClient.generateStream], and
+// streams [InferenceEvent] tokens back to the [ConversationEngine].
+//
+// Context-window resets are handled transparently via [ContextManager].
+//
+// Tool-call interception: if a [ToolCallInterceptor] is attached, the
+// response buffer is scanned after streaming completes.  When a tag is found
+// the interceptor executes the tool and injects the result as a system
+// message into the conversation log.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 import 'dart:math';

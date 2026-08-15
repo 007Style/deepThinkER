@@ -1,7 +1,6 @@
-/// Models the state of an Autonomous Research Mode session.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library research_session;
+// Models the state of an Autonomous Research Mode session.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // ResearchPhase

@@ -1,11 +1,10 @@
-/// DomainWhitelist — restricts which URLs can be fetched by [NetworkFetchTool].
-///
-/// When the whitelist is non-empty, only URLs whose hostname appears in
-/// [allowedDomains] can be fetched. An empty list disables the whitelist
-/// (all fetches are permitted).
-///
-/// This file has zero Flutter imports — pure Dart only.
-library domain_whitelist;
+// DomainWhitelist — restricts which URLs can be fetched by [NetworkFetchTool].
+//
+// When the whitelist is non-empty, only URLs whose hostname appears in
+// [allowedDomains] can be fetched. An empty list disables the whitelist
+// (all fetches are permitted).
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 import 'dart:io';

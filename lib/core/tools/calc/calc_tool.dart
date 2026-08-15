@@ -1,19 +1,17 @@
-/// CalcTool — AgentTool that evaluates math expressions safely.
-///
-/// Tag: [CALC: expression]
-///
-/// Supports: +, -, *, /, ^ (power), unary minus, parentheses,
-///           sqrt(x), abs(x).
-///
-/// Implemented as a hand-rolled recursive descent parser — no eval().
-///
-/// This file has zero Flutter imports — pure Dart only.
-library calc_tool;
+// CalcTool — AgentTool that evaluates math expressions safely.
+//
+// Tag: [CALC: expression]
+//
+// Supports: +, -, *, /, ^ (power), unary minus, parentheses,
+//           sqrt(x), abs(x).
+//
+// Implemented as a hand-rolled recursive descent parser — no eval().
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:math' as math;
 
 import '../agent_tool.dart';
-import '../tool_result.dart';
 import '../../trust/trust_score.dart';
 
 // ---------------------------------------------------------------------------

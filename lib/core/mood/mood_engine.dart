@@ -1,7 +1,6 @@
-/// MoodEngine — analyses conversation messages and tracks per-character mood.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library mood_engine;
+// MoodEngine — analyses conversation messages and tracks per-character mood.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 

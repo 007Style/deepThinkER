@@ -5,11 +5,6 @@ void main() {
   group('ConversationFormatter', () {
     const fmt = ConversationFormatter();
 
-    List<Map<String, String>> _msgs(List<(String, String, String)> data) => [
-          for (final (sender, content, ts) in data)
-            {'sender': sender, 'content': content, 'timestamp': ts},
-        ];
-
     test('formats a simple message', () {
       final result = fmt.format([
         {'sender': 'WATSON', 'content': 'Hello!', 'timestamp': '10:00:00'},

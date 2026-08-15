@@ -1,7 +1,6 @@
-/// SessionLoader — parses a session log file into a [ConversationLog].
-///
-/// This file has zero Flutter imports — pure Dart only.
-library session_loader;
+// SessionLoader — parses a session log file into a [ConversationLog].
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 import 'dart:io';

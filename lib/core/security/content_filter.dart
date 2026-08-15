@@ -1,12 +1,11 @@
-/// ContentFilter — scans and sanitises text against category keyword lists.
-///
-/// Keyword lists are loaded from asset text files (newline-delimited).
-/// In a Flutter context, use [ContentFilter.fromAssets] which calls
-/// rootBundle.loadString.  In pure-Dart tests or non-Flutter code, use
-/// [ContentFilter.fromMap] to supply the word lists directly.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library content_filter;
+// ContentFilter — scans and sanitises text against category keyword lists.
+//
+// Keyword lists are loaded from asset text files (newline-delimited).
+// In a Flutter context, use [ContentFilter.fromAssets] which calls
+// rootBundle.loadString.  In pure-Dart tests or non-Flutter code, use
+// [ContentFilter.fromMap] to supply the word lists directly.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'filter_config.dart';
 
@@ -25,7 +24,7 @@ class ContentFilter {
   ContentFilter._({
     required this.config,
     required Map<String, Set<String>> keywords,
-  }) : _keywords = keywords;
+  }) : _keywords = keywords; // ignore: prefer_initializing_formals
 
   /// Creates a [ContentFilter] from pre-loaded keyword lists.
   ///

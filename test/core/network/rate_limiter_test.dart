@@ -1,6 +1,5 @@
 import 'package:test/test.dart';
 import 'package:deep_think_er/core/network/rate_limiter.dart';
-import 'package:deep_think_er/core/trust/trust_score.dart';
 import 'package:deep_think_er/core/trust/trust_manager.dart';
 
 // All tests use only characters registered in the TrustManager.

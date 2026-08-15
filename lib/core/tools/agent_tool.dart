@@ -1,10 +1,9 @@
-/// Abstract interface for all deepThinkER agent tools.
-///
-/// Every tool — network, shell, or future capability — implements this
-/// interface and is registered in [ToolRegistry] at startup.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library agent_tool;
+// Abstract interface for all deepThinkER agent tools.
+//
+// Every tool — network, shell, or future capability — implements this
+// interface and is registered in [ToolRegistry] at startup.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../trust/trust_score.dart';
 import 'tool_result.dart';

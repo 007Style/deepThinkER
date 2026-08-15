@@ -4,7 +4,6 @@
 // A search bar filters entries by keyword.
 import 'package:flutter/material.dart';
 
-import '../../core/memory/memory_entry.dart';
 import '../../core/memory/memory_persistence.dart';
 import '../../core/memory/memory_store.dart';
 import '../widgets/app_theme.dart';

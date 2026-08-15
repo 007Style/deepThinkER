@@ -1,8 +1,7 @@
-/// Model registry for deepThink.
-///
-/// Defines the four available Ollama models with their metadata.
-/// This file has zero Flutter imports — pure Dart only.
-library model_registry;
+// Model registry for deepThink.
+//
+// Defines the four available Ollama models with their metadata.
+// This file has zero Flutter imports — pure Dart only.
 
 /// Metadata describing a single available model.
 class ModelInfo {

@@ -1,7 +1,6 @@
-/// Configuration model for the deepThinkER rate limiter.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library rate_limit_config;
+// Configuration model for the deepThinkER rate limiter.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../trust/trust_score.dart';
 

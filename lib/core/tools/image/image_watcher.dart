@@ -1,9 +1,8 @@
-/// ImageWatcher — monitors the workspace for new image files.
-///
-/// Emits [ImageDroppedEvent] when an image file is detected.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library image_watcher;
+// ImageWatcher — monitors the workspace for new image files.
+//
+// Emits [ImageDroppedEvent] when an image file is detected.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 import 'dart:io';

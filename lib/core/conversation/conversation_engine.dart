@@ -1,11 +1,10 @@
-/// Conversation engine for deepThink.
-///
-/// Top-level orchestrator that owns the four [InferenceWorker] instances,
-/// manages start/stop lifecycle, injects user messages, and exposes a
-/// merged [eventStream] for the UI layer.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library conversation_engine;
+// Conversation engine for deepThink.
+//
+// Top-level orchestrator that owns the four [InferenceWorker] instances,
+// manages start/stop lifecycle, injects user messages, and exposes a
+// merged [eventStream] for the UI layer.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 

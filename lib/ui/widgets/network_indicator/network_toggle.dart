@@ -69,7 +69,7 @@ class _NetworkToggleState extends State<NetworkToggle> {
             child: Switch(
               value: _enabled,
               onChanged: _onChanged,
-              activeColor: AppColors.accent,
+              activeThumbColor: AppColors.accent,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           ),

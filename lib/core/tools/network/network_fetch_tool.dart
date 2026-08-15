@@ -1,17 +1,15 @@
-/// NetworkFetchTool — executes [FETCH: url] tool calls.
-///
-/// Delegates to [NetworkFetcher.fetch] and returns the raw truncated HTML
-/// as the tool output.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library network_fetch_tool;
+// NetworkFetchTool — executes [FETCH: url] tool calls.
+//
+// Delegates to [NetworkFetcher.fetch] and returns the raw truncated HTML
+// as the tool output.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../../network/domain_whitelist.dart';
 import '../../network/fetch_result.dart';
 import '../../network/network_fetcher.dart';
 import '../../trust/trust_score.dart';
 import '../agent_tool.dart';
-import '../tool_result.dart';
 
 // ---------------------------------------------------------------------------
 // NetworkFetchTool

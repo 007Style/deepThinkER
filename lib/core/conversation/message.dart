@@ -1,8 +1,7 @@
-/// Message model for deepThink.
-///
-/// Represents a single utterance in the shared conversation log.
-/// This file has zero Flutter imports — pure Dart only.
-library message;
+// Message model for deepThink.
+//
+// Represents a single utterance in the shared conversation log.
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:math';
 

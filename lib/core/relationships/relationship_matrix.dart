@@ -1,7 +1,6 @@
-/// RelationshipMatrix — holds and manages all 6 character-pair scores.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library relationship_matrix;
+// RelationshipMatrix — holds and manages all 6 character-pair scores.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 

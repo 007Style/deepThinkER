@@ -1,8 +1,7 @@
-/// Participant model for deepThink.
-///
-/// Defines the four AI characters and their mutable configuration.
-/// This file has zero Flutter imports — pure Dart only.
-library participant;
+// Participant model for deepThink.
+//
+// Defines the four AI characters and their mutable configuration.
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // Participant

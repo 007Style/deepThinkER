@@ -1,7 +1,6 @@
-/// Typed notification event classes for deepThinkER.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library notification_event;
+// Typed notification event classes for deepThinkER.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // NotificationEvent

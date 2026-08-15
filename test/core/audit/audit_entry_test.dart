@@ -59,7 +59,7 @@ void main() {
     });
 
     group('JSON round-trip', () {
-      AuditEntry _make({bool injection = false}) => AuditEntry.create(
+      AuditEntry make({bool injection = false}) => AuditEntry.create(
             sessionName: 'test_session',
             characterName: 'WATSON',
             toolTag: 'SEARCH',
@@ -71,7 +71,7 @@ void main() {
           );
 
       test('toJson/fromJson preserves all fields', () {
-        final original = _make(injection: true);
+        final original = make(injection: true);
         final json = original.toJson();
         final restored = AuditEntry.fromJson(json);
 
@@ -102,7 +102,7 @@ void main() {
       });
 
       test('toNdJsonLine produces valid JSON', () {
-        final e = _make();
+        final e = make();
         final line = e.toNdJsonLine();
         expect(() => AuditEntry.fromJson(
               Map<String, dynamic>.from(

@@ -1,14 +1,13 @@
-/// Session lifecycle manager for deepThink.
-///
-/// Handles session creation, auto-naming, on-disk log writing, session
-/// indexing, and cumulative app-stats persistence.
-///
-/// Log file location:
-/// - macOS:   `~/Library/Application Support/deepThinkER/sessions/<name>_<timestamp>.txt`
-/// - Windows: `%APPDATA%\deepThinkER\sessions\<name>_<timestamp>.txt`
-///
-/// This file has zero Flutter imports — pure Dart only.
-library session_manager;
+// Session lifecycle manager for deepThink.
+//
+// Handles session creation, auto-naming, on-disk log writing, session
+// indexing, and cumulative app-stats persistence.
+//
+// Log file location:
+// - macOS:   `~/Library/Application Support/deepThinkER/sessions/<name>_<timestamp>.txt`
+// - Windows: `%APPDATA%\deepThinkER\sessions\<name>_<timestamp>.txt`
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 import 'dart:convert';

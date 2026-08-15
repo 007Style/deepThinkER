@@ -1,5 +1,4 @@
-/// SoundService — plays audio cues using the audioplayers package.
-library sound_service;
+// SoundService — plays audio cues using the audioplayers package.
 
 import 'package:audioplayers/audioplayers.dart';
 

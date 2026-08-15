@@ -1,7 +1,6 @@
-/// Handles reading and writing trust scores to disk.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library trust_persistence;
+// Handles reading and writing trust scores to disk.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 import 'dart:io';

@@ -1,10 +1,9 @@
-/// Ollama REST API client for deepThink.
-///
-/// Provides streaming chat generation, model listing, model pulling with
-/// progress, and a health check — all using only [dart:io] and [dart:convert].
-///
-/// This file has zero Flutter imports — pure Dart only.
-library ollama_client;
+// Ollama REST API client for deepThink.
+//
+// Provides streaming chat generation, model listing, model pulling with
+// progress, and a health check — all using only [dart:io] and [dart:convert].
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 import 'dart:convert';

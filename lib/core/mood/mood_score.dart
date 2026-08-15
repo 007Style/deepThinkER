@@ -1,7 +1,6 @@
-/// MoodScore — value object for a character's current mood state.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library mood_score;
+// MoodScore — value object for a character's current mood state.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // MoodState

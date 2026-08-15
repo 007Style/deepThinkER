@@ -1,13 +1,10 @@
-/// RememberTool — AgentTool that stores a fact in the character's MemoryStore.
-///
-/// Tag: [REMEMBER: fact]
-///
-/// This file has zero Flutter imports — pure Dart only.
-library remember_tool;
+// RememberTool — AgentTool that stores a fact in the character's MemoryStore.
+//
+// Tag: [REMEMBER: fact]
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../agent_tool.dart';
-import '../tool_result.dart';
-import '../../memory/memory_entry.dart';
 import '../../memory/memory_persistence.dart';
 import '../../memory/memory_store.dart';
 import '../../trust/trust_score.dart';

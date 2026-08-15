@@ -1,7 +1,6 @@
-/// SteeringEngine — injects silent steering messages into all workers.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library steering_engine;
+// SteeringEngine — injects silent steering messages into all workers.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../conversation/conversation_engine.dart';
 import '../conversation/message.dart';

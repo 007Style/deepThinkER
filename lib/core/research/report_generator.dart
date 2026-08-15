@@ -1,7 +1,6 @@
-/// Generates a Markdown research report from a completed ResearchSession.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library report_generator;
+// Generates a Markdown research report from a completed ResearchSession.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 import 'dart:io';

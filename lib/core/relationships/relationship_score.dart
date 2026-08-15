@@ -1,7 +1,6 @@
-/// RelationshipScore — value object for a character pair relationship.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library relationship_score;
+// RelationshipScore — value object for a character pair relationship.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // Disposition

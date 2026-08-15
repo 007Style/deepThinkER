@@ -1,11 +1,10 @@
-/// Orchestrates Autonomous Research Mode.
-///
-/// Injects a task directive into all four characters, manages phase
-/// transitions on timers, collects synthesis statements, and generates
-/// the final Markdown report.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library research_engine;
+// Orchestrates Autonomous Research Mode.
+//
+// Injects a task directive into all four characters, manages phase
+// transitions on timers, collects synthesis statements, and generates
+// the final Markdown report.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 
@@ -90,8 +89,8 @@ class ResearchEngine {
     required ConversationEngine engine,
     required List<String> characterNames,
     ResearchConfig? config,
-  })  : _engine = engine,
-        _characterNames = characterNames,
+  })  : _engine = engine, // ignore: prefer_initializing_formals
+        _characterNames = characterNames, // ignore: prefer_initializing_formals
         _config = config ?? const ResearchConfig();
 
   // -------------------------------------------------------------------------

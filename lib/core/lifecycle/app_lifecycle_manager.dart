@@ -1,11 +1,10 @@
-/// AppLifecycleManager — listens for OS shutdown signals and triggers a
-/// graceful app shutdown callback.
-///
-/// Handles SIGTERM and SIGINT on POSIX platforms. On Windows, only SIGINT
-/// (Ctrl-C) is trapped; SIGTERM is a no-op.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library app_lifecycle_manager;
+// AppLifecycleManager — listens for OS shutdown signals and triggers a
+// graceful app shutdown callback.
+//
+// Handles SIGTERM and SIGINT on POSIX platforms. On Windows, only SIGINT
+// (Ctrl-C) is trapped; SIGTERM is a no-op.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 import 'dart:io';

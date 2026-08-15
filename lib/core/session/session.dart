@@ -1,10 +1,9 @@
-/// Session model for deepThink.
-///
-/// Represents a single conversation session: its identity, name, timing,
-/// participant snapshot, log file location, and running message/token stats.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library session;
+// Session model for deepThink.
+//
+// Represents a single conversation session: its identity, name, timing,
+// participant snapshot, log file location, and running message/token stats.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../conversation/participant.dart';
 

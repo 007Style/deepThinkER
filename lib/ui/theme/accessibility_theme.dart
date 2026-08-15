@@ -1,5 +1,4 @@
-/// AccessibilityTheme — high-contrast ThemeData and font size scale map.
-library accessibility_theme;
+// AccessibilityTheme — high-contrast ThemeData and font size scale map.
 
 import 'package:flutter/material.dart';
 

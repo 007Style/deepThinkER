@@ -1,11 +1,10 @@
-/// Hardware detection for deepThink.
-///
-/// Detects total system RAM and GPU type at runtime using [dart:io] subprocess
-/// calls. Returns a [HardwareInfo] object used throughout the app to choose
-/// the appropriate context window tier and display inference backend status.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library hardware_detector;
+// Hardware detection for deepThink.
+//
+// Detects total system RAM and GPU type at runtime using [dart:io] subprocess
+// calls. Returns a [HardwareInfo] object used throughout the app to choose
+// the appropriate context window tier and display inference backend status.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:io';
 
@@ -206,14 +205,14 @@ class HardwareDetector {
       pageSize = int.tryParse(pageSizeMatch.group(1)!) ?? pageSize;
     }
 
-    int _pages(String key) {
+    pages(String key) {
       final match = RegExp('$key:\\s+(\\d+)\\.').firstMatch(output);
       return int.tryParse(match?.group(1) ?? '0') ?? 0;
     }
 
-    final freePages = _pages('Pages free');
-    final inactivePages = _pages('Pages inactive');
-    final speculativePages = _pages('Pages speculative');
+    final freePages = pages('Pages free');
+    final inactivePages = pages('Pages inactive');
+    final speculativePages = pages('Pages speculative');
     final totalFreeBytes =
         (freePages + inactivePages + speculativePages) * pageSize;
     return totalFreeBytes / (1024 * 1024 * 1024);

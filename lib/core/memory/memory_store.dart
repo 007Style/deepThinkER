@@ -1,7 +1,6 @@
-/// MemoryStore — per-character in-memory store with cap and stream.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library memory_store;
+// MemoryStore — per-character in-memory store with cap and stream.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 

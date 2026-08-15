@@ -1,7 +1,6 @@
-/// AuditEntry — value object for a single tool-call audit record.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library audit_entry;
+// AuditEntry — value object for a single tool-call audit record.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 

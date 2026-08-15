@@ -1,10 +1,9 @@
-/// Singleton registry of all AgentTool instances in deepThinkER.
-///
-/// Tools are registered at app startup in main.dart and resolved by the
-/// ToolCallInterceptor during inference.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library tool_registry;
+// Singleton registry of all AgentTool instances in deepThinkER.
+//
+// Tools are registered at app startup in main.dart and resolved by the
+// ToolCallInterceptor during inference.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'agent_tool.dart';
 

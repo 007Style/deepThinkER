@@ -1,9 +1,8 @@
-/// DebugController — singleton with hooks for simulating state changes.
-///
-/// Wires up callback hooks that the main screen can bind to its own state.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library debug_controller;
+// DebugController — singleton with hooks for simulating state changes.
+//
+// Wires up callback hooks that the main screen can bind to its own state.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // DebugController

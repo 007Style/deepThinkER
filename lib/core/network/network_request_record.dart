@@ -1,10 +1,9 @@
-/// NetworkRequestRecord — lightweight value object for one network tool call.
-///
-/// Collected in-memory by MainScreen and passed to SettingsScreen for display.
-/// Not persisted — lives only for the duration of the session view.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library network_request_record;
+// NetworkRequestRecord — lightweight value object for one network tool call.
+//
+// Collected in-memory by MainScreen and passed to SettingsScreen for display.
+// Not persisted — lives only for the duration of the session view.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // NetworkRequestStatus

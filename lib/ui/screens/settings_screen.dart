@@ -1,5 +1,4 @@
-/// SettingsScreen — tabbed settings UI for deepThinkER.
-library settings_screen;
+// SettingsScreen — tabbed settings UI for deepThinkER.
 
 import 'package:flutter/material.dart';
 
@@ -155,7 +154,7 @@ class _NetworkTab extends StatelessWidget {
             style: TextStyle(color: AppColors.textPrimary, fontSize: 13),
           ),
           value: settings.proactiveInjectionEnabled,
-          activeColor: AppColors.accent,
+          activeThumbColor: AppColors.accent,
           onChanged: (v) =>
               onChanged(settings.copyWith(proactiveInjectionEnabled: v)),
         ),
@@ -280,7 +279,7 @@ class _NetworkLogSection extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: reversed.length,
-            separatorBuilder: (_, __) =>
+            separatorBuilder: (_, _) =>
                 const Divider(height: 1, color: AppColors.border),
             itemBuilder: (ctx, i) =>
                 _NetworkLogRow(record: reversed[i]),
@@ -318,21 +317,6 @@ class _NetworkLogRow extends StatelessWidget {
     final m = t.minute.toString().padLeft(2, '0');
     final s = t.second.toString().padLeft(2, '0');
     return '$h:$m:$s';
-  }
-
-  String get _charColor {
-    switch (record.characterName) {
-      case 'WATSON':
-        return 'WA';
-      case 'DEEP':
-        return 'DE';
-      case 'NOVA':
-        return 'NO';
-      case 'SAGE':
-        return 'SA';
-      default:
-        return record.characterName.substring(0, 2);
-    }
   }
 
   Color get _charAccent {
@@ -659,7 +643,7 @@ class _SafetyTab extends StatelessWidget {
             style: TextStyle(color: AppColors.textPrimary, fontSize: 13),
           ),
           value: settings.contentFilterEnabled,
-          activeColor: AppColors.accent,
+          activeThumbColor: AppColors.accent,
           onChanged: (v) =>
               onChanged(settings.copyWith(contentFilterEnabled: v)),
         ),
@@ -711,7 +695,7 @@ class _DisplayTab extends StatelessWidget {
       children: [
         const _SectionHeader('Font Size'),
         DropdownButtonFormField<String>(
-          value: settings.fontSizeScale,
+          initialValue: settings.fontSizeScale,
           dropdownColor: AppColors.surface,
           style: const TextStyle(
               color: AppColors.textPrimary, fontSize: 13),
@@ -729,7 +713,7 @@ class _DisplayTab extends StatelessWidget {
             style: TextStyle(color: AppColors.textPrimary, fontSize: 13),
           ),
           value: settings.highContrastMode,
-          activeColor: AppColors.accent,
+          activeThumbColor: AppColors.accent,
           onChanged: (v) =>
               onChanged(settings.copyWith(highContrastMode: v)),
         ),
@@ -739,7 +723,7 @@ class _DisplayTab extends StatelessWidget {
             style: TextStyle(color: AppColors.textPrimary, fontSize: 13),
           ),
           value: settings.reducedMotionMode,
-          activeColor: AppColors.accent,
+          activeThumbColor: AppColors.accent,
           onChanged: (v) =>
               onChanged(settings.copyWith(reducedMotionMode: v)),
         ),
@@ -769,7 +753,7 @@ class _AdvancedTab extends StatelessWidget {
             style: TextStyle(color: AppColors.textPrimary, fontSize: 13),
           ),
           value: settings.soundEnabled,
-          activeColor: AppColors.accent,
+          activeThumbColor: AppColors.accent,
           onChanged: (v) => onChanged(settings.copyWith(soundEnabled: v)),
         ),
         SwitchListTile(
@@ -778,7 +762,7 @@ class _AdvancedTab extends StatelessWidget {
             style: TextStyle(color: AppColors.textPrimary, fontSize: 13),
           ),
           value: settings.notificationsEnabled,
-          activeColor: AppColors.accent,
+          activeThumbColor: AppColors.accent,
           onChanged: (v) =>
               onChanged(settings.copyWith(notificationsEnabled: v)),
         ),

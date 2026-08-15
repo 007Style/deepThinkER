@@ -1,7 +1,6 @@
 import 'package:test/test.dart';
 import 'package:deep_think_er/core/tools/tool_registry.dart';
 import 'package:deep_think_er/core/tools/agent_tool.dart';
-import 'package:deep_think_er/core/tools/tool_result.dart';
 import 'package:deep_think_er/core/trust/trust_score.dart';
 
 // ── Minimal stub tool for testing ──────────────────────────────────────────
@@ -14,16 +13,14 @@ class _StubTool implements AgentTool {
   @override
   final String disabledMessage;
   @override
-  final bool requiresTrust;
+  final bool requiresTrust = false;
   @override
-  final TrustTier minimumTrust;
+  final TrustTier minimumTrust = TrustTier.low;
 
   const _StubTool({
     required this.tag,
     this.enabled = true,
     this.disabledMessage = 'disabled',
-    this.requiresTrust = false,
-    this.minimumTrust = TrustTier.low,
   });
 
   @override

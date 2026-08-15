@@ -1,8 +1,7 @@
-/// ToolCallInterceptor — scans the LLM response buffer for tool-call tags
-/// and executes the first matching tool found.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library tool_call_interceptor;
+// ToolCallInterceptor — scans the LLM response buffer for tool-call tags
+// and executes the first matching tool found.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 
@@ -11,11 +10,9 @@ import '../network/rate_limiter.dart';
 import '../security/content_filter.dart';
 import '../security/injection_guard.dart';
 import '../trust/trust_manager.dart';
-import '../trust/trust_score.dart';
 import 'agent_tool.dart';
 import 'tool_call_parser.dart';
 import 'tool_registry.dart';
-import 'tool_result.dart';
 
 // ---------------------------------------------------------------------------
 // ToolCallEvent

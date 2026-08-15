@@ -1,7 +1,6 @@
-/// AuditLog — singleton append-only log of all tool invocations.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library audit_log;
+// AuditLog — singleton append-only log of all tool invocations.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 

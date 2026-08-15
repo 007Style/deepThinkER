@@ -1,10 +1,9 @@
-/// MockOllamaClient — streams scripted responses for offline simulation mode.
-///
-/// Implements the same [generateStream] interface as [OllamaClient] so it can
-/// be swapped in transparently during development / testing.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library mock_ollama_client;
+// MockOllamaClient — streams scripted responses for offline simulation mode.
+//
+// Implements the same [generateStream] interface as [OllamaClient] so it can
+// be swapped in transparently during development / testing.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 

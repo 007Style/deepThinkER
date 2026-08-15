@@ -1,16 +1,14 @@
-/// NetworkSearchTool — executes [SEARCH: query] tool calls.
-///
-/// Delegates to [NetworkFetcher.search] and returns the raw truncated HTML
-/// as the tool output.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library network_search_tool;
+// NetworkSearchTool — executes [SEARCH: query] tool calls.
+//
+// Delegates to [NetworkFetcher.search] and returns the raw truncated HTML
+// as the tool output.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../../trust/trust_score.dart';
 import '../agent_tool.dart';
 import '../../network/fetch_result.dart';
 import '../../network/network_fetcher.dart';
-import '../tool_result.dart';
 
 // ---------------------------------------------------------------------------
 // NetworkSearchTool

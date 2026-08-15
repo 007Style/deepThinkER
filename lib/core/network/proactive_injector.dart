@@ -1,15 +1,14 @@
-/// ProactiveInjector — injects relevant web context into conversation without
-/// a character explicitly requesting it.
-///
-/// Runs a per-character timer keyed to trust tier.  On each tick, it:
-/// 1. Extracts topics from the last 3 messages.
-/// 2. Picks the top topic.
-/// 3. Calls RateLimiter.request(); if allowed, fetches via NetworkFetcher.
-/// 4. Appends an ephemeral system message to the ConversationLog.
-/// 5. Emits a ProactiveInjectionEvent.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library proactive_injector;
+// ProactiveInjector — injects relevant web context into conversation without
+// a character explicitly requesting it.
+//
+// Runs a per-character timer keyed to trust tier.  On each tick, it:
+// 1. Extracts topics from the last 3 messages.
+// 2. Picks the top topic.
+// 3. Calls RateLimiter.request(); if allowed, fetches via NetworkFetcher.
+// 4. Appends an ephemeral system message to the ConversationLog.
+// 5. Emits a ProactiveInjectionEvent.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 
@@ -17,7 +16,6 @@ import '../conversation/conversation_log.dart';
 import '../conversation/message.dart';
 import '../trust/trust_manager.dart';
 import 'network_fetcher.dart';
-import 'rate_limit_config.dart';
 import 'rate_limiter.dart';
 import 'topic_extractor.dart';
 

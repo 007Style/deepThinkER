@@ -1,11 +1,10 @@
-/// System prompt builder for deepThink.
-///
-/// Constructs the per-AI system prompt that is prepended to every Ollama
-/// inference call. The prompt encodes identity, relationships between
-/// participants, conversation rules, and the pass mechanic.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library system_prompt_builder;
+// System prompt builder for deepThink.
+//
+// Constructs the per-AI system prompt that is prepended to every Ollama
+// inference call. The prompt encodes identity, relationships between
+// participants, conversation rules, and the pass mechanic.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../mood/mood_score.dart';
 import '../ollama/hardware_detector.dart';
@@ -100,7 +99,7 @@ Host: $hostName guides the conversation but does not outrank anyone.
 5. Never start your response with your own name.
 6. Never break character.
 
-${personaBlock}${moodBlock.isNotEmpty ? '\n$moodBlock' : ''}${relationshipBlock.isNotEmpty ? '\n$relationshipBlock' : ''} $toolBlock
+$personaBlock${moodBlock.isNotEmpty ? '\n$moodBlock' : ''}${relationshipBlock.isNotEmpty ? '\n$relationshipBlock' : ''} $toolBlock
 $hardwareBlock''';
   }
 

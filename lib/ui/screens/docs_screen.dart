@@ -246,7 +246,7 @@ class _DocTab extends StatelessWidget {
           .where((c) => c.isNotEmpty)
           .toList();
       final isHeader = cells.any((c) => c.isNotEmpty) &&
-          !lines_contain_separator_after(line);
+          !linesContainSeparatorAfter(line);
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 1),
         child: Row(
@@ -364,7 +364,7 @@ class _DocTab extends StatelessWidget {
   }
 
   // Naive helper — tables don't have a separator after headers for our purposes
-  bool lines_contain_separator_after(String line) => false;
+  bool linesContainSeparatorAfter(String line) => false;
 
   Widget _inlineText(String text, {TextStyle? style}) {
     // Strip bold/italic markdown for plain display

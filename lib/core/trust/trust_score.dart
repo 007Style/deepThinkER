@@ -1,7 +1,6 @@
-/// Immutable value object representing a single character's trust state.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library trust_score;
+// Immutable value object representing a single character's trust state.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // TrustTier

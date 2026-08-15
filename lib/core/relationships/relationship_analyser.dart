@@ -1,7 +1,6 @@
-/// RelationshipAnalyser — monitors conversation messages and updates scores.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library relationship_analyser;
+// RelationshipAnalyser — monitors conversation messages and updates scores.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../conversation/message.dart';
 import 'relationship_matrix.dart';

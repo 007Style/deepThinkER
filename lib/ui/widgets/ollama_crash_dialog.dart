@@ -1,5 +1,4 @@
-/// OllamaCrashDialog — shows when the Ollama process has crashed.
-library ollama_crash_dialog;
+// OllamaCrashDialog — shows when the Ollama process has crashed.
 
 import 'package:flutter/material.dart';
 

@@ -48,14 +48,14 @@ void main() {
 
     test('setRelationship clamps score above 100', () {
       int? received;
-      dc.onSetRelationship = (_, __, score) => received = score;
+      dc.onSetRelationship = (_, _, score) => received = score;
       dc.setRelationship('WATSON', 'DEEP', 200);
       expect(received, 100);
     });
 
     test('setRelationship clamps score below -100', () {
       int? received;
-      dc.onSetRelationship = (_, __, score) => received = score;
+      dc.onSetRelationship = (_, _, score) => received = score;
       dc.setRelationship('WATSON', 'DEEP', -200);
       expect(received, -100);
     });

@@ -1,10 +1,9 @@
-/// App-wide lifetime statistics for deepThink.
-///
-/// Tracks cumulative usage across all sessions ever run on this machine.
-/// Persisted to `~/Documents/deepThink/stats.json` by [SessionManager].
-///
-/// This file has zero Flutter imports — pure Dart only.
-library app_stats;
+// App-wide lifetime statistics for deepThink.
+//
+// Tracks cumulative usage across all sessions ever run on this machine.
+// Persisted to `~/Documents/deepThink/stats.json` by [SessionManager].
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // AppStats

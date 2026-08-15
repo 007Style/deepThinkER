@@ -1,10 +1,9 @@
-/// WhisperMessage — a private message directed to a single character.
-///
-/// Extends [Message] with a [targetCharacter] field. Only the target
-/// character's [InferenceWorker] receives it.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library whisper_message;
+// WhisperMessage — a private message directed to a single character.
+//
+// Extends [Message] with a [targetCharacter] field. Only the target
+// character's [InferenceWorker] receives it.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'message.dart';
 

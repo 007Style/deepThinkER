@@ -1,17 +1,16 @@
-/// Ollama process launcher for deepThink.
-///
-/// Manages the bundled Ollama binary lifecycle. On macOS the full Ollama
-/// runtime is copied into the .app bundle at build time by the Xcode
-/// "Copy Ollama Runtime" shell-script build phase and lives at:
-///
-///   `<app>.app/Contents/Resources/ollama/ollama`
-///
-/// On Windows the runtime is placed next to the executable under:
-///
-///   `<install dir>\ollama\ollama.exe`
-///
-/// This file has zero Flutter imports — pure Dart only.
-library ollama_launcher;
+// Ollama process launcher for deepThink.
+//
+// Manages the bundled Ollama binary lifecycle. On macOS the full Ollama
+// runtime is copied into the .app bundle at build time by the Xcode
+// "Copy Ollama Runtime" shell-script build phase and lives at:
+//
+//   `<app>.app/Contents/Resources/ollama/ollama`
+//
+// On Windows the runtime is placed next to the executable under:
+//
+//   `<install dir>\ollama\ollama.exe`
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:io';
 import 'dart:async';

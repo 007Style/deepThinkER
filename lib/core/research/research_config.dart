@@ -1,8 +1,7 @@
-/// Configuration for Autonomous Research Mode.
-///
-/// All durations and limits are user-configurable.
-/// This file has zero Flutter imports — pure Dart only.
-library research_config;
+// Configuration for Autonomous Research Mode.
+//
+// All durations and limits are user-configurable.
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // ResearchConfig

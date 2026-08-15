@@ -1,7 +1,6 @@
-/// FileToolConfig — configuration for the file read/write tools.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library file_tool_config;
+// FileToolConfig — configuration for the file read/write tools.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:io';
 

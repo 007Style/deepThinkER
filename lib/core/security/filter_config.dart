@@ -1,7 +1,6 @@
-/// FilterConfig — configuration model for the content safety filter.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library filter_config;
+// FilterConfig — configuration model for the content safety filter.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // FilterConfig

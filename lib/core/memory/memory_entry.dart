@@ -1,7 +1,6 @@
-/// MemoryEntry — a single stored fact for one AI character.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library memory_entry;
+// MemoryEntry — a single stored fact for one AI character.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // MemorySource

@@ -1,7 +1,6 @@
-/// AuditPersistence — append-only NDJSON audit log file.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library audit_persistence;
+// AuditPersistence — append-only NDJSON audit log file.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 import 'dart:io';

@@ -1,11 +1,10 @@
-/// Context manager for deepThink.
-///
-/// Tracks estimated token usage per participant and triggers context-window
-/// resets when a participant approaches its limit. Also builds the seed
-/// message list used to prime a fresh context window.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library context_manager;
+// Context manager for deepThink.
+//
+// Tracks estimated token usage per participant and triggers context-window
+// resets when a participant approaches its limit. Also builds the seed
+// message list used to prime a fresh context window.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../conversation/conversation_log.dart';
 import '../conversation/message.dart';

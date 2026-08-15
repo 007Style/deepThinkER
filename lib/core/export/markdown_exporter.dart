@@ -1,7 +1,6 @@
-/// MarkdownExporter — formats a conversation as a Markdown document.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library markdown_exporter;
+// MarkdownExporter — formats a conversation as a Markdown document.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // MarkdownExporter

@@ -1,6 +1,5 @@
-/// ShortcutHandler — Flutter widget that wraps a child with keyboard shortcut
-/// Shortcuts + Actions bindings.
-library shortcut_handler;
+// ShortcutHandler — Flutter widget that wraps a child with keyboard shortcut
+// Shortcuts + Actions bindings.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

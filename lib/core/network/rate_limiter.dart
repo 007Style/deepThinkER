@@ -1,16 +1,14 @@
-/// Rate limiter for deepThinkER network access.
-///
-/// Enforces per-character sliding-window limits (derived from trust tier) and
-/// a global cap across all characters combined.  Calls back to [TrustManager]
-/// on denial so a trust penalty is applied.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library rate_limiter;
+// Rate limiter for deepThinkER network access.
+//
+// Enforces per-character sliding-window limits (derived from trust tier) and
+// a global cap across all characters combined.  Calls back to [TrustManager]
+// on denial so a trust penalty is applied.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 
 import '../trust/trust_manager.dart';
-import '../trust/trust_score.dart';
 import 'rate_limit_config.dart';
 
 export 'rate_limit_config.dart';

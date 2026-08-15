@@ -1,14 +1,12 @@
-/// RelationshipPersistence — read/write relationship matrix to disk.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library relationship_persistence;
+// RelationshipPersistence — read/write relationship matrix to disk.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 import 'dart:io';
 
 import '../paths/app_paths.dart';
 import 'relationship_matrix.dart';
-import 'relationship_score.dart';
 
 // ---------------------------------------------------------------------------
 // RelationshipPersistence

@@ -1,12 +1,10 @@
-/// RecallTool — AgentTool that queries the character's MemoryStore.
-///
-/// Tag: [RECALL: topic]
-///
-/// This file has zero Flutter imports — pure Dart only.
-library recall_tool;
+// RecallTool — AgentTool that queries the character's MemoryStore.
+//
+// Tag: [RECALL: topic]
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../agent_tool.dart';
-import '../tool_result.dart';
 import '../../memory/memory_store.dart';
 import '../../trust/trust_score.dart';
 

@@ -1,5 +1,4 @@
-/// SimulationModeToggle — debug-only widget to toggle offline simulation mode.
-library simulation_mode_toggle;
+// SimulationModeToggle — debug-only widget to toggle offline simulation mode.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

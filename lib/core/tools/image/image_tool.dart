@@ -1,13 +1,11 @@
-/// ImageTool — AgentTool that analyses images from the workspace.
-///
-/// Tag: [IMAGE: filename]
-///
-/// This file has zero Flutter imports — pure Dart only.
-library image_tool;
+// ImageTool — AgentTool that analyses images from the workspace.
+//
+// Tag: [IMAGE: filename]
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../../tools/file/file_tool_config.dart';
 import '../agent_tool.dart';
-import '../tool_result.dart';
 import '../../trust/trust_score.dart';
 import 'vision_client.dart';
 

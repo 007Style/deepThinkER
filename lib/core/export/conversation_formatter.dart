@@ -1,8 +1,7 @@
-/// ConversationFormatter — strips system/tool messages and formats a clean
-/// human-readable transcript.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library conversation_formatter;
+// ConversationFormatter — strips system/tool messages and formats a clean
+// human-readable transcript.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // ConversationFormatter

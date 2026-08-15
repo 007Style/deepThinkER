@@ -261,7 +261,7 @@ class _ResourceGateScreenState extends State<ResourceGateScreen>
         if (hasData)
           AnimatedBuilder(
             animation: _pulseAnim,
-            builder: (_, __) => Opacity(
+            builder: (_, _) => Opacity(
               opacity: _pulseAnim.value,
               child: Container(
                 width: 10,
@@ -334,7 +334,7 @@ class _ResourceGateScreenState extends State<ResourceGateScreen>
                     widthFactor: (usedGb / totalGb).clamp(0.0, 1.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: barColor.withOpacity(0.25),
+                        color: barColor.withValues(alpha: 0.25),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -359,7 +359,7 @@ class _ResourceGateScreenState extends State<ResourceGateScreen>
                     bottom: 0,
                     child: Container(
                       width: 2,
-                      color: const Color(0xFFFFFFFF).withOpacity(0.35),
+                      color: const Color(0xFFFFFFFF).withValues(alpha: 0.35),
                     ),
                   ),
                   // Labels inside bar

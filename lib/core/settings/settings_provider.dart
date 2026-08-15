@@ -1,8 +1,7 @@
-/// SettingsProvider — singleton that holds the current AppSettings and
-/// broadcasts changes to subscribers.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library settings_provider;
+// SettingsProvider — singleton that holds the current AppSettings and
+// broadcasts changes to subscribers.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 

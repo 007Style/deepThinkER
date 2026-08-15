@@ -1,7 +1,6 @@
-/// FetchResult — value object for an HTTP fetch response.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library fetch_result;
+// FetchResult — value object for an HTTP fetch response.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 // ---------------------------------------------------------------------------
 // FetchResult

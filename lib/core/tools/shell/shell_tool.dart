@@ -1,19 +1,17 @@
-/// ShellTool — registered stub for [SHELL: command] tool calls.
-///
-/// Shell access is disabled in this version.  The tool is fully registered
-/// in [ToolRegistry] so the interceptor and UI can acknowledge the tag, but
-/// [execute] always returns [ToolResult.disabled].
-///
-/// To enable shell access in a future version: set [ShellConfig.enabled] to
-/// `true`, populate [ShellConfig.allowedCommands], and implement the actual
-/// process-spawn logic in [execute].
-///
-/// This file has zero Flutter imports — pure Dart only.
-library shell_tool;
+// ShellTool — registered stub for [SHELL: command] tool calls.
+//
+// Shell access is disabled in this version.  The tool is fully registered
+// in [ToolRegistry] so the interceptor and UI can acknowledge the tag, but
+// [execute] always returns [ToolResult.disabled].
+//
+// To enable shell access in a future version: set [ShellConfig.enabled] to
+// `true`, populate [ShellConfig.allowedCommands], and implement the actual
+// process-spawn logic in [execute].
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import '../../trust/trust_score.dart';
 import '../agent_tool.dart';
-import '../tool_result.dart';
 import 'shell_config.dart';
 
 // ---------------------------------------------------------------------------

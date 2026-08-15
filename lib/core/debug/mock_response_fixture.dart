@@ -1,7 +1,6 @@
-/// MockResponseFixture — a single scripted mock response for simulation mode.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library mock_response_fixture;
+// MockResponseFixture — a single scripted mock response for simulation mode.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 

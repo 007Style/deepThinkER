@@ -1,7 +1,6 @@
-/// AppSettings — unified settings model for deepThinkER.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library app_settings;
+// AppSettings — unified settings model for deepThinkER.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 

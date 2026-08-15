@@ -1,11 +1,10 @@
-/// Shared conversation log for deepThink.
-///
-/// Maintains an ordered list of [Message] objects, notifies listeners via a
-/// broadcast stream, and provides various slicing queries used by inference
-/// workers and context management.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library conversation_log;
+// Shared conversation log for deepThink.
+//
+// Maintains an ordered list of [Message] objects, notifies listeners via a
+// broadcast stream, and provides various slicing queries used by inference
+// workers and context management.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:async';
 

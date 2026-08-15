@@ -77,10 +77,12 @@ class AnalyticsScreen extends StatelessWidget {
           '.';
       final path = '$home/Downloads/${analytics.sessionName}_analytics.json';
       await analytics.flush();
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Analytics exported to $path')),
       );
     } catch (e) {
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Export failed: $e')),
       );

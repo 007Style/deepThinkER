@@ -1,7 +1,6 @@
-/// Replay mode for loaded sessions.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library replay_mode;
+// Replay mode for loaded sessions.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 /// Replay mode for loaded sessions.
 enum ReplayMode {

@@ -1021,7 +1021,7 @@ class _NetworkAccessSectionState extends State<_NetworkAccessSection> {
                   Switch(
                     value: _networkEnabled[i],
                     onChanged: (v) => setState(() => _networkEnabled[i] = v),
-                    activeColor: AppColors.accent,
+                    activeThumbColor: AppColors.accent,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                 ],
@@ -1098,7 +1098,7 @@ class _NetworkAccessSectionState extends State<_NetworkAccessSection> {
               Switch(
                 value: _proactiveEnabled,
                 onChanged: (v) => setState(() => _proactiveEnabled = v),
-                activeColor: AppColors.accent,
+                activeThumbColor: AppColors.accent,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ],

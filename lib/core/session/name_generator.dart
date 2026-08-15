@@ -1,10 +1,9 @@
-/// Fun lowerCamelCase session name generator for deepThink.
-///
-/// Produces names of the form `[adjective][Noun]` — e.g. `thetaByte`,
-/// `thorKitten`, `lateralPerception`.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library name_generator;
+// Fun lowerCamelCase session name generator for deepThink.
+//
+// Produces names of the form `[adjective][Noun]` — e.g. `thetaByte`,
+// `thorKitten`, `lateralPerception`.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:math';
 

@@ -1,7 +1,6 @@
-/// UserPersona — persistent user description injected into all system prompts.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library user_persona;
+// UserPersona — persistent user description injected into all system prompts.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:convert';
 import 'dart:io';

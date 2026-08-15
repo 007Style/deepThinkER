@@ -17,7 +17,6 @@ import '../../core/conversation/participant.dart';
 import '../../core/mood/mood_score.dart';
 import '../../core/tools/image/image_watcher.dart';
 import '../../core/trust/trust_manager.dart';
-import '../../core/trust/trust_score.dart';
 import '../avatars/avatar_registry.dart';
 import '../avatars/avatar_widget.dart';
 import '../avatars/energy_orb/orb_config.dart';
@@ -635,11 +634,6 @@ class _MessageArea extends StatelessWidget {
     );
   }
 
-  /// Truncates [content] to at most [maxLen] characters for compact display.
-  static String _truncate(String content, {int maxLen = 60}) {
-    final preview = content.replaceAll('\n', ' ').trim();
-    return preview.length > 60 ? '${preview.substring(0, 57)}...' : preview;
-  }
 }
 
 // ---------------------------------------------------------------------------

@@ -1,13 +1,12 @@
-/// AppPaths — single source of truth for all on-disk paths used by deepThinkER.
-///
-/// On macOS  : ~/Library/Application Support/deepThinkER/
-/// On Windows: %APPDATA%\deepThinkER\
-///
-/// Using ~/Library/Application Support avoids the macOS TCC privacy prompt
-/// that fires when any app first touches ~/Documents.
-///
-/// This file has zero Flutter imports — pure Dart only.
-library app_paths;
+// AppPaths — single source of truth for all on-disk paths used by deepThinkER.
+//
+// On macOS  : ~/Library/Application Support/deepThinkER/
+// On Windows: %APPDATA%\deepThinkER\
+//
+// Using ~/Library/Application Support avoids the macOS TCC privacy prompt
+// that fires when any app first touches ~/Documents.
+//
+// This file has zero Flutter imports — pure Dart only.
 
 import 'dart:io';
 
