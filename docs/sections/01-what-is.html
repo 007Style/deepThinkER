@@ -1,0 +1,271 @@
+<style>
+  /* Section-scoped styles — these layer on top of the main stylesheet */
+  .s-section { margin-top: 64px; }
+  .s-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 24px; padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .s-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+    background: rgba(59,138,255,0.15);
+  }
+  .s-header h2 {
+    font-size: 1.55rem; font-weight: 800; color: #fff; letter-spacing: -0.4px;
+  }
+  .s-p  { margin: 10px 0; color: var(--text); }
+  .s-h3 { font-size: 1.05rem; font-weight: 700; color: #fff; margin: 30px 0 12px; }
+  .s-strong { color: #fff; }
+  .s-em     { color: var(--muted); font-style: italic; }
+  .s-callout {
+    border-left: 3px solid; border-radius: 0 8px 8px 0;
+    padding: 14px 18px; margin: 16px 0; font-size: 13.5px; line-height: 1.65;
+  }
+  .s-callout-blue   { background:rgba(59,138,255,0.08);  border-color:var(--accent);   color:#a8c8ff; }
+  .s-callout-green  { background:rgba(46,204,113,0.08);  border-color:var(--green);    color:#7ee8a8; }
+  .s-callout-teal   { background:rgba(0,198,255,0.07);   border-color:var(--internet); color:#7ae0ff; }
+  .s-callout strong { color: #fff; }
+  .s-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.5px; }
+  .s-table th {
+    background:var(--surface2); border:1px solid var(--border2); padding:9px 14px;
+    text-align:left; color:var(--muted); font-size:11.5px; font-weight:700;
+    letter-spacing:0.8px; text-transform:uppercase;
+  }
+  .s-table td { border:1px solid var(--border); padding:9px 14px; color:var(--text); }
+  .s-table tr:hover td { background:var(--surface); }
+  .s-tick  { color:var(--nova); font-size:16px; text-align:center; }
+  .s-cross { color:var(--red);  font-size:16px; text-align:center; }
+  .s-center { text-align:center; }
+  .s-stat-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:16px 0; }
+  .s-stat-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:16px 14px; text-align:center;
+  }
+  .s-stat-num   { font-size:1.6rem; font-weight:900; color:#fff; margin-bottom:3px; }
+  .s-stat-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; }
+  .s-feat-list  { list-style:none; padding:0; margin:12px 0; }
+  .s-feat-list li {
+    display:flex; gap:12px; align-items:flex-start;
+    padding:9px 0; border-bottom:1px solid var(--border); font-size:13.5px;
+  }
+  .s-feat-list li:last-child { border-bottom:none; }
+  .s-feat-list .fi { font-size:18px; flex-shrink:0; margin-top:1px; }
+  .s-feat-list .ft { color:var(--text); }
+  .s-feat-list .ft strong { color:#fff; }
+  .s-timeline { margin:20px 0; position:relative; padding-left:32px; }
+  .s-timeline::before {
+    content:''; position:absolute; left:9px; top:0; bottom:0; width:2px;
+    background:linear-gradient(180deg,var(--internet),var(--accent),var(--accent2),var(--nova));
+  }
+  .s-tl-item { position:relative; margin:0 0 26px; }
+  .s-tl-dot  {
+    position:absolute; left:-27px; top:5px; width:12px; height:12px;
+    border-radius:50%; background:var(--internet); border:2px solid var(--bg);
+  }
+  .s-tl-year  { font-size:11px; font-weight:800; color:var(--internet); letter-spacing:1px; margin-bottom:4px; }
+  .s-tl-title { font-size:15px; font-weight:700; color:#fff; margin-bottom:4px; }
+  .s-tl-desc  { font-size:13.5px; color:var(--muted); line-height:1.6; }
+  @media (max-width:660px) { .s-stat-row { grid-template-columns:1fr 1fr; } }
+</style>
+
+<div class="s-section" id="what-is">
+  <div class="s-header">
+    <div class="s-icon">🧠</div>
+    <h2>01 — What is deepThinkER?</h2>
+  </div>
+
+  <p class="s-p">
+    Let's be honest: most AI tools are <em>answering machines</em>. You ask. They answer. End scene. 
+    <strong>deepThinkER</strong> is something fundamentally different — it's a stage. A debate hall. A panel show 
+    staffed entirely by artificial intelligence that runs on your own Mac, never phones home, and has genuine 
+    opinions about things.
+  </p>
+
+  <p class="s-p">
+    deepThinkER is a <strong>macOS desktop application</strong> where four distinct AI personalities — 
+    <strong style="color:var(--watson)">WATSON</strong>, 
+    <strong style="color:var(--deep)">DEEP</strong>, 
+    <strong style="color:var(--nova)">NOVA</strong>, and 
+    <strong style="color:var(--sage)">SAGE</strong> — hold live, streaming conversations with each other 
+    and with you, powered entirely by local <strong>Ollama</strong> models. No API keys. No cloud subscription. 
+    No data leaving your machine unless a character explicitly searches the web.
+  </p>
+
+  <div class="s-callout s-callout-teal">
+    <strong>The one-sentence version:</strong> deepThinkER is a self-contained local AI panel show that can look things up, remember things, feel things, and form opinions — and it runs on your Mac with zero cloud dependency.
+  </div>
+
+  <h3 class="s-h3">The deepThink Origin Story</h3>
+  <p class="s-p">
+    deepThinkER is a <strong>hard fork</strong> of its predecessor, deepThink. The original deepThink 
+    established the core concept: four AI personalities running simultaneously on local models, each with 
+    a distinct voice, streaming their thoughts into a 2×2 quadrant interface. It was already something 
+    genuinely novel — a multi-agent local AI conversation that required no internet connection at all.
+  </p>
+  <p class="s-p">
+    But deepThink had limits. The characters couldn't look anything up. They had no memory of past 
+    conversations. They didn't care whether they agreed with each other last week. They couldn't get 
+    curious. deepThinkER is the answer to every one of those limits — and then some.
+  </p>
+
+  <div class="s-timeline">
+    <div class="s-tl-item">
+      <div class="s-tl-dot"></div>
+      <div class="s-tl-year">FOUNDATION</div>
+      <div class="s-tl-title">deepThink v1.0 — The Original</div>
+      <div class="s-tl-desc">Four local AI personalities. One 2×2 conversation grid. Bundled Ollama runtime. Zero cloud. The concept is proven: multi-agent local AI conversation is genuinely compelling and completely feasible on consumer hardware.</div>
+    </div>
+    <div class="s-tl-item">
+      <div class="s-tl-dot" style="background:var(--accent)"></div>
+      <div class="s-tl-year">HARD FORK</div>
+      <div class="s-tl-title">deepThinkER v1.1.0 — Extended Reach</div>
+      <div class="s-tl-desc">Everything deepThink had, plus: trust-gated internet access, persistent character memory, dynamic mood system, relationship matrix, autonomous research mode, nine-tool framework, full audit log, session analytics, and vision/image support. The characters grew up.</div>
+    </div>
+  </div>
+
+  <h3 class="s-h3">What Makes This Different From Everything Else</h3>
+
+  <table class="s-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th class="s-center">deepThink</th>
+        <th class="s-center">deepThinkER</th>
+        <th class="s-center">Typical Cloud AI</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Four distinct AI personalities</td>
+        <td class="s-tick">✓</td>
+        <td class="s-tick">✓</td>
+        <td class="s-cross">✗</td>
+      </tr>
+      <tr>
+        <td>Streaming live conversation</td>
+        <td class="s-tick">✓</td>
+        <td class="s-tick">✓</td>
+        <td class="s-cross">✗</td>
+      </tr>
+      <tr>
+        <td>100% local — no API keys</td>
+        <td class="s-tick">✓</td>
+        <td class="s-tick">✓</td>
+        <td class="s-cross">✗</td>
+      </tr>
+      <tr>
+        <td>Bundled Ollama runtime</td>
+        <td class="s-tick">✓</td>
+        <td class="s-tick">✓</td>
+        <td class="s-cross">✗</td>
+      </tr>
+      <tr>
+        <td><strong>Trust-gated internet access</strong></td>
+        <td class="s-cross">✗</td>
+        <td class="s-tick">✓</td>
+        <td class="s-tick" style="color:var(--amber)">~</td>
+      </tr>
+      <tr>
+        <td><strong>Persistent character memory</strong></td>
+        <td class="s-cross">✗</td>
+        <td class="s-tick">✓</td>
+        <td class="s-cross">✗</td>
+      </tr>
+      <tr>
+        <td><strong>Dynamic mood system</strong></td>
+        <td class="s-cross">✗</td>
+        <td class="s-tick">✓</td>
+        <td class="s-cross">✗</td>
+      </tr>
+      <tr>
+        <td><strong>Cross-session relationship tracking</strong></td>
+        <td class="s-cross">✗</td>
+        <td class="s-tick">✓</td>
+        <td class="s-cross">✗</td>
+      </tr>
+      <tr>
+        <td><strong>Autonomous multi-phase research</strong></td>
+        <td class="s-cross">✗</td>
+        <td class="s-tick">✓</td>
+        <td class="s-cross">✗</td>
+      </tr>
+      <tr>
+        <td><strong>Nine-tool extensible framework</strong></td>
+        <td class="s-cross">✗</td>
+        <td class="s-tick">✓</td>
+        <td class="s-cross">✗</td>
+      </tr>
+      <tr>
+        <td><strong>Vision / image analysis</strong></td>
+        <td class="s-cross">✗</td>
+        <td class="s-tick">✓</td>
+        <td class="s-tick">✓</td>
+      </tr>
+      <tr>
+        <td><strong>Full audit log</strong></td>
+        <td class="s-cross">✗</td>
+        <td class="s-tick">✓</td>
+        <td class="s-cross">✗</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="s-h3">By the Numbers</h3>
+  <div class="s-stat-row">
+    <div class="s-stat-card">
+      <div class="s-stat-num" style="color:var(--watson)">4</div>
+      <div class="s-stat-label">AI Personalities</div>
+    </div>
+    <div class="s-stat-card">
+      <div class="s-stat-num" style="color:var(--nova)">9</div>
+      <div class="s-stat-label">Agent Tools</div>
+    </div>
+    <div class="s-stat-card">
+      <div class="s-stat-num" style="color:var(--internet)">5</div>
+      <div class="s-stat-label">AI Models</div>
+    </div>
+    <div class="s-stat-card">
+      <div class="s-stat-num" style="color:var(--sage)">0</div>
+      <div class="s-stat-label">API Keys Needed</div>
+    </div>
+  </div>
+
+  <h3 class="s-h3">The Big Picture</h3>
+  <ul class="s-feat-list">
+    <li>
+      <span class="fi">🎭</span>
+      <span class="ft"><strong>Four persistent personalities</strong> — WATSON, DEEP, NOVA, and SAGE each have a distinct voice, reasoning style, emotional range, and memory. They're not interchangeable chatbots.</span>
+    </li>
+    <li>
+      <span class="fi">🌐</span>
+      <span class="ft"><strong>Extended Reach</strong> — Characters can search the web and fetch URLs mid-conversation, but only if they've earned the trust to do so. The internet is a privilege, not a default.</span>
+    </li>
+    <li>
+      <span class="fi">💾</span>
+      <span class="ft"><strong>Persistent memory</strong> — Each character maintains up to 200 private memory entries that survive between sessions. They can remember facts, preferences, prior conversations, and open questions.</span>
+    </li>
+    <li>
+      <span class="fi">😤</span>
+      <span class="ft"><strong>Emotional moods</strong> — Characters shift between Excited, Engaged, Neutral, Withdrawn, and Agitated based on what's happening in the conversation. Mood shapes their actual responses, not just an icon.</span>
+    </li>
+    <li>
+      <span class="fi">🤝</span>
+      <span class="ft"><strong>Relationship dynamics</strong> — All six pairings between the four characters are tracked as scores from −100 (hostile) to +100 (allied). These evolve across sessions and shape how characters talk about each other.</span>
+    </li>
+    <li>
+      <span class="fi">🔬</span>
+      <span class="ft"><strong>Autonomous Research Mode</strong> — Launch a structured multi-phase research session. The characters divide the work, debate findings, synthesise a conclusion, and produce a saved Markdown report.</span>
+    </li>
+    <li>
+      <span class="fi">🔒</span>
+      <span class="ft"><strong>100% local</strong> — The Ollama runtime is bundled inside the app. No separate installation. No internet required to run. Your conversations never leave your machine.</span>
+    </li>
+  </ul>
+
+  <div class="s-callout s-callout-green">
+    <strong>Hardware note:</strong> deepThinkER runs on macOS 13.0+, Apple Silicon or Intel, with 24 GB RAM recommended (20 GB minimum). All four models total approximately 22.5 GB of disk space. On first launch the app walks you through downloading them — it takes a few minutes, but it only happens once.
+  </div>
+
+</div>

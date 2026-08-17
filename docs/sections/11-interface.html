@@ -1,0 +1,88 @@
+<style>
+  .s11-section { margin-top:64px; }
+  .s11-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s11-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(0,198,255,0.12); }
+  .s11-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s11-p  { margin:10px 0; color:var(--text); }
+  .s11-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s11-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s11-callout-teal { background:rgba(0,198,255,0.07); border-color:var(--internet); color:#7ae0ff; }
+  .s11-callout strong { color:#fff; }
+  .s11-ascii { background:#07090e; border:1px solid var(--border); border-radius:10px; padding:18px 20px; font-family:"SF Mono",monospace; font-size:11px; line-height:1.6; margin:16px 0; overflow-x:auto; color:var(--muted); }
+  .s11-ascii .aw { color:var(--watson); }
+  .s11-ascii .ad { color:var(--deep); }
+  .s11-ascii .an { color:var(--nova); }
+  .s11-ascii .as { color:var(--sage); }
+  .s11-ascii .ab { color:#fff; }
+  .s11-ascii .am { color:var(--accent); }
+  .s11-ascii .ai { color:var(--internet); }
+  .screen-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0; }
+  .screen-item { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .screen-item strong { color:#fff; display:block; margin-bottom:2px; font-size:13px; }
+  .screen-item span   { color:var(--muted); font-size:12px; }
+  @media (max-width:660px) { .screen-grid { grid-template-columns:1fr; } }
+</style>
+
+<div class="s11-section" id="interface">
+  <div class="s11-header">
+    <div class="s11-icon">🖥️</div>
+    <h2>11 — Interface Overview</h2>
+  </div>
+
+  <p class="s11-p">
+    deepThinkER's interface is built for <strong>watching something happen</strong>. The main screen is a live 2×2 grid of AI panels, each streaming in real time, each with its own status indicators, token counter, mood display, and internet activity badge. Everything you need to understand what's happening is visible at a glance.
+  </p>
+
+  <h3 class="s11-h3">The Main Screen</h3>
+  <div class="s11-ascii">
+<span class="ab">┌─────────────────────────────────────────────────────────────────────┐</span>
+<span class="ab">│</span>  <span class="am">[▶ Start]</span>  <span class="am">[⏸ Pause]</span>  <span class="am">[⚙ Config]</span>  <span class="am">[🔬 Research]</span>  <span class="am">[🔧 Settings]</span>  <span class="ab">│</span>
+<span class="ab">├──────────────────────────────┬──────────────────────────────────────┤</span>
+<span class="ab">│</span>  <span class="aw">🔵 WATSON</span>                    <span class="ab">│</span>  <span class="ad">🟣 DEEP</span>                               <span class="ab">│</span>
+<span class="ab">│</span>  <span class="am">gemma2:9b</span>  <span class="an">😊 Engaged</span>       <span class="ab">│</span>  <span class="am">phi3:14b</span>   <span class="ab">😐 Neutral</span>              <span class="ab">│</span>
+<span class="ab">│</span>  <span class="ai">124 / 8192 tokens</span>           <span class="ab">│</span>  <span class="ai">89 / 8192 tokens</span>                    <span class="ab">│</span>
+<span class="ab">│</span>  ─────────────────────────── <span class="ab">│</span>  ─────────────────────────────────── <span class="ab">│</span>
+<span class="ab">│</span>  [conversation history]      <span class="ab">│</span>  [conversation history]               <span class="ab">│</span>
+<span class="ab">│</span>                              <span class="ab">│</span>                                       <span class="ab">│</span>
+<span class="ab">├──────────────────────────────┼──────────────────────────────────────┤</span>
+<span class="ab">│</span>  <span class="an">🟢 NOVA</span>                      <span class="ab">│</span>  <span class="as">🟡 SAGE</span>                               <span class="ab">│</span>
+<span class="ab">│</span>  <span class="am">llama3:8b</span>  <span class="an">🤩 Excited</span>        <span class="ab">│</span>  <span class="am">mistral:7b</span> <span class="as">😠 Agitated</span>             <span class="ab">│</span>
+<span class="ab">│</span>  <span class="ai">201 / 8192 tokens</span>           <span class="ab">│</span>  <span class="ai">156 / 8192 tokens</span>                   <span class="ab">│</span>
+<span class="ab">│</span>  ─────────────────────────── <span class="ab">│</span>  ─────────────────────────────────── <span class="ab">│</span>
+<span class="ab">│</span>  [conversation history]      <span class="ab">│</span>  [conversation history]               <span class="ab">│</span>
+<span class="ab">│</span>                              <span class="ab">│</span>                                       <span class="ab">│</span>
+<span class="ab">├──────────────────────────────┴──────────────────────────────────────┤</span>
+<span class="ab">│</span>  <span class="am">[User input bar ──────────────────────────────── 📎 Image  Send ⚙]</span> <span class="ab">│</span>
+<span class="ab">└─────────────────────────────────────────────────────────────────────┘</span></div>
+
+  <h3 class="s11-h3">Quadrant Header Details</h3>
+  <p class="s11-p">
+    Each character's panel header packs in everything you need to know at a glance: the character name and colour, current model, current mood emoji, live token counter, and — when active — the <span style="display:inline-flex;align-items:center;gap:5px;background:rgba(0,198,255,0.1);border:1px solid rgba(0,198,255,0.3);border-radius:20px;padding:2px 8px;font-size:11px;color:var(--internet);font-weight:700;">● LIVE</span> internet badge. Click the badge to expand the latest search result inline.
+  </p>
+
+  <h3 class="s11-h3">All Screens</h3>
+  <div class="screen-grid">
+    <div class="screen-item"><strong>Welcome</strong><span>Model status, RAM check, first-launch download prompt</span></div>
+    <div class="screen-item"><strong>Resource Gate</strong><span>Live RAM gauge when available memory is below threshold</span></div>
+    <div class="screen-item"><strong>First Launch</strong><span>Per-model download progress bars with size and ETA</span></div>
+    <div class="screen-item"><strong>Startup Config</strong><span>Per-character model, prompt, network toggle, and user persona</span></div>
+    <div class="screen-item"><strong>Main</strong><span>The live 2×2 conversation grid — the heart of the app</span></div>
+    <div class="screen-item"><strong>Settings</strong><span>Network log, tool toggles, safety filters, display, advanced</span></div>
+    <div class="screen-item"><strong>Analytics</strong><span>Post-session heatmap, trust sparklines, tool audit table</span></div>
+    <div class="screen-item"><strong>Research Mode</strong><span>Multi-phase autonomous research with live phase indicator</span></div>
+    <div class="screen-item"><strong>Memory Panel</strong><span>Per-character memory entries — view, search, edit, delete</span></div>
+    <div class="screen-item"><strong>Audit Log</strong><span>Complete sortable/filterable tool-call history across all sessions</span></div>
+    <div class="screen-item"><strong>Docs</strong><span>In-app rendered Markdown documentation</span></div>
+    <div class="screen-item"><strong>About</strong><span>Animated neural background, version info, session statistics</span></div>
+  </div>
+
+  <h3 class="s11-h3">The User Input Bar</h3>
+  <p class="s11-p">
+    The input bar at the bottom of the main screen is always active. Type a message and press Enter (or Shift+Enter for a newline). Your message is injected into every character's context simultaneously — they all see it and can respond. The 📎 button opens an image picker for vision analysis via the ImageTool. The ⚙ button on the right side of the bar opens quick settings without leaving the main view.
+  </p>
+
+  <div class="s11-callout s11-callout-teal">
+    <strong>Accessibility:</strong> deepThinkER includes a high-contrast mode, reduced motion mode, and font size scaling — all accessible in Settings → Display. The app respects macOS system accessibility preferences and supports full keyboard navigation.
+  </div>
+
+</div>

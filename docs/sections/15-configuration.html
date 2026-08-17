@@ -1,0 +1,100 @@
+<style>
+  .s15-section { margin-top:64px; }
+  .s15-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s15-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(212,160,23,0.15); }
+  .s15-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s15-p  { margin:10px 0; color:var(--text); }
+  .s15-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s15-h4 { font-size:0.9rem; font-weight:700; color:var(--text); margin:16px 0 6px; }
+  .s15-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s15-callout-blue   { background:rgba(59,138,255,0.08); border-color:var(--accent); color:#a8c8ff; }
+  .s15-callout-purple { background:rgba(155,89,245,0.08); border-color:var(--accent2); color:#c4a0f8; }
+  .s15-callout strong { color:#fff; }
+  .s15-cfg { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:20px; margin:12px 0; }
+  .s15-cfg h4 { color:#fff; font-size:13px; margin-bottom:10px; }
+  .s15-cfg ul { list-style:none; padding:0; margin:0; }
+  .s15-cfg ul li { padding:6px 0; border-bottom:1px solid var(--border); font-size:13px; color:var(--text); display:flex; gap:10px; }
+  .s15-cfg ul li:last-child { border-bottom:none; }
+  .s15-cfg ul li::before { content:"›"; color:var(--accent); font-weight:900; flex-shrink:0; }
+</style>
+
+<div class="s15-section" id="configuration">
+  <div class="s15-header">
+    <div class="s15-icon">⚙️</div>
+    <h2>15 — Configuration</h2>
+  </div>
+
+  <p class="s15-p">
+    deepThinkER is configured at two levels: <strong>per-session</strong> settings in the Startup Config screen (which you see every time you start a conversation), and <strong>persistent global settings</strong> in the Settings screen (which carry across sessions). Between the two, nearly every aspect of the app's behaviour is configurable.
+  </p>
+
+  <h3 class="s15-h3">Startup Config Screen (Per-Session)</h3>
+  <p class="s15-p">This screen appears before every conversation. Changes here apply only to the upcoming session, except for prompts and persona which are saved as defaults.</p>
+
+  <div class="s15-cfg">
+    <h4>Per-Character Settings</h4>
+    <ul>
+      <li><strong>Model</strong> — Select any locally installed Ollama model. Not limited to the defaults.</li>
+      <li><strong>Master Prompt</strong> — Full control over the character's personality and base instructions. "Reset to Defaults" restores the curated IBM-character prompts.</li>
+      <li><strong>Network Access</strong> — Toggle internet access on/off per character for this session.</li>
+      <li><strong>Session Name</strong> — Auto-generated (e.g. "amber-koala-7") or customise it before starting.</li>
+    </ul>
+  </div>
+
+  <div class="s15-cfg">
+    <h4>User Persona</h4>
+    <ul>
+      <li>A free-text description of yourself — injected into every character's system prompt. They can use it to tailor their communication style and address you by name.</li>
+      <li>Examples: "I'm a software engineer who prefers precise technical language", "I'm a student exploring philosophy, please don't dumb it down"</li>
+    </ul>
+  </div>
+
+  <h3 class="s15-h3">Global Settings (Persistent)</h3>
+
+  <div class="s15-cfg">
+    <h4>🌐 Network Tab</h4>
+    <ul>
+      <li>Per-character network enable/disable (persists between sessions)</li>
+      <li>Global rate limit cap — searches/minute across all four characters (default: 10)</li>
+      <li>Domain whitelist — restrict <code style="background:transparent;color:var(--sage);font-family:monospace;">[FETCH:]</code> calls to specific domains</li>
+      <li>Network request log — view all search/fetch calls made this session</li>
+    </ul>
+  </div>
+
+  <div class="s15-cfg">
+    <h4>🔧 Tools Tab</h4>
+    <ul>
+      <li>Enable/disable individual tools (any of the nine can be blocked)</li>
+      <li>Workspace path — the directory FileReadTool and FileWriteTool operate within</li>
+      <li>Vision model selection (default: llava:7b)</li>
+    </ul>
+  </div>
+
+  <div class="s15-cfg">
+    <h4>🛡️ Safety Tab</h4>
+    <ul>
+      <li>Content filter — category keyword lists with configurable replacement text</li>
+      <li>Injection guard toggle — scans user input for tool-call tag patterns before injection</li>
+      <li>Domain whitelist management (add/remove/export)</li>
+    </ul>
+  </div>
+
+  <div class="s15-cfg">
+    <h4>🎨 Display Tab</h4>
+    <ul>
+      <li>High contrast mode — higher contrast text and borders for accessibility</li>
+      <li>Reduced motion mode — disables animations (respects macOS system preference too)</li>
+      <li>Font size scale — small / normal / large</li>
+      <li>Sound cues — enable/disable audio feedback on conversation events</li>
+    </ul>
+  </div>
+
+  <div class="s15-callout s15-callout-blue">
+    <strong>Settings persistence:</strong> All global settings are saved to <code style="background:transparent;color:var(--sage);font-family:monospace;">~/Library/Application Support/deepThinkER/settings.json</code>. This is a plain, human-readable JSON file — you can hand-edit it if needed.
+  </div>
+
+  <div class="s15-callout s15-callout-purple">
+    <strong>Character prompts are powerful.</strong> Each character's master prompt is the single most impactful thing you can change. A well-crafted prompt for a domain-specific character (e.g., "You are a sceptical medical researcher…") will produce far more useful conversations than any configuration setting. Experiment freely — the Reset to Defaults button is always there.
+  </div>
+
+</div>

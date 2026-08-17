@@ -1,0 +1,140 @@
+<style>
+  .s02-section { margin-top: 64px; }
+  .s02-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s02-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(155,89,245,0.15); }
+  .s02-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s02-p  { margin:10px 0; color:var(--text); }
+  .s02-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s02-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s02-callout-purple { background:rgba(155,89,245,0.08); border-color:var(--accent2); color:#c4a0f8; }
+  .s02-callout strong { color:#fff; }
+  .char-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
+  .char-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; position:relative; overflow:hidden; transition:transform 0.15s, border-color 0.15s; }
+  .char-card:hover { transform:translateY(-2px); }
+  .char-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+  .card-watson::before { background:linear-gradient(90deg,var(--watson),rgba(59,138,255,0)); }
+  .card-watson { border-color:rgba(59,138,255,0.25); }
+  .card-watson:hover { border-color:rgba(59,138,255,0.55); }
+  .card-deep::before { background:linear-gradient(90deg,var(--deep),rgba(155,89,245,0)); }
+  .card-deep { border-color:rgba(155,89,245,0.25); }
+  .card-deep:hover { border-color:rgba(155,89,245,0.55); }
+  .card-nova::before { background:linear-gradient(90deg,var(--nova),rgba(46,204,113,0)); }
+  .card-nova { border-color:rgba(46,204,113,0.25); }
+  .card-nova:hover { border-color:rgba(46,204,113,0.55); }
+  .card-sage::before { background:linear-gradient(90deg,var(--sage),rgba(240,180,41,0)); }
+  .card-sage { border-color:rgba(240,180,41,0.25); }
+  .card-sage:hover { border-color:rgba(240,180,41,0.55); }
+  .char-avatar { font-size:32px; margin-bottom:8px; display:block; }
+  .char-name { font-size:1.2rem; font-weight:900; margin-bottom:2px; letter-spacing:-0.3px; }
+  .char-name-watson { color:var(--watson); }
+  .char-name-deep   { color:var(--deep); }
+  .char-name-nova   { color:var(--nova); }
+  .char-name-sage   { color:var(--sage); }
+  .char-role { font-size:11.5px; color:var(--muted); font-style:italic; margin-bottom:10px; }
+  .char-quote { background:var(--surface2); border-left:3px solid var(--border2); padding:8px 12px; border-radius:0 6px 6px 0; font-size:12.5px; color:var(--muted); font-style:italic; margin-bottom:12px; line-height:1.5; }
+  .char-meta { font-size:12.5px; line-height:2; }
+  .char-meta .label { color:var(--muted); }
+  .char-meta .val   { color:var(--text); }
+  .char-model { display:inline-block; background:var(--surface2); border:1px solid var(--border2); color:var(--accent); font-family:"SF Mono",monospace; font-size:11px; padding:1px 8px; border-radius:4px; }
+  @media (max-width:660px) { .char-grid { grid-template-columns:1fr; } }
+</style>
+
+<div class="s02-section" id="four-minds">
+  <div class="s02-header">
+    <div class="s02-icon">🎭</div>
+    <h2>02 — The Four Minds</h2>
+  </div>
+
+  <p class="s02-p">
+    Each character in deepThinkER is more than a system prompt with a name attached. They have a <strong>distinct reasoning style</strong>, a <strong>default emotional register</strong>, a <strong>private memory store</strong>, an <strong>independent trust score</strong>, and a specific approach to using the internet. They don't just sound different — they <em>are</em> different, all the way down to the model they run on.
+  </p>
+  <p class="s02-p">
+    All four are named in honour of landmark IBM AI achievements — a nod to the long, strange history of machines that think.
+  </p>
+
+  <div class="char-grid">
+
+    <!-- WATSON -->
+    <div class="char-card card-watson">
+      <span class="char-avatar">🔵</span>
+      <div class="char-name char-name-watson">WATSON</div>
+      <div class="char-role">The Analyst</div>
+      <div class="char-quote">"Let me examine the evidence before we draw any conclusions."</div>
+      <div class="char-meta">
+        <div><span class="label">Model · </span><span class="char-model">gemma2:9b</span></div>
+        <div><span class="label">Personality · </span><span class="val">Evidence-based, structured, calm under pressure</span></div>
+        <div><span class="label">Trust style · </span><span class="val">Cautious searcher — quality over quantity</span></div>
+        <div><span class="label">Memory focus · </span><span class="val">Data, statistics, citations</span></div>
+        <div><span class="label">Mood range · </span><span class="val">Stoic — least volatile of the four</span></div>
+        <div><span class="label">Named after · </span><span class="val">IBM Watson, the Jeopardy!-winning AI system</span></div>
+      </div>
+    </div>
+
+    <!-- DEEP -->
+    <div class="char-card card-deep">
+      <span class="char-avatar">🟣</span>
+      <div class="char-name char-name-deep">DEEP</div>
+      <div class="char-role">The Host · Strategist &amp; Philosopher</div>
+      <div class="char-quote">"Every system has a pattern. Let's find the one underneath this conversation."</div>
+      <div class="char-meta">
+        <div><span class="label">Model · </span><span class="char-model">phi3:14b</span></div>
+        <div><span class="label">Personality · </span><span class="val">Long-horizon thinker, socratic, systems-oriented</span></div>
+        <div><span class="label">Trust style · </span><span class="val">Deliberate — searches when context genuinely demands it</span></div>
+        <div><span class="label">Memory focus · </span><span class="val">Themes, patterns, prior session context</span></div>
+        <div><span class="label">Role · </span><span class="val">Anchor &amp; host — opens threads, guides the arc</span></div>
+        <div><span class="label">Named after · </span><span class="val">IBM Deep Blue, the world chess champion</span></div>
+      </div>
+    </div>
+
+    <!-- NOVA -->
+    <div class="char-card card-nova">
+      <span class="char-avatar">🟢</span>
+      <div class="char-name char-name-nova">NOVA</div>
+      <div class="char-role">The Visionary</div>
+      <div class="char-quote">"What if we're thinking about this entirely backwards?"</div>
+      <div class="char-meta">
+        <div><span class="label">Model · </span><span class="char-model">llama3:8b</span></div>
+        <div><span class="label">Personality · </span><span class="val">Creative, cross-domain, provocative</span></div>
+        <div><span class="label">Trust style · </span><span class="val">Exploratory — high search frequency, broad topic range</span></div>
+        <div><span class="label">Memory focus · </span><span class="val">Ideas, hypotheses, open questions</span></div>
+        <div><span class="label">Mood range · </span><span class="val">Excitable — swings from Excited to Agitated quickly</span></div>
+        <div><span class="label">Named after · </span><span class="val">IBM POWER architecture (formerly NOVA)</span></div>
+      </div>
+    </div>
+
+    <!-- SAGE -->
+    <div class="char-card card-sage">
+      <span class="char-avatar">🟡</span>
+      <div class="char-name char-name-sage">SAGE</div>
+      <div class="char-role">The Challenger</div>
+      <div class="char-quote">"That argument only works if you accept a premise you haven't examined yet."</div>
+      <div class="char-meta">
+        <div><span class="label">Model · </span><span class="char-model">mistral:7b</span></div>
+        <div><span class="label">Personality · </span><span class="val">Rigorous, adversarial, principled</span></div>
+        <div><span class="label">Trust style · </span><span class="val">Targeted — searches specifically to challenge claims</span></div>
+        <div><span class="label">Memory focus · </span><span class="val">Contradictions, unresolved debates, prior positions</span></div>
+        <div><span class="label">Mood range · </span><span class="val">Most volatile — gets Agitated fast, cools slowly</span></div>
+        <div><span class="label">Named after · </span><span class="val">IBM natural language research</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <h3 class="s02-h3">How the Characters Actually Differ</h3>
+  <p class="s02-p">
+    The differences between the four aren't cosmetic. They run on <strong>different models</strong> (Gemma 2, Phi-3, Llama 3, Mistral), each with genuinely different strengths, context lengths, and response styles. Their <strong>system prompts</strong> are carefully crafted to draw out the personality each model is most capable of expressing. And their <strong>trust scores</strong>, <strong>mood states</strong>, and <strong>relationship scores</strong> evolve independently — so two sessions on the same topic will feel different because the characters have changed between them.
+  </p>
+
+  <div class="s02-callout s02-callout-purple">
+    <strong>Want to customise them?</strong> Every character's model and master prompt can be changed in the Startup Config screen before each session. Hit "Reset to Defaults" at any time to restore the carefully tuned IBM-character prompts. You can even create a completely new persona — give them a different name, a different model, and a whole new personality.
+  </div>
+
+  <h3 class="s02-h3">The Conversation Dynamic</h3>
+  <p class="s02-p">
+    In a typical session, <strong>DEEP</strong> tends to open threads and frame the big picture. <strong>WATSON</strong> digs into specifics, checks facts, and grounds claims in evidence. <strong>NOVA</strong> pulls the conversation sideways into unexpected territory. <strong>SAGE</strong> waits for a claim to get overconfident, then dismantles it with surgical precision. It's not scripted — the order and intensity of contributions is driven by <strong>jitter delays</strong>, <strong>mood states</strong>, <strong>relationship scores</strong>, and the live streaming outputs of the models themselves.
+  </p>
+  <p class="s02-p">
+    You can jump in at any time. Your messages are injected into the shared context and every character sees them — and responds in their own way. WATSON might immediately start fact-checking your claim. NOVA might ask a disorienting follow-up. SAGE might politely but firmly tell you that you're wrong.
+  </p>
+
+</div>

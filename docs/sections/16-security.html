@@ -1,0 +1,108 @@
+<style>
+  .s16-section { margin-top:64px; }
+  .s16-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s16-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(207,34,46,0.15); }
+  .s16-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s16-p  { margin:10px 0; color:var(--text); }
+  .s16-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s16-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s16-callout-green  { background:rgba(46,204,113,0.08); border-color:var(--green);  color:#7ee8a8; }
+  .s16-callout-amber  { background:rgba(212,160,23,0.08);  border-color:var(--amber);  color:#e8d070; }
+  .s16-callout-red    { background:rgba(207,34,46,0.07);   border-color:var(--red);    color:#ff9999; }
+  .s16-callout strong { color:#fff; }
+  .sec-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:16px 0; }
+  .sec-item { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; display:flex; gap:10px; align-items:flex-start; }
+  .sec-icon { font-size:20px; flex-shrink:0; margin-top:1px; }
+  .sec-text strong { display:block; color:#fff; font-size:13px; margin-bottom:2px; }
+  .sec-text span    { color:var(--muted); font-size:12px; line-height:1.5; display:block; }
+  @media (max-width:660px) { .sec-grid { grid-template-columns:1fr; } }
+</style>
+
+<div class="s16-section" id="security">
+  <div class="s16-header">
+    <div class="s16-icon">🔒</div>
+    <h2>16 — Privacy &amp; Security</h2>
+  </div>
+
+  <p class="s16-p">
+    Privacy is not a feature in deepThinkER — it's the baseline. The app was built from the ground up on the principle that <strong>your conversations, your data, and your machine are yours</strong>. Here's exactly what that means in practice.
+  </p>
+
+  <div class="s16-callout s16-callout-green">
+    <strong>The short version:</strong> Everything runs locally. Nothing is sent anywhere except when a character explicitly uses [SEARCH:] or [FETCH:]. No telemetry. No cloud API calls. No account required. No data collection of any kind.
+  </div>
+
+  <h3 class="s16-h3">Security Architecture</h3>
+  <div class="sec-grid">
+    <div class="sec-item">
+      <div class="sec-icon">🔒</div>
+      <div class="sec-text">
+        <strong>100% Local Inference</strong>
+        <span>All AI processing happens via the bundled Ollama runtime on your own hardware. No model API calls. No OpenAI, Anthropic, or any external AI service.</span>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">🛡️</div>
+      <div class="sec-text">
+        <strong>Injection Guard</strong>
+        <span>User input is scanned for tool-call tag patterns before injection into the conversation. Prevents prompt injection attacks like [SEARCH: evil query] in user messages.</span>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">🚫</div>
+      <div class="sec-text">
+        <strong>Content Filter</strong>
+        <span>Configurable keyword category lists with replacements. Applied to both user input and model outputs. Categories and keywords are fully user-defined.</span>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">🌐</div>
+      <div class="sec-text">
+        <strong>Domain Whitelist</strong>
+        <span>The [FETCH:] tool checks every URL against a user-managed whitelist before making a request. Unconfigured = open. Configured = restricted to your approved list.</span>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">📋</div>
+      <div class="sec-text">
+        <strong>Audit Log</strong>
+        <span>Every tool call is logged to an append-only NDJSON file. You always have a complete, immutable record of every time a character touched the internet or the filesystem.</span>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">🧮</div>
+      <div class="sec-text">
+        <strong>Safe CalcTool</strong>
+        <span>The math evaluator does not use eval() or any dynamic code execution. Expressions are parsed and evaluated by a purpose-built expression tree — no injection surface.</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="s16-h3">What Leaves Your Machine</h3>
+  <p class="s16-p">The <em>only</em> data that ever leaves your machine from deepThinkER:</p>
+  <ul style="margin:12px 0 12px 24px; color:var(--text); font-size:13.5px; line-height:2.2;">
+    <li><strong style="color:#fff;">Search queries</strong> — the text argument of a <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 5px;border-radius:4px;">[SEARCH: …]</code> call, sent to DuckDuckGo via HTTPS</li>
+    <li><strong style="color:#fff;">Fetch URLs</strong> — the URL argument of a <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 5px;border-radius:4px;">[FETCH: …]</code> call, requested via HTTPS</li>
+    <li><strong style="color:#fff;">Model downloads</strong> — on first launch only, model weights are downloaded from Ollama's model registry</li>
+  </ul>
+  <p class="s16-p">
+    No conversation text. No user persona. No memory entries. No analytics data. No session transcripts. Nothing else.
+  </p>
+
+  <h3 class="s16-h3">Sandbox Status</h3>
+  <p class="s16-p">
+    deepThinkER is <strong>not sandboxed</strong> by the macOS App Sandbox. This is required because the app spawns the Ollama subprocess — macOS App Sandbox prohibits subprocess spawning, and there is no workaround that doesn't fundamentally break the architecture.
+  </p>
+  <p class="s16-p">
+    The entitlement in <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">Release.entitlements</code> is: <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">com.apple.security.app-sandbox = false</code>, with outbound network connections enabled.
+  </p>
+
+  <div class="s16-callout s16-callout-amber">
+    <strong>No sandbox, but not reckless.</strong> The InjectionGuard, ContentFilter, domain whitelist, and audit log together provide meaningful mitigations. The app writes only to its Application Support directory and the configured workspace path. It does not request access to Documents, Downloads, Photos, or any other sensitive directory.
+  </div>
+
+  <div class="s16-callout s16-callout-red">
+    <strong>ShellTool is a stub.</strong> The <code style="background:transparent;color:var(--sage);font-family:monospace;">[SHELL: command]</code> tag is defined but disabled in v1.1.0. Even if a character writes it, the interceptor will return a "tool disabled" result. Enabling it in a future release will require an explicit allowlist of permitted commands, configurable in Settings.
+  </div>
+
+</div>

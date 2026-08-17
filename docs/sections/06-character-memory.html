@@ -1,0 +1,91 @@
+<style>
+  .s06-section { margin-top:64px; }
+  .s06-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s06-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(46,204,113,0.15); }
+  .s06-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s06-p  { margin:10px 0; color:var(--text); }
+  .s06-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s06-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s06-callout-green  { background:rgba(46,204,113,0.08); border-color:var(--green);  color:#7ee8a8; }
+  .s06-callout-blue   { background:rgba(59,138,255,0.08); border-color:var(--accent); color:#a8c8ff; }
+  .s06-callout strong { color:#fff; }
+  .s06-feat { list-style:none; padding:0; margin:12px 0; }
+  .s06-feat li { display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--border); font-size:13.5px; }
+  .s06-feat li:last-child { border-bottom:none; }
+  .s06-feat .fi { font-size:18px; flex-shrink:0; margin-top:1px; }
+  .s06-feat .ft { color:var(--text); }
+  .s06-feat .ft strong { color:#fff; }
+  .s06-path { background:#0a0c10; border:1px solid var(--border); border-radius:8px; padding:12px 16px; font-family:"SF Mono",monospace; font-size:12px; color:var(--muted); margin:8px 0; line-height:2; }
+  .s06-path .ph { color:var(--accent); }
+  .s06-path .pf { color:var(--text); }
+  .s06-path .pn { color:var(--nova); }
+</style>
+
+<div class="s06-section" id="character-memory">
+  <div class="s06-header">
+    <div class="s06-icon">💾</div>
+    <h2>06 — Character Memory</h2>
+  </div>
+
+  <p class="s06-p">
+    One of the most human-feeling capabilities in deepThinkER is the simplest to explain: the characters <strong>remember things</strong>. Not just within a session — across sessions. WATSON can recall a statistic it stored three weeks ago. SAGE can remember the exact position it took in a debate you had last Tuesday and pick up exactly where it left off.
+  </p>
+  <p class="s06-p">
+    Each character maintains a <strong>private, persistent memory store</strong> with up to <strong>200 entries</strong>. Entries are stored as plain JSON and survive between sessions without any action required from you.
+  </p>
+
+  <h3 class="s06-h3">Storing and Recalling</h3>
+  <p class="s06-p">Characters access memory through two tool tags:</p>
+
+  <ul class="s06-feat">
+    <li>
+      <span class="fi">📝</span>
+      <span class="ft"><code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 5px;border-radius:4px;">[REMEMBER: fact]</code> — Stores a new memory entry with a timestamp. The character decides what's worth remembering. WATSON tends to store facts and citations. SAGE stores contradictions and unresolved positions. NOVA stores open questions and half-formed hypotheses.</span>
+    </li>
+    <li>
+      <span class="fi">🔍</span>
+      <span class="ft"><code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 5px;border-radius:4px;">[RECALL: topic]</code> — Keyword-searches the store and injects matching entries into the character's context as a system message. The character can then reference those memories in their response as naturally as any other context.</span>
+    </li>
+  </ul>
+
+  <h3 class="s06-h3">Memory and Context Resets</h3>
+  <p class="s06-p">
+    When a character's context window fills up and is reset, their most important memories are automatically <strong>summarised and re-injected</strong> into the new context. This means characters never forget their key facts even after a context flush — the most significant memories survive the reset and become part of the new baseline.
+  </p>
+  <p class="s06-p">
+    The <strong>MemoryQuery</strong> component scores entries by recency, keyword relevance, and how often an entry has been recalled before — giving the most contextually relevant memories the best chance of surviving into the reset.
+  </p>
+
+  <h3 class="s06-h3">The Memory Panel</h3>
+  <p class="s06-p">
+    Every character's memory store is fully inspectable. The <strong>Memory Panel</strong> — accessible from each quadrant's header menu — lets you:
+  </p>
+  <ul class="s06-feat">
+    <li><span class="fi">👁️</span><span class="ft"><strong>Browse</strong> all memory entries with timestamps and character attribution</span></li>
+    <li><span class="fi">🔎</span><span class="ft"><strong>Search</strong> entries by keyword — the same query interface the character uses internally</span></li>
+    <li><span class="fi">🗑️</span><span class="ft"><strong>Delete</strong> individual entries — useful for correcting outdated or incorrect memories</span></li>
+    <li><span class="fi">✏️</span><span class="ft"><strong>Edit</strong> entry content if you want to correct or clarify a stored fact</span></li>
+  </ul>
+
+  <h3 class="s06-h3">Storage Location</h3>
+  <div class="s06-path">
+    <span class="ph">~/Library/Application Support/deepThinkER/</span><span class="pf">memory/</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pn">WATSON</span><span class="pf">.json</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pn">DEEP</span><span class="pf">.json</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pn">NOVA</span><span class="pf">.json</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pn">SAGE</span><span class="pf">.json</span>
+  </div>
+
+  <p class="s06-p">
+    Each file is a plain JSON array — human-readable, easily backed up, and trivially portable. There's nothing proprietary about the format.
+  </p>
+
+  <div class="s06-callout s06-callout-green">
+    <strong>Memory cap and eviction:</strong> When the 200-entry cap is reached, the oldest entry is evicted to make room for the new one. The eviction policy is FIFO by default — but the context-reset summarisation pass will have already promoted the most important old entries into a more persistent form before they age out.
+  </div>
+
+  <div class="s06-callout s06-callout-blue">
+    <strong>Memory is private.</strong> Each character can only read their own memory store. WATSON cannot RECALL from SAGE's store and vice versa. This is by design — it preserves each character's distinct perspective and prevents convergence toward a shared monolithic "knowledge base."
+  </div>
+
+</div>

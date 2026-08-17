@@ -1,0 +1,113 @@
+<style>
+  .s18-section { margin-top:64px; }
+  .s18-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s18-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(99,102,241,0.15); }
+  .s18-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s18-p  { margin:10px 0; color:var(--text); }
+  .s18-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s18-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s18-callout-purple { background:rgba(155,89,245,0.08); border-color:var(--accent2); color:#c4a0f8; }
+  .s18-callout strong { color:#fff; }
+  .s18-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.5px; }
+  .s18-table th { background:var(--surface2); border:1px solid var(--border2); padding:9px 14px; text-align:left; color:var(--muted); font-size:11.5px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; }
+  .s18-table td { border:1px solid var(--border); padding:9px 14px; color:var(--text); }
+  .s18-table tr:hover td { background:var(--surface); }
+  .s18-table .pkg { font-family:"SF Mono",monospace; color:var(--sage); font-size:12.5px; }
+  .s18-table .ver { font-family:"SF Mono",monospace; color:var(--muted); font-size:12px; }
+</style>
+
+<div class="s18-section" id="dependencies">
+  <div class="s18-header">
+    <div class="s18-icon">🧩</div>
+    <h2>18 — Dependencies</h2>
+  </div>
+
+  <p class="s18-p">
+    One of deepThinkER's proudest achievements is how <strong>little it depends on</strong>. The entire application — with all its features — runs on just six runtime packages. No AI framework. No state management library. No database ORM. No reactive toolkit. Just a handful of small, well-maintained packages for things the Dart standard library genuinely doesn't do.
+  </p>
+
+  <h3 class="s18-h3">Runtime Dependencies</h3>
+  <table class="s18-table">
+    <thead>
+      <tr><th>Package</th><th>Version</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="pkg">flutter</td>
+        <td class="ver">SDK</td>
+        <td>UI framework — widgets, rendering, platform channels</td>
+      </tr>
+      <tr>
+        <td class="pkg">http</td>
+        <td class="ver">^1.2.0</td>
+        <td>HTTP client for web search/fetch calls to DuckDuckGo and fetched URLs</td>
+      </tr>
+      <tr>
+        <td class="pkg">path_provider</td>
+        <td class="ver">^2.1.0</td>
+        <td>Resolve the Application Support directory path on macOS</td>
+      </tr>
+      <tr>
+        <td class="pkg">url_launcher</td>
+        <td class="ver">^6.2.0</td>
+        <td>Open URLs from the About and Help screens in the default browser</td>
+      </tr>
+      <tr>
+        <td class="pkg">flutter_local_notifications</td>
+        <td class="ver">^18.0.0</td>
+        <td>System desktop notifications for session events (research complete, etc.)</td>
+      </tr>
+      <tr>
+        <td class="pkg">audioplayers</td>
+        <td class="ver">^6.0.0</td>
+        <td>Audio cues on conversation events (configurable, off by default)</td>
+      </tr>
+      <tr>
+        <td class="pkg">archive</td>
+        <td class="ver">^3.6.0</td>
+        <td>ZIP assembly for session export bundles</td>
+      </tr>
+      <tr>
+        <td class="pkg">cupertino_icons</td>
+        <td class="ver">^1.0.8</td>
+        <td>Icon set used in the UI</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="s18-h3">Development Dependencies</h3>
+  <table class="s18-table">
+    <thead>
+      <tr><th>Package</th><th>Version</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="pkg">flutter_lints</td>
+        <td class="ver">^6.0.0</td>
+        <td>Recommended Flutter lint rules — enforced in CI</td>
+      </tr>
+      <tr>
+        <td class="pkg">test</td>
+        <td class="ver">^1.25.0</td>
+        <td>Dart test runner for the pure-Dart core unit tests</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="s18-h3">Deliberately Absent</h3>
+  <p class="s18-p">
+    The following categories of package were considered and explicitly rejected:
+  </p>
+  <ul style="margin:12px 0 12px 24px; color:var(--text); font-size:13.5px; line-height:2.2;">
+    <li><strong style="color:#fff;">State management</strong> — No Riverpod, BLoC, Provider, GetX, or Redux. Vanilla <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 5px;border-radius:4px;">setState</code> and <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 5px;border-radius:4px;">dart:async</code> streams only.</li>
+    <li><strong style="color:#fff;">AI/LLM framework</strong> — No LangChain, LlamaIndex, or similar. The Ollama API is simple enough that a direct HTTP client is sufficient and far more transparent.</li>
+    <li><strong style="color:#fff;">Database ORM</strong> — No SQLite, Hive, Isar, or similar. All data is plain JSON. It's fast enough, human-readable, and requires no migration system.</li>
+    <li><strong style="color:#fff;">Dependency injection</strong> — No get_it, injectable, or similar. Dependencies are passed explicitly, making the code straightforward to test.</li>
+    <li><strong style="color:#fff;">Reactive streams</strong> — No RxDart. The built-in <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 5px;border-radius:4px;">StreamController</code> is sufficient.</li>
+  </ul>
+
+  <div class="s18-callout s18-callout-purple">
+    <strong>The philosophy:</strong> Every dependency added is a dependency that can break, go unmaintained, introduce a security vulnerability, or just make the codebase harder to understand for a new contributor. deepThinkER's complexity lives in its features — not its dependency graph.
+  </div>
+
+</div>

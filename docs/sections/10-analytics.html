@@ -1,0 +1,99 @@
+<style>
+  .s10-section { margin-top:64px; }
+  .s10-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s10-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(59,138,255,0.15); }
+  .s10-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s10-p  { margin:10px 0; color:var(--text); }
+  .s10-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s10-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s10-callout-blue   { background:rgba(59,138,255,0.08); border-color:var(--accent); color:#a8c8ff; }
+  .s10-callout-amber  { background:rgba(212,160,23,0.08); border-color:var(--amber);  color:#e8d070; }
+  .s10-callout strong { color:#fff; }
+  .s10-stat-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:16px 0; }
+  .s10-stat-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 14px; text-align:center; }
+  .s10-stat-num   { font-size:1.6rem; font-weight:900; color:#fff; margin-bottom:3px; }
+  .s10-stat-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; }
+  .s10-feat { list-style:none; padding:0; margin:12px 0; }
+  .s10-feat li { display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--border); font-size:13.5px; }
+  .s10-feat li:last-child { border-bottom:none; }
+  .s10-feat .fi { font-size:18px; flex-shrink:0; margin-top:1px; }
+  .s10-feat .ft { color:var(--text); }
+  .s10-feat .ft strong { color:#fff; }
+  .s10-path { background:#0a0c10; border:1px solid var(--border); border-radius:8px; padding:12px 16px; font-family:"SF Mono",monospace; font-size:12px; color:var(--muted); margin:8px 0; }
+  .s10-path .ph { color:var(--accent); }
+  .s10-path .pf { color:var(--text); }
+  @media (max-width:660px) { .s10-stat-row { grid-template-columns:1fr 1fr; } }
+</style>
+
+<div class="s10-section" id="analytics">
+  <div class="s10-header">
+    <div class="s10-icon">📊</div>
+    <h2>10 — Session Analytics &amp; Audit</h2>
+  </div>
+
+  <p class="s10-p">
+    Every session in deepThinkER is fully instrumented. The analytics pipeline captures who said what when, how trust evolved, what tools were used, how moods shifted, and how many tokens each character consumed — all in real time, all saved automatically.
+  </p>
+  <p class="s10-p">
+    This isn't just for power users. The <strong>post-session Analytics screen</strong> gives you a visual, human-readable breakdown of what just happened — useful for understanding why a conversation went where it did, or just satisfying the curiosity of watching four AI minds work.
+  </p>
+
+  <h3 class="s10-h3">What Gets Tracked</h3>
+  <ul class="s10-feat">
+    <li>
+      <span class="fi">🗓️</span>
+      <span class="ft"><strong>Message heatmap</strong> — A timeline grid showing who spoke when across the session. Gaps, bursts, and silences are all visible at a glance.</span>
+    </li>
+    <li>
+      <span class="fi">📈</span>
+      <span class="ft"><strong>Trust sparklines</strong> — Per-character trust score trajectories over the session, plotted as mini line charts on a shared timeline. Watch trust climb, dip on violations, and recover.</span>
+    </li>
+    <li>
+      <span class="fi">🔧</span>
+      <span class="ft"><strong>Tool call table</strong> — Every SEARCH, FETCH, REMEMBER, RECALL, CALC, FILE_READ, FILE_WRITE, and IMAGE call, with character name, timestamp, input argument, result summary, rate-limit flag, and trust delta.</span>
+    </li>
+    <li>
+      <span class="fi">😤</span>
+      <span class="ft"><strong>Mood trajectory</strong> — Mood state changes annotated on the session timeline. See exactly when SAGE tipped from Engaged to Agitated, and what triggered it.</span>
+    </li>
+    <li>
+      <span class="fi">🔢</span>
+      <span class="ft"><strong>Live token counters</strong> — Visible in each quadrant header during the live conversation. Green → amber → red as the context window fills. Resets are shown with a small flash.</span>
+    </li>
+    <li>
+      <span class="fi">🤝</span>
+      <span class="ft"><strong>Relationship deltas</strong> — Per-pair relationship score changes across the session, showing which pairs moved and by how much.</span>
+    </li>
+  </ul>
+
+  <h3 class="s10-h3">The Audit Log</h3>
+  <p class="s10-p">
+    Separate from session analytics, the <strong>Audit Log</strong> is an <em>append-only</em> record of every tool call made across all sessions. It never truncates and is never deleted automatically. Format: <strong>NDJSON</strong> (newline-delimited JSON) — one record per line, trivially parseable by any tool.
+  </p>
+  <div class="s10-path">
+    <span class="ph">~/Library/Application Support/deepThinkER/</span><span class="pf">audit.ndjson</span>
+  </div>
+  <p class="s10-p">
+    Each audit entry contains: timestamp, session ID, character name, tool name, input argument, result summary (truncated), success/failure, trust score at time of call, and whether a rate limit was triggered.
+  </p>
+  <p class="s10-p">
+    The <strong>Audit Log screen</strong> (accessible from the main menu) renders this as a sortable, filterable table — filter by character, by tool type, by session, by date range, or by rate-limit violations only.
+  </p>
+
+  <h3 class="s10-h3">Analytics Export</h3>
+  <p class="s10-p">
+    Analytics for each session are exported as JSON alongside the conversation transcript, and can be zipped into a portable export bundle via the Export button in the Analytics screen.
+  </p>
+  <div class="s10-path">
+    <span class="ph">~/Library/Application Support/deepThinkER/</span><span class="pf">analytics/&lt;session-id&gt;.json</span>
+  </div>
+
+  <div class="s10-callout s10-callout-blue">
+    <strong>Token counters explained:</strong> The counter in each quadrant header shows <code style="background:transparent;color:var(--sage);font-family:monospace;">used / max</code> tokens for that character's current context window. deepThinkER uses a fast token estimator (character-count heuristic, ~4 chars/token) rather than a full tokeniser — fast enough for real-time display, accurate enough to be useful. When a character hits 85% of their context limit, the counter turns amber. At 95%, red. A context reset is triggered automatically at the configurable threshold.
+  </div>
+
+  <div class="s10-callout s10-callout-amber">
+    <strong>The audit log is immutable by design.</strong> It is append-only — there's no delete or edit operation, even from within the app. This is intentional: the audit log is your ground truth for what the characters actually did on the internet. If you need to clear it, you can delete the file manually — but the app will never do it for you.
+  </div>
+
+</div>

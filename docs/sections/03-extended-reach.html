@@ -1,0 +1,105 @@
+<style>
+  .s03-section { margin-top:64px; }
+  .s03-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s03-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(0,198,255,0.12); }
+  .s03-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s03-p  { margin:10px 0; color:var(--text); }
+  .s03-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s03-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s03-callout-teal   { background:rgba(0,198,255,0.07); border-color:var(--internet); color:#7ae0ff; }
+  .s03-callout-amber  { background:rgba(212,160,23,0.08); border-color:var(--amber); color:#e8d070; }
+  .s03-callout strong { color:#fff; }
+  .s03-pre { background:#0a0c10; border:1px solid var(--border); border-radius:10px; padding:18px 20px; overflow-x:auto; font-family:"SF Mono","Fira Code",monospace; font-size:12.5px; line-height:1.65; margin:14px 0; color:var(--text); }
+  .s03-pre .c-tag   { color:var(--sage); }
+  .s03-pre .c-val   { color:var(--internet); }
+  .s03-pre .c-comm  { color:#3d4a5c; }
+  .s03-pre .c-ok    { color:var(--nova); }
+  .internet-live { display:inline-flex; align-items:center; gap:6px; background:rgba(0,198,255,0.1); border:1px solid rgba(0,198,255,0.3); border-radius:20px; padding:3px 12px; font-size:12px; color:var(--internet); font-weight:700; }
+  .pulse-dot { width:7px; height:7px; border-radius:50%; background:var(--internet); display:inline-block; }
+  .s03-flow { display:flex; align-items:stretch; gap:0; margin:16px 0; }
+  .s03-flow-box { flex:1; background:var(--surface); border:1px solid var(--border); padding:14px 12px; position:relative; text-align:center; }
+  .s03-flow-box:first-child { border-radius:10px 0 0 10px; }
+  .s03-flow-box:last-child  { border-radius:0 10px 10px 0; }
+  .s03-flow-box + .s03-flow-box { border-left:none; }
+  .s03-flow-num  { font-size:10px; color:var(--muted); margin-bottom:4px; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+  .s03-flow-name { font-size:13px; font-weight:800; color:#fff; margin-bottom:5px; }
+  .s03-flow-desc { font-size:11.5px; color:var(--muted); line-height:1.45; }
+  @media (max-width:660px) { .s03-flow { flex-direction:column; } .s03-flow-box { border-left:1px solid var(--border) !important; border-radius:0 !important; } .s03-flow-box:first-child { border-radius:10px 10px 0 0 !important; } .s03-flow-box:last-child { border-radius:0 0 10px 10px !important; } }
+</style>
+
+<div class="s03-section" id="extended-reach">
+  <div class="s03-header">
+    <div class="s03-icon">🌐</div>
+    <h2>03 — Extended Reach · Internet Access</h2>
+  </div>
+
+  <p class="s03-p">
+    The defining feature of deepThinkER is its name: <strong>Extended Reach</strong>. For the first time, these locally-running AI personalities can reach out and touch the live internet — searching DuckDuckGo, fetching pages, pulling in real-world information mid-conversation. But this power comes with a leash: the <strong>Trust System</strong>.
+  </p>
+
+  <div class="s03-callout s03-callout-teal">
+    <strong>What "Extended Reach" actually means:</strong> Each character can embed tool-call tags in their responses. When the <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">ToolCallInterceptor</code> detects one, it executes the tool, injects the result back into the character's context as a system message, and the character continues their response informed by the fresh data. The whole thing happens in real time, mid-stream.
+  </div>
+
+  <h3 class="s03-h3">How It Works — The Tag Syntax</h3>
+  <p class="s03-p">Characters request internet access by embedding plain-text tags directly in their responses:</p>
+
+  <div class="s03-pre"><span class="c-comm">// Web search</span>
+<span class="c-tag">[SEARCH:</span> <span class="c-val">benefits of large language model ensembles</span><span class="c-tag">]</span>
+
+<span class="c-comm">// Direct URL fetch (whitelist-checked)</span>
+<span class="c-tag">[FETCH:</span> <span class="c-val">https://arxiv.org/abs/2405.12345</span><span class="c-tag">]</span></div>
+
+  <p class="s03-p">
+    These tags look like plain text to the model — no special prompt engineering required. The <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">ToolCallParser</code> scans every completed token chunk for these patterns using a simple regex pass. When one is found, the interceptor takes over.
+  </p>
+
+  <h3 class="s03-h3">The Request Pipeline</h3>
+  <div class="s03-flow">
+    <div class="s03-flow-box">
+      <div class="s03-flow-num">Step 01</div>
+      <div class="s03-flow-name">Character Requests</div>
+      <div class="s03-flow-desc">Character embeds <code style="background:transparent;border:none;color:var(--sage);font-family:monospace;">[SEARCH: …]</code> or <code style="background:transparent;border:none;color:var(--internet);font-family:monospace;">[FETCH: …]</code> in their streamed response</div>
+    </div>
+    <div class="s03-flow-box">
+      <div class="s03-flow-num">Step 02</div>
+      <div class="s03-flow-name">Trust Check</div>
+      <div class="s03-flow-desc">Interceptor checks character's current trust tier. Below Low tier → request denied and logged</div>
+    </div>
+    <div class="s03-flow-box">
+      <div class="s03-flow-num">Step 03</div>
+      <div class="s03-flow-name">Rate Check</div>
+      <div class="s03-flow-desc">Sliding-window rate limiter checks per-character and global caps. Violation → deny + trust penalty</div>
+    </div>
+    <div class="s03-flow-box">
+      <div class="s03-flow-num">Step 04</div>
+      <div class="s03-flow-name">Execute</div>
+      <div class="s03-flow-desc">DuckDuckGo HTML search or URL fetch (whitelist-checked). Result is cleaned and truncated</div>
+    </div>
+    <div class="s03-flow-box">
+      <div class="s03-flow-num">Step 05</div>
+      <div class="s03-flow-name">Inject &amp; Log</div>
+      <div class="s03-flow-desc">Result injected as a system message. Logged to audit log. UI badge lights up on character's panel</div>
+    </div>
+  </div>
+
+  <h3 class="s03-h3">The Search Badge</h3>
+  <p class="s03-p">
+    When a character performs a live web search, a <span class="internet-live"><span class="pulse-dot"></span> LIVE</span> badge appears on their quadrant header in real time. Clicking or expanding it reveals the full search result that was injected into the conversation. The complete network log for the session is also available under <strong>Settings → Network</strong>.
+  </p>
+
+  <h3 class="s03-h3">Proactive Search Injection</h3>
+  <p class="s03-p">
+    deepThinkER also includes a <strong>ProactiveInjector</strong> — a background component that analyses the conversation topic and can pre-emptively inject relevant context into a character's system prompt <em>before</em> they even ask. Think of it as giving the characters a heads-up: "Hey, this conversation is heading towards quantum computing — here are some recent headlines." This is always presented as injected context, never as a character's own words.
+  </p>
+
+  <h3 class="s03-h3">DuckDuckGo — Why Not a Search API?</h3>
+  <p class="s03-p">
+    deepThinkER uses <strong>DuckDuckGo's HTML endpoint</strong> rather than a paid search API (Google, Bing, Brave, etc.) for a deliberate reason: <em>zero API keys, zero accounts, zero cost.</em> The HTML scraping approach is entirely free, requires no registration, and aligns with the project's core philosophy of running without any external service dependencies. The trade-off is that result quality and rate limits are governed by DuckDuckGo's HTML interface rather than a dedicated API — but in practice it works extremely well for the kinds of real-time fact queries the characters make.
+  </p>
+
+  <div class="s03-callout s03-callout-amber">
+    <strong>Privacy note:</strong> <code style="background:transparent;color:var(--sage);font-family:monospace;">[SEARCH:]</code> and <code style="background:transparent;color:var(--sage);font-family:monospace;">[FETCH:]</code> calls are the <em>only</em> moments when any data leaves your machine. The query text and fetched URL are the only things transmitted — no conversation history, no user data, no telemetry. Every outbound call is logged in the audit log so you always know exactly what was sent.
+  </div>
+
+</div>

@@ -1,0 +1,125 @@
+<style>
+  .s14-section { margin-top:64px; }
+  .s14-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s14-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(255,107,53,0.15); }
+  .s14-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s14-p  { margin:10px 0; color:var(--text); }
+  .s14-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s14-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s14-callout-blue  { background:rgba(59,138,255,0.08); border-color:var(--accent); color:#a8c8ff; }
+  .s14-callout-amber { background:rgba(212,160,23,0.08);  border-color:var(--amber);  color:#e8d070; }
+  .s14-callout strong { color:#fff; }
+  .terminal { background:#07090e; border:1px solid var(--border); border-radius:10px; overflow:hidden; margin:16px 0; }
+  .terminal-bar { background:#12151f; padding:10px 14px; display:flex; align-items:center; gap:6px; border-bottom:1px solid var(--border); }
+  .dot   { width:10px; height:10px; border-radius:50%; }
+  .dot-r { background:#ff5f57; }
+  .dot-y { background:#ffbd2e; }
+  .dot-g { background:#28c840; }
+  .terminal-bar span { font-size:12px; color:var(--muted); margin-left:8px; }
+  .terminal-body { padding:16px 18px; font-family:"SF Mono","Fira Code",monospace; font-size:12.5px; line-height:1.9; }
+  .terminal-body .prompt { color:var(--nova); }
+  .terminal-body .cmd    { color:#fff; }
+  .terminal-body .out    { color:var(--muted); }
+  .terminal-body .ok     { color:var(--nova); }
+  .terminal-body .tag    { color:var(--sage); }
+  .s14-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.5px; }
+  .s14-table th { background:var(--surface2); border:1px solid var(--border2); padding:9px 14px; text-align:left; color:var(--muted); font-size:11.5px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; }
+  .s14-table td { border:1px solid var(--border); padding:9px 14px; color:var(--text); }
+  .s14-table tr:hover td { background:var(--surface); }
+</style>
+
+<div class="s14-section" id="building">
+  <div class="s14-header">
+    <div class="s14-icon">🔨</div>
+    <h2>14 — Building from Source</h2>
+  </div>
+
+  <p class="s14-p">
+    deepThinkER is a standard Flutter macOS application. If you have Flutter, Xcode, and CocoaPods set up, you can have a debug build running in minutes. The only extra step compared to a typical Flutter project is pulling the bundled Ollama runtime via Git LFS.
+  </p>
+
+  <h3 class="s14-h3">Prerequisites</h3>
+  <div class="terminal">
+    <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>Terminal</span></div>
+    <div class="terminal-body">
+      <span class="prompt">$</span> <span class="cmd">flutter --version</span><br/>
+      <span class="out">Flutter 3.x.x • channel stable</span><br/>
+      <br/>
+      <span class="prompt">$</span> <span class="cmd">xcode-select --install</span>  <span class="tag"># Xcode command line tools</span><br/>
+      <br/>
+      <span class="prompt">$</span> <span class="cmd">sudo gem install cocoapods</span>  <span class="tag"># macOS plugin deps</span><br/>
+      <br/>
+      <span class="prompt">$</span> <span class="cmd">git lfs install</span>  <span class="tag"># For bundled Ollama runtime (metallib files)</span><br/>
+      <span class="ok">Git LFS initialized.</span>
+    </div>
+  </div>
+
+  <h3 class="s14-h3">Clone &amp; Setup</h3>
+  <div class="terminal">
+    <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>Terminal</span></div>
+    <div class="terminal-body">
+      <span class="prompt">$</span> <span class="cmd">git clone https://github.com/007Style/deepThinkER.git</span><br/>
+      <span class="prompt">$</span> <span class="cmd">cd deepThinkER</span><br/>
+      <br/>
+      <span class="tag"># Pull the bundled Ollama runtime (~285 MB of metallib files)</span><br/>
+      <span class="prompt">$</span> <span class="cmd">git lfs pull</span><br/>
+      <br/>
+      <span class="tag"># Install Dart/Flutter dependencies</span><br/>
+      <span class="prompt">$</span> <span class="cmd">flutter pub get</span><br/>
+      <br/>
+      <span class="tag"># Install macOS CocoaPods dependencies</span><br/>
+      <span class="prompt">$</span> <span class="cmd">cd macos && pod install && cd ..</span>
+    </div>
+  </div>
+
+  <h3 class="s14-h3">Run in Debug Mode</h3>
+  <div class="terminal">
+    <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>Terminal</span></div>
+    <div class="terminal-body">
+      <span class="prompt">$</span> <span class="cmd">flutter run -d macos</span><br/>
+      <span class="out">Launching lib/main.dart on macOS in debug mode...</span><br/>
+      <span class="ok">✓ Built build/macos/Build/Products/Debug/deepThinkER.app</span>
+    </div>
+  </div>
+
+  <h3 class="s14-h3">Build Release DMG + .app</h3>
+  <div class="terminal">
+    <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>Terminal</span></div>
+    <div class="terminal-body">
+      <span class="tag"># Standard release build</span><br/>
+      <span class="prompt">$</span> <span class="cmd">./scripts/build_dmg.sh</span><br/>
+      <br/>
+      <span class="tag"># With a custom version number</span><br/>
+      <span class="prompt">$</span> <span class="cmd">./scripts/build_dmg.sh 1.2.0</span>
+    </div>
+  </div>
+
+  <table class="s14-table">
+    <thead><tr><th>Artefact</th><th>Location</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code style="color:var(--sage);font-family:monospace;">deepThinkER-v1.1.0-macos.dmg</code></td><td><code style="color:var(--muted);font-family:monospace;">build/</code></td><td>Installer DMG with drag-to-Applications layout</td></tr>
+      <tr><td><code style="color:var(--sage);font-family:monospace;">deepThinkER.app</code></td><td><code style="color:var(--muted);font-family:monospace;">build/</code></td><td>Standalone app bundle — run from anywhere</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="s14-h3">Run Tests</h3>
+  <div class="terminal">
+    <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>Terminal</span></div>
+    <div class="terminal-body">
+      <span class="prompt">$</span> <span class="cmd">flutter test</span><br/>
+      <span class="out">00:12 +147: All tests passed!</span><br/>
+      <br/>
+      <span class="prompt">$</span> <span class="cmd">flutter analyze</span><br/>
+      <span class="ok">No issues found!</span>
+    </div>
+  </div>
+
+  <div class="s14-callout s14-callout-blue">
+    <strong>All tests are pure Dart.</strong> No Flutter widget tests needed for the core logic. The 14 test directories under <code style="background:transparent;color:var(--sage);font-family:monospace;">test/core/</code> cover everything from trust tier transitions to tool call parsing to context window management. They run in milliseconds with no Ollama dependency.
+  </div>
+
+  <div class="s14-callout s14-callout-amber">
+    <strong>Debug mode and model downloads:</strong> Running in debug mode does not bypass the model download step. The first time you run <code style="background:transparent;color:var(--sage);font-family:monospace;">flutter run -d macos</code>, the app will walk you through downloading all models exactly as it would in a production install.
+  </div>
+
+</div>

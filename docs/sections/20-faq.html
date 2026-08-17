@@ -1,0 +1,72 @@
+<style>
+  .s20-section { margin-top:64px; }
+  .s20-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s20-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(212,160,23,0.15); }
+  .s20-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .faq { margin:16px 0; }
+  .faq-item { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 18px; margin:10px 0; }
+  .faq-q { display:flex; align-items:flex-start; gap:10px; font-weight:700; color:#fff; font-size:14px; margin-bottom:8px; }
+  .faq-q::before { content:'Q'; color:var(--accent); font-size:11px; font-weight:900; background:rgba(59,138,255,0.15); border-radius:4px; padding:2px 7px; flex-shrink:0; margin-top:1px; }
+  .faq-a { font-size:13.5px; color:var(--text); padding-left:36px; line-height:1.65; }
+</style>
+
+<div class="s20-section" id="faq">
+  <div class="s20-header">
+    <div class="s20-icon">❓</div>
+    <h2>20 — FAQ</h2>
+  </div>
+
+  <div class="faq">
+
+    <div class="faq-item">
+      <div class="faq-q">Do the characters actually talk to each other, or is it just turn-taking?</div>
+      <div class="faq-a">It's genuine turn-taking with full shared context — each character sees every previous message from all four participants (including you) in their context window. So when SAGE says "WATSON, that statistic is from 2019 — have you checked whether it still holds?", SAGE is genuinely responding to what WATSON actually said. It's not a simulation of a conversation; it <em>is</em> a conversation. The jitter and pass mechanics make the timing feel natural rather than perfectly round-robin.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I run it with less than 24 GB of RAM?</div>
+      <div class="faq-a">The hard minimum is approximately 20 GB of free RAM to run all four models simultaneously. The app will warn you if you're below threshold at launch. With 16 GB, you'll likely see significant model swapping to disk, which causes very slow responses and possible timeouts. The recommended approach with 16 GB is to start a session with only two or three characters active (which is configurable in Startup Config).</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I use different models — like Llama 3.1, Mistral Large, or Gemma 3?</div>
+      <div class="faq-a">Yes. Any model available through Ollama can be assigned to any character in the Startup Config screen. The default models (Gemma 2 9B, Phi-3 14B, Llama 3 8B, Mistral 7B) were chosen for a balance of quality, personality expressiveness, and RAM footprint — but if you have the hardware for larger models, go for it. The character prompts are model-agnostic.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Does it work on Apple Silicon? On Intel?</div>
+      <div class="faq-a">Yes to both. The app ships as a Universal Binary. On Apple Silicon (M1/M2/M3/M4), the bundled Ollama runtime uses Metal GPU acceleration — responses are significantly faster than on Intel. On Intel Macs, inference runs on CPU, which is slower but perfectly functional. The RAM requirement is the same regardless of chip.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is it completely offline after the initial model download?</div>
+      <div class="faq-a">Yes — completely. Once the models are downloaded, the app runs with zero internet dependency. The only network activity is from explicit [SEARCH:] and [FETCH:] tool calls made by the characters, which you can disable entirely per-character. The Ollama runtime, all four models, and all app logic run locally. No telemetry, no update checks, no cloud sync.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Why are the characters named after IBM systems?</div>
+      <div class="faq-a">It's a tribute to the long history of AI research that made any of this possible. IBM Watson (1997 Jeopardy! winner), Deep Blue (world chess champion 1997), the POWER/NOVA architecture, and IBM's natural language research — these were landmark moments in the story of machines that think. The names are a nod to that lineage, and they turned out to map surprisingly well to distinct personality archetypes: analytical, strategic, creative, and sceptical.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I add a fifth character?</div>
+      <div class="faq-a">Not in v1.1.0 — the UI is designed around four quadrants and the conversation engine is tuned for four simultaneous workers. The Custom Character Editor planned for v1.3 will let you replace one of the four default characters with a fully custom one. A fifth participant slot is theoretically possible and might appear in a future release, but it substantially increases RAM requirements.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What's the difference between mood and relationship? They both seem to affect how characters respond.</div>
+      <div class="faq-a">Mood is <strong>transient and session-scoped</strong> — it reflects how a character is feeling right now, in this conversation, based on recent events. It resets at the start of each session. Relationship is <strong>persistent and cross-session</strong> — it reflects the accumulated history between two characters across all conversations they've had. Mood affects the character's tone and verbosity. Relationship affects how they specifically engage with <em>another particular character</em>. Both inject into the system prompt, but at different points and with different effects.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I export my conversation transcripts?</div>
+      <div class="faq-a">Yes. Session transcripts are saved automatically as plain text in the sessions/ directory. The Export button in the Analytics screen produces a ZIP bundle containing the transcript, analytics JSON, research report (if applicable), and a tool call summary. You can also just navigate directly to <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 5px;border-radius:4px;">~/Library/Application Support/deepThinkER/sessions/</code> in Finder.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is this open source?</div>
+      <div class="faq-a">Yes — MIT license. The full source is on GitHub at <a href="https://github.com/007Style/deepThinkER" style="color:var(--accent);">github.com/007Style/deepThinkER</a>. Read, fork, contribute, build on it. The architecture is documented in exhaustive detail in ARCHITECTURE.md and DEVELOPMENT.md.</div>
+    </div>
+
+  </div>
+</div>

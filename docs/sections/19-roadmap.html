@@ -1,0 +1,97 @@
+<style>
+  .s19-section { margin-top:64px; }
+  .s19-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s19-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(0,198,255,0.12); }
+  .s19-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s19-p  { margin:10px 0; color:var(--text); }
+  .s19-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .roadmap { margin:16px 0; }
+  .rm-item { display:flex; align-items:flex-start; gap:14px; padding:13px 0; border-bottom:1px solid var(--border); }
+  .rm-item:last-child { border-bottom:none; }
+  .rm-ver { min-width:68px; text-align:center; padding:3px 8px; border-radius:6px; font-size:11.5px; font-weight:800; flex-shrink:0; margin-top:1px; }
+  .rm-done    { background:rgba(46,204,113,0.15);  color:var(--nova);    border:1px solid rgba(46,204,113,0.35); }
+  .rm-current { background:rgba(0,198,255,0.15);   color:var(--internet);border:1px solid rgba(0,198,255,0.35); }
+  .rm-next    { background:rgba(59,138,255,0.15);  color:var(--accent);  border:1px solid rgba(59,138,255,0.35); }
+  .rm-future  { background:var(--surface2);        color:var(--muted);   border:1px solid var(--border); }
+  .rm-future2 { background:rgba(155,89,245,0.12);  color:#b07ef5;        border:1px solid rgba(155,89,245,0.3); }
+  .rm-text { font-size:14px; color:var(--text); line-height:1.5; }
+  .rm-text strong { color:#fff; }
+  .rm-tags { margin-top:5px; display:flex; flex-wrap:wrap; gap:5px; }
+  .rm-tag { font-size:10.5px; background:var(--surface2); border:1px solid var(--border); color:var(--muted); padding:1px 7px; border-radius:4px; }
+</style>
+
+<div class="s19-section" id="roadmap">
+  <div class="s19-header">
+    <div class="s19-icon">🗺️</div>
+    <h2>19 — Roadmap</h2>
+  </div>
+
+  <p class="s19-p">
+    deepThinkER is under active development. The roadmap below reflects planned features in rough priority order. Contributions toward any of these are welcome — see the Contributing section for how to get involved.
+  </p>
+
+  <div class="roadmap">
+
+    <div class="rm-item">
+      <div class="rm-ver rm-done">v1.0</div>
+      <div class="rm-text">
+        <strong>deepThink — The Foundation</strong><br/>
+        Four local AI personalities, 2×2 conversation grid, bundled Ollama runtime, streaming inference, jitter mechanics, context window management.
+        <div class="rm-tags"><span class="rm-tag">Released</span></div>
+      </div>
+    </div>
+
+    <div class="rm-item">
+      <div class="rm-ver rm-current">v1.1</div>
+      <div class="rm-text">
+        <strong>Extended Reach — Current Release</strong><br/>
+        Trust-gated internet access, nine-tool framework, persistent character memory, dynamic mood system, relationship matrix, autonomous research mode, session analytics, full audit log, vision/image analysis, injection guard, content filter.
+        <div class="rm-tags"><span class="rm-tag">Released</span><span class="rm-tag">macOS</span></div>
+      </div>
+    </div>
+
+    <div class="rm-item">
+      <div class="rm-ver rm-next">v1.2</div>
+      <div class="rm-text">
+        <strong>Character Flexibility</strong><br/>
+        <strong>Hot-swap characters mid-session</strong> without losing conversation history — swap in a different model or persona while keeping the full context intact.
+        <br/><strong>Whisper mode</strong> — private messages to a single character that the others don't see, enabling sidebar conversations and secret context injections.
+        <div class="rm-tags"><span class="rm-tag">Planned</span><span class="rm-tag">macOS</span></div>
+      </div>
+    </div>
+
+    <div class="rm-item">
+      <div class="rm-ver rm-next">v1.3</div>
+      <div class="rm-text">
+        <strong>Shell Tool &amp; Custom Characters</strong><br/>
+        <strong>Shell tool</strong> (controlled command execution with a configurable allowlist) — the stub becomes real.
+        <br/><strong>Custom character editor UI</strong> — create and save completely new personas with custom names, avatars, models, and prompts from within the app.
+        <div class="rm-tags"><span class="rm-tag">Planned</span><span class="rm-tag">macOS</span></div>
+      </div>
+    </div>
+
+    <div class="rm-item">
+      <div class="rm-ver rm-future">v1.4</div>
+      <div class="rm-text">
+        <strong>Windows Binary Release</strong><br/>
+        A native Windows build. The core is already pure Dart — the work is in the Windows-specific Ollama bundling, entitlements, and installer packaging.
+        <div class="rm-tags"><span class="rm-tag">Planned</span><span class="rm-tag">Windows</span></div>
+      </div>
+    </div>
+
+    <div class="rm-item">
+      <div class="rm-ver rm-future2">v2.0</div>
+      <div class="rm-text">
+        <strong>Multi-Session Workspace &amp; Memory Federation</strong><br/>
+        A persistent workspace that spans sessions — characters carry forward not just their private memory but a shared project context. Cross-session memory federation: characters can reference what they learned in previous research sessions. Workspace-aware tool access with project-scoped permissions.
+        <div class="rm-tags"><span class="rm-tag">Future</span><span class="rm-tag">All platforms</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="s19-p" style="margin-top:20px;">
+    Have a feature idea that's not on the roadmap? Open a <a href="https://github.com/007Style/deepThinkER/discussions" style="color:var(--accent);">Discussion</a> on GitHub. The best feature requests come with a clear use case — describe what you're trying to do, not just what you want the app to do.
+  </p>
+
+</div>

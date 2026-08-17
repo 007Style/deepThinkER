@@ -1,0 +1,100 @@
+<style>
+  .s12-section { margin-top:64px; }
+  .s12-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s12-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(99,102,241,0.15); }
+  .s12-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s12-p  { margin:10px 0; color:var(--text); }
+  .s12-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s12-h4 { font-size:0.92rem; font-weight:700; color:var(--text); margin:18px 0 6px; }
+  .s12-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s12-callout-purple { background:rgba(155,89,245,0.08); border-color:var(--accent2); color:#c4a0f8; }
+  .s12-callout-blue   { background:rgba(59,138,255,0.08); border-color:var(--accent);  color:#a8c8ff; }
+  .s12-callout strong { color:#fff; }
+  .s12-tree { background:#07090e; border:1px solid var(--border); border-radius:10px; padding:18px 20px; font-family:"SF Mono",monospace; font-size:12px; line-height:1.8; margin:16px 0; }
+  .s12-tree .dir  { color:var(--accent); }
+  .s12-tree .file { color:var(--muted); }
+  .s12-tree .note { color:#3d4a5c; }
+  .s12-tree .new  { color:var(--internet); }
+  .s12-layer-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0; }
+  .s12-layer { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; }
+  .s12-layer strong { display:block; font-size:13px; margin-bottom:4px; }
+  .s12-layer span { color:var(--muted); font-size:12px; line-height:1.6; }
+  @media (max-width:660px) { .s12-layer-grid { grid-template-columns:1fr; } }
+</style>
+
+<div class="s12-section" id="architecture">
+  <div class="s12-header">
+    <div class="s12-icon">🏗️</div>
+    <h2>12 — Architecture Deep-Dive</h2>
+  </div>
+
+  <p class="s12-p">
+    deepThinkER is built on a deliberate set of architectural principles designed to keep the codebase maintainable, testable, and free from third-party framework lock-in. Understanding these principles makes the codebase approachable for contributors and illuminates why certain decisions were made.
+  </p>
+
+  <h3 class="s12-h3">Core Design Principles</h3>
+  <div class="s12-layer-grid">
+    <div class="s12-layer" style="border-color:rgba(59,138,255,0.3);">
+      <strong style="color:var(--watson)">Pure-Dart Core</strong>
+      <span>Everything in <code style="background:transparent;color:var(--sage);font-family:monospace;">lib/core/</code> is zero-Flutter. No <code style="background:transparent;color:var(--sage);font-family:monospace;">import 'package:flutter/…'</code> anywhere in core. This makes all business logic purely testable via <code style="background:transparent;color:var(--sage);font-family:monospace;">dart test</code> — no widget infrastructure needed. Core has no knowledge of screens, widgets, or rendering.</span>
+    </div>
+    <div class="s12-layer" style="border-color:rgba(155,89,245,0.3);">
+      <strong style="color:var(--deep)">No State Management Packages</strong>
+      <span>No Riverpod, BLoC, Provider, GetX, or Redux. State flows through vanilla Flutter <code style="background:transparent;color:var(--sage);font-family:monospace;">setState</code> and <code style="background:transparent;color:var(--sage);font-family:monospace;">dart:async</code> streams. The conversation engine exposes a <code style="background:transparent;color:var(--sage);font-family:monospace;">Stream&lt;ConversationEvent&gt;</code> that the UI subscribes to.</span>
+    </div>
+    <div class="s12-layer" style="border-color:rgba(46,204,113,0.3);">
+      <strong style="color:var(--nova)">Bundled Runtime</strong>
+      <span>The Ollama binary and <code style="background:transparent;color:var(--sage);font-family:monospace;">metallib</code> GPU shader files are bundled inside the app bundle via Git LFS. No separate Ollama install. No version mismatch. The app launches Ollama as a subprocess and owns its lifecycle completely.</span>
+    </div>
+    <div class="s12-layer" style="border-color:rgba(240,180,41,0.3);">
+      <strong style="color:var(--sage)">Minimal Dependencies</strong>
+      <span>Only 6 runtime packages: <code style="background:transparent;color:var(--sage);font-family:monospace;">http</code>, <code style="background:transparent;color:var(--sage);font-family:monospace;">path_provider</code>, <code style="background:transparent;color:var(--sage);font-family:monospace;">url_launcher</code>, <code style="background:transparent;color:var(--sage);font-family:monospace;">flutter_local_notifications</code>, <code style="background:transparent;color:var(--sage);font-family:monospace;">audioplayers</code>, <code style="background:transparent;color:var(--sage);font-family:monospace;">archive</code>. No AI framework, no ORM, no reactive package.</span>
+    </div>
+  </div>
+
+  <h3 class="s12-h3">Project Structure</h3>
+  <div class="s12-tree">
+    <span class="dir">deepThinkER/</span><br/>
+    ├── <span class="dir">lib/</span><br/>
+    │   ├── <span class="file">main.dart</span> <span class="note">— App entry, tool registration, Ollama launch</span><br/>
+    │   ├── <span class="dir">core/</span> <span class="note">— Pure Dart, zero Flutter imports</span><br/>
+    │   │   ├── <span class="dir">analytics/</span>      <span class="note">SessionAnalytics, AnalyticsEvent</span><br/>
+    │   │   ├── <span class="dir">audit/</span>          <span class="note">AuditLog, AuditEntry, AuditPersistence</span><br/>
+    │   │   ├── <span class="dir">context/</span>        <span class="note">ContextManager (token tracking, resets)</span><br/>
+    │   │   ├── <span class="dir">conversation/</span>   <span class="note">ConversationEngine, InferenceWorker, Message…</span><br/>
+    │   │   ├── <span class="dir">memory/</span>         <span class="note">MemoryStore, MemoryEntry, MemoryQuery</span><br/>
+    │   │   ├── <span class="dir">mood/</span>           <span class="note">MoodEngine, MoodScore, MoodConfig</span><br/>
+    │   │   ├── <span class="dir">network/</span>        <span class="note">NetworkFetcher, RateLimiter, ProactiveInjector…</span><br/>
+    │   │   ├── <span class="dir">ollama/</span>         <span class="note">OllamaClient, OllamaLauncher, ModelRegistry…</span><br/>
+    │   │   ├── <span class="dir">relationships/</span>  <span class="note">RelationshipMatrix, RelationshipAnalyser…</span><br/>
+    │   │   ├── <span class="dir">research/</span>       <span class="note">ResearchEngine, ResearchSession, ReportGenerator</span><br/>
+    │   │   ├── <span class="dir">security/</span>       <span class="note">ContentFilter, InjectionGuard</span><br/>
+    │   │   ├── <span class="dir">session/</span>        <span class="note">SessionManager, AppStats, NameGenerator</span><br/>
+    │   │   ├── <span class="dir">trust/</span>          <span class="note">TrustManager, TrustScore, TrustPersistence</span><br/>
+    │   │   └── <span class="dir">trust/tools/</span>    <span class="note">AgentTool, ToolRegistry, ToolCallInterceptor…</span><br/>
+    │   └── <span class="dir">ui/</span> <span class="note">— Flutter widgets</span><br/>
+    │       ├── <span class="dir">quadrants/</span>      <span class="note">AiQuadrant, QuadrantGrid</span><br/>
+    │       ├── <span class="dir">screens/</span>        <span class="note">All app screens (12 total)</span><br/>
+    │       └── <span class="dir">widgets/</span>        <span class="note">Analytics, mood, network, token counter widgets</span><br/>
+    ├── <span class="dir">test/</span>               <span class="note">Pure-Dart unit tests (14 test directories)</span><br/>
+    ├── <span class="dir">macos/</span>              <span class="note">Xcode project, entitlements, bundled Ollama</span><br/>
+    └── <span class="dir">scripts/</span>            <span class="note">build_dmg.sh — release build script</span>
+  </div>
+
+  <h3 class="s12-h3">The Conversation Engine</h3>
+  <p class="s12-p">
+    The <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">ConversationEngine</code> is the heart of the app. It maintains a pool of four <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">InferenceWorker</code> instances — one per character — and orchestrates turn-taking via jitter delays and pass mechanics. Each worker streams tokens from the Ollama API and emits them as <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">ConversationEvent</code>s on a shared broadcast stream. The UI subscribes to this stream and renders tokens as they arrive.
+  </p>
+  <p class="s12-p">
+    The <strong>jitter mechanic</strong> means characters don't always respond immediately after the previous one finishes — there's a randomised delay (configurable) that prevents a perfectly round-robin cadence and makes the conversation feel more natural and unpredictable.
+  </p>
+
+  <div class="s12-callout s12-callout-purple">
+    <strong>Why no sandbox?</strong> The app requires <code style="background:transparent;color:var(--sage);font-family:monospace;">com.apple.security.app-sandbox = false</code> in its entitlements because it needs to spawn the Ollama subprocess. macOS App Sandbox prohibits subprocess spawning. This is a known trade-off — the app mitigates the risk through the InjectionGuard, ContentFilter, and domain whitelist rather than OS-level sandboxing.
+  </div>
+
+  <div class="s12-callout s12-callout-blue">
+    <strong>Full architecture reference:</strong> The <code style="background:transparent;color:var(--sage);font-family:monospace;">ARCHITECTURE.md</code> file in the repository root is a 1,200+ line technical deep-dive covering every subsystem, class, and design decision in exhaustive detail. Start there if you're contributing or extending the app.
+  </div>
+
+</div>

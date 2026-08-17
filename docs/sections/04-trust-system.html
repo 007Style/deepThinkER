@@ -1,0 +1,146 @@
+<style>
+  .s04-section { margin-top:64px; }
+  .s04-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s04-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(212,160,23,0.15); }
+  .s04-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s04-p  { margin:10px 0; color:var(--text); }
+  .s04-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s04-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s04-callout-amber  { background:rgba(212,160,23,0.08); border-color:var(--amber); color:#e8d070; }
+  .s04-callout-green  { background:rgba(46,204,113,0.08); border-color:var(--green); color:#7ee8a8; }
+  .s04-callout strong { color:#fff; }
+  .tier-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:16px 0; }
+  .tier-card { border:1px solid; border-radius:10px; padding:16px; text-align:center; }
+  .tier-low  { background:rgba(207,34,46,0.07);  border-color:rgba(207,34,46,0.3); }
+  .tier-mid  { background:rgba(212,160,23,0.07); border-color:rgba(212,160,23,0.3); }
+  .tier-high { background:rgba(46,204,113,0.07); border-color:rgba(46,204,113,0.3); }
+  .tier-emoji { font-size:28px; display:block; margin-bottom:6px; }
+  .tier-name  { font-size:13px; font-weight:900; margin-bottom:4px; letter-spacing:0.5px; }
+  .tier-low  .tier-name { color:#ff7b7b; }
+  .tier-mid  .tier-name { color:#e8c24a; }
+  .tier-high .tier-name { color:#4dd98a; }
+  .tier-range { font-size:12px; color:var(--muted); margin-bottom:10px; }
+  .tier-stat  { font-size:12px; color:var(--text); line-height:1.9; }
+  .s04-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.5px; }
+  .s04-table th { background:var(--surface2); border:1px solid var(--border2); padding:9px 14px; text-align:left; color:var(--muted); font-size:11.5px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; }
+  .s04-table td { border:1px solid var(--border); padding:9px 14px; color:var(--text); }
+  .s04-table tr:hover td { background:var(--surface); }
+  .delta-plus  { color:var(--nova);   font-weight:700; font-family:monospace; }
+  .delta-minus { color:#ff7b7b;       font-weight:700; font-family:monospace; }
+  @media (max-width:660px) { .tier-grid { grid-template-columns:1fr; } }
+</style>
+
+<div class="s04-section" id="trust-system">
+  <div class="s04-header">
+    <div class="s04-icon">🔐</div>
+    <h2>04 — The Trust System</h2>
+  </div>
+
+  <p class="s04-p">
+    Internet access in deepThinkER is not a switch you flip once. It's a <strong>living score</strong> — continuously earned, slowly decayed, and instantly impacted by behaviour. Every character starts at <strong>50 points</strong> and their score evolves throughout every session, carrying over to the next.
+  </p>
+  <p class="s04-p">
+    This isn't just a rate limiter in disguise. Trust is a genuine game mechanic: characters who behave responsibly — staying engaged, not flooding the network, using searches purposefully — accumulate privilege over time. Characters who overreach get penalised. And a character who has been a good citizen across multiple sessions starts the next one with a meaningful advantage.
+  </p>
+
+  <h3 class="s04-h3">The Three Tiers</h3>
+  <div class="tier-grid">
+    <div class="tier-card tier-low">
+      <span class="tier-emoji">🔴</span>
+      <div class="tier-name">LOW TRUST</div>
+      <div class="tier-range">Score 0 – 33</div>
+      <div class="tier-stat">
+        1 search / min<br/>
+        No file access<br/>
+        FETCH allowed<br/>
+        CALC / REMEMBER / RECALL always on
+      </div>
+    </div>
+    <div class="tier-card tier-mid">
+      <span class="tier-emoji">🟡</span>
+      <div class="tier-name">MID TRUST</div>
+      <div class="tier-range">Score 34 – 66</div>
+      <div class="tier-stat">
+        3 searches / min<br/>
+        File read access<br/>
+        FETCH allowed<br/>
+        Full memory tools
+      </div>
+    </div>
+    <div class="tier-card tier-high">
+      <span class="tier-emoji">🟢</span>
+      <div class="tier-name">HIGH TRUST</div>
+      <div class="tier-range">Score 67 – 100</div>
+      <div class="tier-stat">
+        5 searches / min<br/>
+        File read + write<br/>
+        FETCH allowed<br/>
+        All tools enabled
+      </div>
+    </div>
+  </div>
+
+  <h3 class="s04-h3">How Trust Changes</h3>
+  <table class="s04-table">
+    <thead>
+      <tr>
+        <th>Event</th>
+        <th>Delta</th>
+        <th>Why</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Conversation is active (per minute)</td>
+        <td><span class="delta-plus">+1.0</span></td>
+        <td>Steady gain for staying engaged and participating</td>
+      </tr>
+      <tr>
+        <td>Natural decay (per minute)</td>
+        <td><span class="delta-minus">−0.5</span></td>
+        <td>Trust erodes slightly if not actively maintained</td>
+      </tr>
+      <tr>
+        <td>Network access toggled back ON</td>
+        <td><span class="delta-plus">+5.0</span></td>
+        <td>Reward for regaining the privilege</td>
+      </tr>
+      <tr>
+        <td>Network access toggled OFF</td>
+        <td><span class="delta-minus">−15.0</span></td>
+        <td>Significant penalty — losing access is a red flag</td>
+      </tr>
+      <tr>
+        <td>Rate limit violation</td>
+        <td><span class="delta-minus">−2.0</span></td>
+        <td>Over-searching is a misuse of the privilege</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="s04-callout s04-callout-amber">
+    <strong>Trust persists between sessions.</strong> Scores are saved to <code style="background:transparent;color:var(--sage);font-family:monospace;">~/Library/Application Support/deepThinkER/trust.json</code> at the end of every session. A character who has been a responsible internet citizen across multiple conversations starts the next one with that history intact.
+  </div>
+
+  <h3 class="s04-h3">Rate Limiting</h3>
+  <p class="s04-p">
+    The rate limiter enforces two independent ceilings simultaneously:
+  </p>
+  <ul style="margin:12px 0 12px 24px; color:var(--text); font-size:13.5px; line-height:2;">
+    <li><strong style="color:#fff;">Per-character limit</strong> — derived from the character's current trust tier (1, 3, or 5 searches/minute)</li>
+    <li><strong style="color:#fff;">Global ceiling</strong> — configurable cap across all four characters combined (default: 10 searches/minute). Adjustable in Settings → Network.</li>
+  </ul>
+  <p class="s04-p">
+    Both limits use a <strong>sliding-window algorithm</strong> — not a fixed-clock reset. This prevents bursting at the top of each minute. Rate limit violations are logged to the audit log with full context (character, tool, timestamp, score impact).
+  </p>
+
+  <h3 class="s04-h3">Disabling Network Access</h3>
+  <p class="s04-p">
+    Network access can be toggled per-character in the Startup Config screen or in Settings → Network at any point during a session. Toggling it off applies the −15 trust penalty immediately — so it's not a free "pause" button. Toggling it back on rewards the character with +5 trust to help them rebuild.
+  </p>
+
+  <div class="s04-callout s04-callout-green">
+    <strong>Want a fully offline session?</strong> Simply turn off network access for all four characters in the Startup Config screen before starting. The characters will still have full access to memory, tools, calculations, and image analysis — they just won't reach the internet. All the personality, none of the latency.
+  </div>
+
+</div>

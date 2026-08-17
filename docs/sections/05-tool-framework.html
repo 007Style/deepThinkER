@@ -1,0 +1,143 @@
+<style>
+  .s05-section { margin-top:64px; }
+  .s05-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s05-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(240,180,41,0.15); }
+  .s05-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s05-p  { margin:10px 0; color:var(--text); }
+  .s05-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s05-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s05-callout-blue  { background:rgba(59,138,255,0.08); border-color:var(--accent); color:#a8c8ff; }
+  .s05-callout-green { background:rgba(46,204,113,0.08); border-color:var(--green);  color:#7ee8a8; }
+  .s05-callout strong { color:#fff; }
+  .s05-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.5px; }
+  .s05-table th { background:var(--surface2); border:1px solid var(--border2); padding:9px 14px; text-align:left; color:var(--muted); font-size:11.5px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; }
+  .s05-table td { border:1px solid var(--border); padding:9px 14px; color:var(--text); }
+  .s05-table tr:hover td { background:var(--surface); }
+  .tool-tag { display:inline-block; background:var(--surface2); border:1px solid var(--border2); color:var(--sage); font-family:"SF Mono",monospace; font-size:12px; padding:2px 8px; border-radius:4px; white-space:nowrap; }
+  .trust-low  { color:#ff7b7b; font-weight:700; font-size:12px; }
+  .trust-mid  { color:#e8c24a; font-weight:700; font-size:12px; }
+  .trust-high { color:#4dd98a; font-weight:700; font-size:12px; }
+  .trust-none { color:var(--muted); font-size:12px; }
+  .s05-pre { background:#0a0c10; border:1px solid var(--border); border-radius:10px; padding:18px 20px; overflow-x:auto; font-family:"SF Mono","Fira Code",monospace; font-size:12.5px; line-height:1.65; margin:14px 0; color:var(--text); }
+  .s05-pre .c-tag  { color:var(--sage); }
+  .s05-pre .c-val  { color:var(--internet); }
+  .s05-pre .c-comm { color:#3d4a5c; }
+</style>
+
+<div class="s05-section" id="tool-framework">
+  <div class="s05-header">
+    <div class="s05-icon">🧰</div>
+    <h2>05 — The Tool Framework</h2>
+  </div>
+
+  <p class="s05-p">
+    deepThinkER ships with a <strong>nine-tool extensible framework</strong> that gives characters capabilities far beyond text generation. Every tool is registered at startup in the <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">ToolRegistry</code>, and the <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">ToolCallInterceptor</code> scans every completed response for tool-call tags. When one is found, the tool executes, the result is formatted and injected, and the audit log records the whole event — automatically, with zero additional wiring needed.
+  </p>
+
+  <h3 class="s05-h3">All Nine Tools</h3>
+
+  <table class="s05-table">
+    <thead>
+      <tr>
+        <th>Tag Syntax</th>
+        <th>Tool Name</th>
+        <th>Min Trust</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tool-tag">[SEARCH: query]</span></td>
+        <td>NetworkSearchTool</td>
+        <td><span class="trust-low">LOW</span></td>
+        <td>DuckDuckGo HTML search — returns top results with titles, URLs, and snippets</td>
+      </tr>
+      <tr>
+        <td><span class="tool-tag">[FETCH: url]</span></td>
+        <td>NetworkFetchTool</td>
+        <td><span class="trust-low">LOW</span></td>
+        <td>Direct URL fetch, domain-whitelist checked, HTML stripped to readable text</td>
+      </tr>
+      <tr>
+        <td><span class="tool-tag">[REMEMBER: fact]</span></td>
+        <td>RememberTool</td>
+        <td><span class="trust-none">None</span></td>
+        <td>Store a new entry in the character's private memory store (up to 200 entries)</td>
+      </tr>
+      <tr>
+        <td><span class="tool-tag">[RECALL: topic]</span></td>
+        <td>RecallTool</td>
+        <td><span class="trust-none">None</span></td>
+        <td>Keyword-search the character's memory and inject matching entries as context</td>
+      </tr>
+      <tr>
+        <td><span class="tool-tag">[FILE_READ: path]</span></td>
+        <td>FileReadTool</td>
+        <td><span class="trust-mid">MID</span></td>
+        <td>Read a file from the configured workspace directory</td>
+      </tr>
+      <tr>
+        <td><span class="tool-tag">[FILE_WRITE: path | content]</span></td>
+        <td>FileWriteTool</td>
+        <td><span class="trust-high">HIGH</span></td>
+        <td>Write content to the workspace directory</td>
+      </tr>
+      <tr>
+        <td><span class="tool-tag">[CALC: expression]</span></td>
+        <td>CalcTool</td>
+        <td><span class="trust-none">None</span></td>
+        <td>Safe math evaluator — no <code style="background:transparent;color:var(--sage);font-family:monospace;">eval()</code>, supports arithmetic, trig, exponents, constants</td>
+      </tr>
+      <tr>
+        <td><span class="tool-tag">[IMAGE: filename]</span></td>
+        <td>ImageTool</td>
+        <td><span class="trust-none">None</span></td>
+        <td>Analyse an image using the bundled <code style="background:transparent;color:var(--sage);font-family:monospace;">llava:7b</code> vision model</td>
+      </tr>
+      <tr>
+        <td><span class="tool-tag">[SHELL: command]</span></td>
+        <td>ShellTool</td>
+        <td><span class="trust-high">HIGH</span></td>
+        <td><em style="color:var(--muted);">Reserved — stub only in v1.1.0. Enabled in a future release with allowlist controls.</em></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="s05-h3">What a Tool Call Looks Like</h3>
+  <div class="s05-pre"><span class="c-comm">// A character mid-response might write:</span>
+
+<span style="color:var(--text);">"That's a strong claim. Let me verify that figure.</span>
+<span class="c-tag">[SEARCH:</span> <span class="c-val">global renewable energy share 2024 statistics</span><span class="c-tag">]</span>
+<span style="color:var(--text);">Based on what I'm seeing, the actual number is..."</span>
+
+<span class="c-comm">// The ToolCallInterceptor strips the tag, executes the search,</span>
+<span class="c-comm">// and injects back something like:</span>
+
+<span style="color:var(--muted);">[SYSTEM — WATSON search result]
+DuckDuckGo: "renewable energy global share 2024"
+→ IEA (2024): Renewables accounted for 30% of global electricity...
+→ Our World in Data: Solar+Wind now 13% of total generation...
+→ [3 more results...]</span></div>
+
+  <h3 class="s05-h3">Adding a New Tool</h3>
+  <p class="s05-p">
+    The framework is deliberately designed for easy extension. Adding a new tool is a <strong>single-file task</strong>:
+  </p>
+  <ol style="margin:12px 0 12px 24px; color:var(--text); font-size:13.5px; line-height:2.2;">
+    <li>Create a new class that implements the <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">AgentTool</code> interface</li>
+    <li>Define your <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">tag</code>, <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">minTrust</code>, and <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">execute()</code> method</li>
+    <li>Call <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">registry.register(MyTool())</code> in <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 6px;border-radius:4px;">main.dart</code></li>
+  </ol>
+  <p class="s05-p">
+    The interceptor, rate limiter, trust checks, audit log entries, and UI badge all wire up <strong>automatically</strong>. You never touch the framework internals to add a new capability.
+  </p>
+
+  <div class="s05-callout s05-callout-green">
+    <strong>The AgentTool interface:</strong> Three methods — <code style="background:transparent;color:var(--sage);font-family:monospace;">String get tag</code> (the tag name the interceptor matches), <code style="background:transparent;color:var(--sage);font-family:monospace;">TrustTier get minTrust</code> (minimum tier required), and <code style="background:transparent;color:var(--sage);font-family:monospace;">Future&lt;ToolResult&gt; execute(String argument, Participant character)</code>. That's the whole contract.
+  </div>
+
+  <div class="s05-callout s05-callout-blue">
+    <strong>Tools tab in Settings:</strong> Each tool can be individually enabled or disabled in Settings → Tools. Disabling a tool prevents the interceptor from executing it even if a character embeds the tag — the call is logged as blocked.
+  </div>
+
+</div>

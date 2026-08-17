@@ -1,0 +1,108 @@
+<style>
+  .s21-section { margin-top:64px; }
+  .s21-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s21-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(46,204,113,0.15); }
+  .s21-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s21-p  { margin:10px 0; color:var(--text); }
+  .s21-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s21-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s21-callout-green  { background:rgba(46,204,113,0.08); border-color:var(--green);  color:#7ee8a8; }
+  .s21-callout-blue   { background:rgba(59,138,255,0.08); border-color:var(--accent); color:#a8c8ff; }
+  .s21-callout strong { color:#fff; }
+  .terminal { background:#07090e; border:1px solid var(--border); border-radius:10px; overflow:hidden; margin:16px 0; }
+  .terminal-bar { background:#12151f; padding:10px 14px; display:flex; align-items:center; gap:6px; border-bottom:1px solid var(--border); }
+  .dot   { width:10px; height:10px; border-radius:50%; }
+  .dot-r { background:#ff5f57; }
+  .dot-y { background:#ffbd2e; }
+  .dot-g { background:#28c840; }
+  .terminal-bar span { font-size:12px; color:var(--muted); margin-left:8px; }
+  .terminal-body { padding:16px 18px; font-family:"SF Mono","Fira Code",monospace; font-size:12.5px; line-height:1.9; }
+  .terminal-body .prompt { color:var(--nova); }
+  .terminal-body .cmd    { color:#fff; }
+  .terminal-body .out    { color:var(--muted); }
+  .terminal-body .ok     { color:var(--nova); }
+  .terminal-body .comment { color:#3d4a5c; }
+  .s21-rules { list-style:none; padding:0; margin:12px 0; }
+  .s21-rules li { display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--border); font-size:13.5px; }
+  .s21-rules li:last-child { border-bottom:none; }
+  .s21-rules .fi { font-size:16px; flex-shrink:0; margin-top:2px; }
+  .s21-rules .ft { color:var(--text); }
+  .s21-rules .ft strong { color:#fff; }
+</style>
+
+<div class="s21-section" id="contributing">
+  <div class="s21-header">
+    <div class="s21-icon">🤝</div>
+    <h2>21 — Contributing</h2>
+  </div>
+
+  <p class="s21-p">
+    Contributions are genuinely welcome. deepThinkER is a project that covers a lot of interesting ground — AI agent design, local inference, macOS development, trust and safety systems, UI/UX for real-time streaming content — and there's good work to be done at every level of the stack.
+  </p>
+
+  <h3 class="s21-h3">Quick Start</h3>
+  <div class="terminal">
+    <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>Contributing Flow</span></div>
+    <div class="terminal-body">
+      <span class="comment"># 1. Fork and clone</span><br/>
+      <span class="prompt">$</span> <span class="cmd">git clone https://github.com/&lt;you&gt;/deepThinkER.git</span><br/>
+      <br/>
+      <span class="comment"># 2. Setup (see Section 14 — Building from Source)</span><br/>
+      <span class="prompt">$</span> <span class="cmd">git lfs pull && flutter pub get && cd macos && pod install && cd ..</span><br/>
+      <br/>
+      <span class="comment"># 3. Run in debug mode</span><br/>
+      <span class="prompt">$</span> <span class="cmd">flutter run -d macos</span><br/>
+      <br/>
+      <span class="comment"># 4. Make your changes and write tests</span><br/>
+      <span class="prompt">$</span> <span class="cmd">flutter test</span><br/>
+      <span class="ok">00:14 +147: All tests passed!</span><br/>
+      <br/>
+      <span class="comment"># 5. Verify zero analyzer issues</span><br/>
+      <span class="prompt">$</span> <span class="cmd">flutter analyze</span><br/>
+      <span class="ok">No issues found!</span><br/>
+      <br/>
+      <span class="comment"># 6. Submit a PR on GitHub</span>
+    </div>
+  </div>
+
+  <h3 class="s21-h3">Architecture Rules (Non-Negotiable)</h3>
+  <ul class="s21-rules">
+    <li>
+      <span class="fi">🔒</span>
+      <span class="ft"><strong>lib/core/ must be pure Dart.</strong> Zero Flutter imports anywhere in core. This is enforced in code review. If you're adding logic to core, your imports must be limited to <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 5px;border-radius:4px;">dart:*</code> and other core/ files.</span>
+    </li>
+    <li>
+      <span class="fi">🧪</span>
+      <span class="ft"><strong>New core logic requires tests.</strong> The test suite currently covers 147 cases across 14 directories. New features in core/ should come with tests in the corresponding test/core/ directory.</span>
+    </li>
+    <li>
+      <span class="fi">🚫</span>
+      <span class="ft"><strong>No new runtime dependencies without discussion.</strong> Open an issue first. The minimal dependency philosophy is intentional and maintained carefully.</span>
+    </li>
+    <li>
+      <span class="fi">📋</span>
+      <span class="ft"><strong>New tools must implement AgentTool.</strong> If you're adding a new tool, implement the interface — don't reach into the interceptor or trust system directly. The framework handles everything else automatically.</span>
+    </li>
+  </ul>
+
+  <h3 class="s21-h3">Good First Issues</h3>
+  <p class="s21-p">
+    Looking for a place to start? These areas tend to be well-bounded and don't require deep knowledge of the full architecture:
+  </p>
+  <ul style="margin:12px 0 12px 24px; color:var(--text); font-size:13.5px; line-height:2.2;">
+    <li>Adding a new AgentTool (e.g., a <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 5px;border-radius:4px;">[TIMER: seconds]</code> tool or a <code style="background:var(--surface2);border:1px solid var(--border2);color:var(--sage);padding:1px 5px;border-radius:4px;">[TRANSLATE: text | lang]</code> tool)</li>
+    <li>Improving the RelationshipAnalyser to detect more agreement/contradiction patterns</li>
+    <li>Adding new mood trigger conditions to the MoodEngine</li>
+    <li>UI polish — animations, transitions, accessibility improvements</li>
+    <li>Documentation — the ARCHITECTURE.md is detailed but always benefits from examples and clarifications</li>
+  </ul>
+
+  <div class="s21-callout s21-callout-blue">
+    <strong>Read DEVELOPMENT.md first.</strong> The full contribution guide — including branching conventions, PR checklist, debug simulation mode, and how to run individual test suites — lives in <code style="background:transparent;color:var(--sage);font-family:monospace;">DEVELOPMENT.md</code> in the repository root.
+  </div>
+
+  <div class="s21-callout s21-callout-green">
+    <strong>Questions welcome.</strong> Not sure whether your idea fits the project? Open a <a href="https://github.com/007Style/deepThinkER/discussions" style="color:var(--nova);">Discussion</a> before spending time building it. The best PRs come after a conversation.
+  </div>
+
+</div>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>deepThinkER — Four AI Minds. One Conversation. Extended Reach.</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0d0f14;
+      --surface:   #141720;
+      --surface2:  #1a1d26;
+      --border:    #252836;
+      --border2:   #2e3248;
+      --text:      #c9d1e0;
+      --muted:     #5a6070;
+      --accent:    #3b8aff;
+      --accent2:   #9b59f5;
+      --green:     #2ecc71;
+      --amber:     #d4a017;
+      --red:       #cf222e;
+      --watson:    #3b8aff;
+      --deep:      #9b59f5;
+      --nova:      #2ecc71;
+      --sage:      #f0b429;
+      --internet:  #00c6ff;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.65;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+    .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px 100px; }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 72px 24px 52px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 30% 40%, rgba(59,138,255,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 70% 60%, rgba(155,89,245,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 50% 80%, rgba(0,198,255,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-ascii {
+      font-family: "SF Mono","Fira Code",monospace;
+      font-size: 9.5px;
+      line-height: 1.2;
+      color: var(--muted);
+      margin-bottom: 28px;
+      opacity: 0.55;
+      white-space: pre;
+    }
+    .hero h1 {
+      font-size: 3.2rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg,#fff 0%,#a8c4ff 40%,var(--accent2) 70%,var(--internet) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero .ver {
+      display: inline-block;
+      background: rgba(59,138,255,0.15);
+      border: 1px solid rgba(59,138,255,0.35);
+      color: var(--accent);
+      font-family: "SF Mono",monospace;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+    .tagline {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #dde4f5;
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
+    }
+    .tagline em { color: var(--internet); font-style: normal; }
+    .sub-tagline {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 40px; }
+    .badge {
+      font-size: 11.5px; font-weight: 700; padding: 4px 12px;
+      border-radius: 20px; border: 1px solid; letter-spacing: 0.3px;
+    }
+    .badge-blue   { background:rgba(59,138,255,0.15);  border-color:rgba(59,138,255,0.4);  color:#6ab3ff; }
+    .badge-purple { background:rgba(155,89,245,0.15);  border-color:rgba(155,89,245,0.4);  color:#b07ef5; }
+    .badge-green  { background:rgba(46,204,113,0.15);  border-color:rgba(46,204,113,0.4);  color:#4dd98a; }
+    .badge-orange { background:rgba(255,107,53,0.15);  border-color:rgba(255,107,53,0.4);  color:#ff8c6b; }
+    .badge-amber  { background:rgba(212,160,23,0.15);  border-color:rgba(212,160,23,0.4);  color:#e8c24a; }
+    .badge-teal   { background:rgba(0,198,255,0.12);   border-color:rgba(0,198,255,0.35);  color:#00c6ff; }
+    .hero-desc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 28px;
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.75;
+    }
+    .hero-desc strong { color: #fff; }
+    .hero-desc .internet-glow { color: var(--internet); font-weight: 700; }
+
+    /* ── TOC ── */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin: 40px 0;
+    }
+    .toc h3 {
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 28px; }
+    .toc a {
+      color: var(--accent); text-decoration: none; font-size: 13px;
+      padding: 3px 0; display: flex; align-items: center; gap: 6px;
+    }
+    .toc a:hover { color: #fff; }
+    .toc-num { color: var(--muted); font-size: 11px; font-family: monospace; min-width: 20px; }
+
+    /* ── SECTION LOADER PLACEHOLDER ── */
+    .section-placeholder {
+      margin-top: 64px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .section-placeholder .loader {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 2px solid var(--border2);
+      border-top-color: var(--accent);
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── PAGE FOOTER ── */
+    .page-footer {
+      margin-top: 80px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .page-footer strong { color: var(--text); }
+
+    @media (max-width: 660px) {
+      .toc-grid { grid-template-columns: 1fr; }
+      .hero h1   { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══════════════════════════════════════════════════ HERO ══ -->
+  <div class="hero">
+    <div class="hero-ascii">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557; &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;  &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2557;  &#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2588;&#x2557;   &#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2557;  &#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;
+&#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x2550;&#x2550;&#x255D;&#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x2550;&#x2550;&#x255D;&#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x2588;&#x2588;&#x2557; &#x255A;&#x2550;&#x2550;&#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x255D;&#x2588;&#x2588;&#x2551;  &#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;  &#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2551; &#x2588;&#x2588;&#x2554;&#x255D;&#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x2550;&#x2550;&#x255D;&#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x2588;&#x2588;&#x2557;
+&#x2588;&#x2588;&#x2551;  &#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;  &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;  &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2554;&#x255D;    &#x2588;&#x2588;&#x2551;   &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2554;&#x2588;&#x2588;&#x2557; &#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2554;&#x255D; &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;  &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2554;&#x255D;
+&#x2588;&#x2588;&#x2551;  &#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x255D;  &#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x255D;  &#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x2550;&#x255D;     &#x2588;&#x2588;&#x2551;   &#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2551;&#x255A;&#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2554;&#x2550;&#x2588;&#x2588;&#x2557; &#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x255D;  &#x2588;&#x2588;&#x2554;&#x2550;&#x2550;&#x2588;&#x2588;&#x2557;
+&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2554;&#x255D;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2551;         &#x2588;&#x2588;&#x2551;   &#x2588;&#x2588;&#x2551;  &#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2551; &#x255A;&#x2588;&#x2588;&#x2588;&#x2588;&#x2551;&#x2588;&#x2588;&#x2551;  &#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2557;&#x2588;&#x2588;&#x2551;  &#x2588;&#x2588;&#x2551;
+&#x255A;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x255D; &#x255A;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x255D;&#x255A;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x255D;&#x255A;&#x2550;&#x255D;         &#x255A;&#x2550;&#x255D;   &#x255A;&#x2550;&#x255D;  &#x255A;&#x2550;&#x255D;&#x255A;&#x2550;&#x255D;&#x255A;&#x2550;&#x255D;  &#x255A;&#x2550;&#x2550;&#x2550;&#x255D;&#x255A;&#x2550;&#x255D;  &#x255A;&#x2550;&#x255D;&#x255A;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x255D;&#x255A;&#x2550;&#x255D;  &#x255A;&#x2550;&#x255D;</div>
+
+    <h1>deepThinkER</h1>
+    <div class="ver">v1.1.0+3 &middot; macOS &middot; Flutter / Dart</div>
+    <div style="margin:10px 0 20px; font-size:13px; color:var(--muted); letter-spacing:0.4px;">
+      From the minds of <strong style="color:#fff;">Daneyand</strong> &amp; <strong style="color:var(--internet);">IBM Bob</strong>
+    </div>
+
+    <p class="tagline">Four AI Minds. One Conversation. <em>Now with Extended Reach over the Internet!</em></p>
+    <p class="sub-tagline">A hard fork of deepThink — supercharged with trust-gated internet access, persistent character memory, dynamic mood &amp; relationship systems, autonomous research mode, and a fully extensible tool-call framework. Runs entirely offline. No API keys. No cloud. Ever.</p>
+
+    <div class="badges">
+      <span class="badge badge-teal">🌐 Internet Access</span>
+      <span class="badge badge-blue">🔵 WATSON · Analyst</span>
+      <span class="badge badge-purple">🟣 DEEP · Strategist</span>
+      <span class="badge badge-green">🟢 NOVA · Visionary</span>
+      <span class="badge badge-amber">🟡 SAGE · Challenger</span>
+      <span class="badge badge-orange">🦙 Ollama Bundled</span>
+      <span class="badge badge-teal">🔒 100% Local</span>
+      <span class="badge badge-purple">💜 Flutter · macOS</span>
+    </div>
+
+    <div class="hero-desc">
+      <strong>deepThinkER</strong> is a macOS desktop application where <strong>four distinct AI personalities</strong> — WATSON, DEEP, NOVA, and SAGE — hold live streaming conversations with each other and with you, powered by locally running Ollama models.
+      <br/><br/>
+      Version 1.1.0 takes the deepThink foundation and smashes it open with <span class="internet-glow">🌐 Extended Reach</span> — a trust-gated internet access system that lets each character search the web and fetch URLs mid-conversation. Add in <strong>persistent character memory</strong>, <strong>dynamic emotional moods</strong>, <strong>cross-session relationship tracking</strong>, <strong>autonomous multi-phase research mode</strong>, <strong>vision / image analysis</strong>, a <strong>full audit log</strong>, <strong>session analytics</strong>, and a <strong>nine-tool extensible framework</strong> — and you have something that has never existed before: a self-contained local AI panel show that can look things up, remember things, feel things, and form opinions.
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ TOC ══ -->
+  <div class="toc">
+    <h3>📋 Table of Contents</h3>
+    <div class="toc-grid">
+      <a href="#what-is"><span class="toc-num">01</span> What is deepThinkER?</a>
+      <a href="#four-minds"><span class="toc-num">02</span> The Four Minds</a>
+      <a href="#extended-reach"><span class="toc-num">03</span> Extended Reach · Internet Access</a>
+      <a href="#trust-system"><span class="toc-num">04</span> The Trust System</a>
+      <a href="#tool-framework"><span class="toc-num">05</span> The Tool Framework</a>
+      <a href="#character-memory"><span class="toc-num">06</span> Character Memory</a>
+      <a href="#mood-system"><span class="toc-num">07</span> Mood System</a>
+      <a href="#relationships"><span class="toc-num">08</span> Relationship Matrix</a>
+      <a href="#research-mode"><span class="toc-num">09</span> Autonomous Research Mode</a>
+      <a href="#analytics"><span class="toc-num">10</span> Session Analytics &amp; Audit</a>
+      <a href="#interface"><span class="toc-num">11</span> Interface Overview</a>
+      <a href="#architecture"><span class="toc-num">12</span> Architecture Deep-Dive</a>
+      <a href="#installation"><span class="toc-num">13</span> Installation</a>
+      <a href="#building"><span class="toc-num">14</span> Building from Source</a>
+      <a href="#configuration"><span class="toc-num">15</span> Configuration</a>
+      <a href="#security"><span class="toc-num">16</span> Privacy &amp; Security</a>
+      <a href="#data-storage"><span class="toc-num">17</span> Data Storage</a>
+      <a href="#dependencies"><span class="toc-num">18</span> Dependencies</a>
+      <a href="#roadmap"><span class="toc-num">19</span> Roadmap</a>
+      <a href="#faq"><span class="toc-num">20</span> FAQ</a>
+      <a href="#contributing"><span class="toc-num">21</span> Contributing</a>
+      <a href="#acknowledgements"><span class="toc-num">22</span> Acknowledgements</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTIONS (loaded) ══ -->
+  <div id="sections-container">
+    <div class="section-placeholder"><div class="loader"></div> Loading sections…</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ FOOTER ══ -->
+  <div class="page-footer">
+    <strong>deepThinkER v1.1.0</strong> &middot; MIT License &middot; Built with Flutter &amp; Ollama &middot; Runs 100% locally
+    <br/><br/>
+    <span style="font-size:11px;border-top:1px solid #252836;padding-top:10px;display:block;">Made by <strong style="color:var(--text);">Daneyand</strong> with IBM Bob</span>
+  </div>
+
+</div><!-- /.wrap -->
+
+<script>
+  // Ordered list of section fragment files
+  const sections = [
+    'sections/01-what-is.html',
+    'sections/02-four-minds.html',
+    'sections/03-extended-reach.html',
+    'sections/04-trust-system.html',
+    'sections/05-tool-framework.html',
+    'sections/06-character-memory.html',
+    'sections/07-mood-system.html',
+    'sections/08-relationships.html',
+    'sections/09-research-mode.html',
+    'sections/10-analytics.html',
+    'sections/11-interface.html',
+    'sections/12-architecture.html',
+    'sections/13-installation.html',
+    'sections/14-building.html',
+    'sections/15-configuration.html',
+    'sections/16-security.html',
+    'sections/17-data-storage.html',
+    'sections/18-dependencies.html',
+    'sections/19-roadmap.html',
+    'sections/20-faq.html',
+    'sections/21-contributing.html',
+    'sections/22-acknowledgements.html',
+  ];
+
+  async function loadSections() {
+    const container = document.getElementById('sections-container');
+    container.innerHTML = '';
+
+    for (const src of sections) {
+      try {
+        const res  = await fetch(src);
+        const html = await res.text();
+        const div  = document.createElement('div');
+        div.innerHTML = html;
+        container.appendChild(div);
+      } catch (e) {
+        // Section file not yet written — show a tasteful stub
+        const stub = document.createElement('div');
+        stub.style.cssText = 'margin-top:64px;padding:20px;border:1px dashed #252836;border-radius:10px;color:#5a6070;font-size:13px;';
+        stub.textContent = src + ' — coming soon';
+        container.appendChild(stub);
+      }
+    }
+  }
+
+  loadSections();
+</script>
+</body>
+</html>

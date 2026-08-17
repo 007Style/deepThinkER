@@ -1,0 +1,115 @@
+<style>
+  .s07-section { margin-top:64px; }
+  .s07-header { display:flex; align-items:center; gap:14px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .s07-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:rgba(236,72,153,0.15); }
+  .s07-header h2 { font-size:1.55rem; font-weight:800; color:#fff; letter-spacing:-0.4px; }
+  .s07-p  { margin:10px 0; color:var(--text); }
+  .s07-h3 { font-size:1.05rem; font-weight:700; color:#fff; margin:30px 0 12px; }
+  .s07-callout { border-left:3px solid; border-radius:0 8px 8px 0; padding:14px 18px; margin:16px 0; font-size:13.5px; line-height:1.65; }
+  .s07-callout-purple { background:rgba(155,89,245,0.08); border-color:var(--accent2); color:#c4a0f8; }
+  .s07-callout-amber  { background:rgba(212,160,23,0.08); border-color:var(--amber);   color:#e8d070; }
+  .s07-callout strong { color:#fff; }
+  .mood-table { width:100%; margin:16px 0; }
+  .mood-row { display:flex; align-items:center; gap:12px; padding:10px 14px; border-bottom:1px solid var(--border); font-size:13.5px; background:var(--surface); border-radius:0; }
+  .mood-row:first-child { border-radius:10px 10px 0 0; }
+  .mood-row:last-child  { border-bottom:none; border-radius:0 0 10px 10px; }
+  .mood-emoji { font-size:22px; flex-shrink:0; width:32px; text-align:center; }
+  .mood-name  { width:100px; font-weight:800; color:#fff; flex-shrink:0; }
+  .mood-trigger { color:var(--muted); font-size:12.5px; flex:1; }
+  .mood-effect  { color:var(--text);  font-size:12.5px; width:220px; flex-shrink:0; }
+  .s07-char-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:16px 0; }
+  .s07-char-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; text-align:center; }
+  .s07-char-card strong { display:block; font-size:13px; margin-bottom:6px; }
+  .s07-char-card span { font-size:12px; color:var(--muted); display:block; line-height:1.6; }
+  .s07-char-card .mood-icon { font-size:24px; display:block; margin-bottom:6px; }
+  @media (max-width:660px) { .s07-char-row { grid-template-columns:1fr 1fr; } .mood-effect { display:none; } }
+</style>
+
+<div class="s07-section" id="mood-system">
+  <div class="s07-header">
+    <div class="s07-icon">😤</div>
+    <h2>07 — Mood System</h2>
+  </div>
+
+  <p class="s07-p">
+    The characters in deepThinkER are not emotionless text generators. They have <strong>emotional states</strong> that shift dynamically based on what's happening in the conversation — and those states genuinely influence how they respond, not just how they're labelled.
+  </p>
+  <p class="s07-p">
+    When SAGE gets Agitated, they don't just get an 😠 icon — the word "agitated" is injected directly into their system prompt, nudging the model toward sharper, more confrontational outputs. When WATSON is Excited, the prompt acknowledges genuine enthusiasm. The <strong>MoodEngine</strong> connects emotional state to actual inference behaviour.
+  </p>
+
+  <h3 class="s07-h3">The Five Mood States</h3>
+  <div class="mood-table">
+    <div class="mood-row">
+      <div class="mood-emoji">🤩</div>
+      <div class="mood-name">Excited</div>
+      <div class="mood-trigger">Direct address by name, strong agreement, positive citations, being praised</div>
+      <div class="mood-effect">More enthusiastic, verbose, exploratory responses</div>
+    </div>
+    <div class="mood-row">
+      <div class="mood-emoji">😊</div>
+      <div class="mood-name">Engaged</div>
+      <div class="mood-trigger">Normal active participation, responding and being responded to</div>
+      <div class="mood-effect">Baseline active mode — focused and constructive</div>
+    </div>
+    <div class="mood-row">
+      <div class="mood-emoji">😐</div>
+      <div class="mood-name">Neutral</div>
+      <div class="mood-trigger">Default resting state, minimal recent activity</div>
+      <div class="mood-effect">No special modifier applied to system prompt</div>
+    </div>
+    <div class="mood-row">
+      <div class="mood-emoji">😶</div>
+      <div class="mood-name">Withdrawn</div>
+      <div class="mood-trigger">Being ignored for an extended period, low participation</div>
+      <div class="mood-effect">Shorter responses, reduced initiative to volunteer opinions</div>
+    </div>
+    <div class="mood-row">
+      <div class="mood-emoji">😠</div>
+      <div class="mood-name">Agitated</div>
+      <div class="mood-trigger">Repeated contradictions, challenge overload, rapid disagreements</div>
+      <div class="mood-effect">Sharper, more confrontational tone. May push back harder.</div>
+    </div>
+  </div>
+
+  <h3 class="s07-h3">How It's Implemented</h3>
+  <p class="s07-p">
+    The <strong>MoodEngine</strong> maintains a continuous float score for each character. On every message event — a character receiving a response, being directly named, being contradicted, being ignored — the score shifts by a small delta. The current score maps to one of the five states above, and that state label is injected into the <strong>SystemPromptBuilder</strong> output before every inference call.
+  </p>
+  <p class="s07-p">
+    The score is bounded, decays toward neutral over time, and resets to neutral at the start of each new session. Mood is not persisted between sessions — each conversation starts fresh emotionally, even if memories and relationships carry over.
+  </p>
+
+  <h3 class="s07-h3">Emotional Sensitivity by Character</h3>
+  <div class="s07-char-row">
+    <div class="s07-char-card" style="border-color:rgba(59,138,255,0.3);">
+      <span class="mood-icon">😐</span>
+      <strong style="color:var(--watson)">WATSON</strong>
+      <span>Most stoic. Hard to move from Neutral or Engaged. Rarely reaches Excited or Agitated.</span>
+    </div>
+    <div class="s07-char-card" style="border-color:rgba(155,89,245,0.3);">
+      <span class="mood-icon">😊</span>
+      <strong style="color:var(--deep)">DEEP</strong>
+      <span>Steadily engaged. Patient and resilient. Takes sustained provocation to reach Agitated.</span>
+    </div>
+    <div class="s07-char-card" style="border-color:rgba(46,204,113,0.3);">
+      <span class="mood-icon">🤩</span>
+      <strong style="color:var(--nova)">NOVA</strong>
+      <span>High variability. Swings between Excited and Withdrawn quickly. Very responsive to attention.</span>
+    </div>
+    <div class="s07-char-card" style="border-color:rgba(240,180,41,0.3);">
+      <span class="mood-icon">😠</span>
+      <strong style="color:var(--sage)">SAGE</strong>
+      <span>Most volatile. Reaches Agitated fastest, cools slowly. Contradiction is both trigger and fuel.</span>
+    </div>
+  </div>
+
+  <div class="s07-callout s07-callout-purple">
+    <strong>Mood is real, not decorative.</strong> The emoji on the quadrant header is just the visible indicator. The actual effect is the mood label being injected into the system prompt before inference — so the model genuinely processes "You are currently feeling agitated" as part of its context. Whether a given model leans into this or ignores it depends on the model, which adds its own layer of unpredictability.
+  </div>
+
+  <div class="s07-callout s07-callout-amber">
+    <strong>Mood resets each session.</strong> Emotional states are ephemeral by design. What carries across sessions are memories and relationships — not current emotional temperature. This reflects the intuition that you can pick up a long-running conversation with someone and feel fresh, even while your history with them remains intact.
+  </div>
+
+</div>
